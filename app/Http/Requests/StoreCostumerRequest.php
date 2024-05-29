@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Entities\Data;
 use App\Rules\CpfRule;
+use App\Rules\DataRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCostumerRequest extends FormRequest
@@ -13,6 +15,13 @@ class StoreCostumerRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+    public function messages()
+    {
+        return [
+            'costumer.cpf.unique' => 'CPF já Cadastrado!.',
+            'costumer.email.unique' => 'Email já Cadastrado!.'
+        ];
     }
 
     /**
@@ -30,8 +39,8 @@ class StoreCostumerRequest extends FormRequest
             'person.photo' => ['nullable', 'string'],
             'costumer' => ['array'],
             'costumer.cpf' => ['unique:App\Models\Costumer,cpf', 'nullable', 'not_regex:/^(.)\1*$/', 'digits:11',  new CpfRule],
-            'costumer.birthday' => ['nullable', 'date'],
-            'costumer.email' => ['nullable', 'email'],
+            'costumer.birthday' => ['required', 'date_format:d/m/Y'],
+            'costumer.email' => ['unique:App\Models\Costumer,email', 'nullable', 'email'],
         ];
     }
 }

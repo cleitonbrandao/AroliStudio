@@ -14,6 +14,7 @@ class CostumerController extends Controller
         $data = $request->validated();
         $people = People::create($data['person']);
         $people->costumer()->create($data['costumer']);
+        dd($data);
         return redirect('costumer/index');
     }
 }

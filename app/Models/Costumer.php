@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Costumer extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'person_id', 'cpf', 'birthday', 'email'
     ];
