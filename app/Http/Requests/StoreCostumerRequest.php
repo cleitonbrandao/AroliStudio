@@ -38,7 +38,7 @@ class StoreCostumerRequest extends FormRequest
             'person.phone' => ['nullable', 'string'],
             'person.photo' => ['nullable', 'string'],
             'costumer' => ['array'],
-            'costumer.cpf' => ['unique:App\Models\Costumer,cpf', 'nullable', 'not_regex:/^(.)\1*$/', 'digits:11',  new CpfRule],
+            'costumer.cpf' => ['unique:App\Models\Costumer,cpf', 'nullable', 'not_regex:/^(.)\1*$/',  new CpfRule],
             'costumer.birthday' => ['required', 'date_format:d/m/Y'],
             'costumer.email' => ['unique:App\Models\Costumer,email', 'nullable', 'email'],
         ];

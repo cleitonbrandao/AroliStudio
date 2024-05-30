@@ -14,6 +14,7 @@ class CpfRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        $value = preg_replace('/[\.\-]/', '', $value);
         // Calcula os dígitos verificadores para verificar se o CPF é válido
         for ($t = 9; $t < 11; $t++) {
             for ($d = 0, $c = 0; $c < $t; $c++) {
