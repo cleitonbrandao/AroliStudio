@@ -30,8 +30,8 @@ class StoreServiceController extends FormRequest
         return [
             'name' => ['unique:App\Models\Service,name', 'required', 'string'],
             'service_time' => ['nullable'],
-            'price' => ['nullable'],
-            'cost_price' => ['nullable'],
+            'price' => ['nullable', 'numeric'],
+            'cost_price' => ['nullable', 'numeric'],
             'description' => ['nullable', 'string']
         ];
     }
