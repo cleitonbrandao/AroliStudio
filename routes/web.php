@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\CostumerController;
 
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Dashboard\HomeDashBoard;
 use App\Livewire\Dashboard\IndexDashBoard;
@@ -57,9 +59,10 @@ Route::middleware([
         Route::get('/index', [IndexCostumer::class, 'index'])->name('costumer.index');
     });
 
-    Route::name('root.')->prefix('service')->group(function () {
-        Route::get('/', [HomeService::class, 'home'])->name('service');
-        Route::get('/index', [IndexService::class, 'index'])->name('service.index');
+    Route::name('root.')->prefix('negotiable')->group(function () {
+        Route::get('/', [HomeService::class, 'home'])->name('negotiable');
+        Route::get('service/index', [IndexService::class, 'index'])->name('service.index');
+        Route::get('product/index', [ProductController::class, 'index'])->name('product.index');
     });
 
     Route::name('root.')->prefix('form')->group(function () {
@@ -78,6 +81,8 @@ Route::middleware([
 
     Route::name('root.')->prefix('register')->group(function () {
         Route::post('/costumer', [CostumerController::class, 'store'])->name('register.costumer');
+        Route::post('/product', [ProductController::class, 'store'])->name('register.product');
+        Route::post('/service', [ServiceController::class, 'store'])->name('register.service');
     });
 
     Route::name('root.')->prefix('update')->group(function () {

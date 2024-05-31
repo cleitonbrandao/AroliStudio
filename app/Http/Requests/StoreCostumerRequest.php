@@ -16,7 +16,7 @@ class StoreCostumerRequest extends FormRequest
     {
         return true;
     }
-    public function messages()
+    public function messages(): array
     {
         return [
             'costumer.cpf.unique' => 'CPF já Cadastrado!.',
