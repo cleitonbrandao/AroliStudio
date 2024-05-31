@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Livewire\Costumer;
+use LivewireUI\Modal\ModalComponent;
 
-use Livewire\Component;
 
-class HomeCostumer extends Component
+class HomeCostumer extends ModalComponent
 {
     public function home()
     {
