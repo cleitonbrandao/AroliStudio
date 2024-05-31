@@ -21,7 +21,7 @@
                     <x-nav-link href="{{ route('root.costumer') }}" :active="request()->routeIs('root.costumer')">
                         {{ __('Clientes') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('root.service') }}" :active="request()->routeIs('root.service')">
+                    <x-nav-link href="{{ route('root.negotiable') }}" :active="request()->routeIs('root.negotiable')">
                         {{ __('Serviços') }}
                     </x-nav-link>
                     <x-nav-link href="{{ route('root.commercial') }}" :active="request()->routeIs('root.commercial')">

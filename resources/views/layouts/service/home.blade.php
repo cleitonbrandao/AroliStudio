@@ -6,7 +6,7 @@
             </h2>
             <!-- Navigation Links -->
             <div class="space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <x-nav-link class="text-xs" href="{{ route('root.service.index') }}" :active="request()->routeIs('root.service.index')">
+                <x-nav-link class="text-xs" href="{{ route('root.negotiable') }}" :active="request()->routeIs('root.negotiable')">
                     {{ __('Lista') }}
                 </x-nav-link>
                 <x-nav-link class="text-xs" href="{{ route('root.form.product') }}" :active="request()->routeIs('root.form.product')">

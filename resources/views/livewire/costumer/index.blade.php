@@ -15,8 +15,6 @@
             </div>
         </div>
         <button >Open Modal</button>
-        <button wire:click="$dispatch('openModal', { component: {component: 'hello-world'} })">Show Users</button>
-        <a href="#" type="button" onclick="Livewire.dispatch('openModal', { component: 'hello-world' })" class="font-medium text-blue-600 light:text-blue-500 hover:underline">Edit user</a>
 
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
