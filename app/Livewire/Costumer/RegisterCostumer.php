@@ -1,14 +1,13 @@
 <?php
 
 namespace App\Livewire\Costumer;
+use LivewireUI\Modal\ModalComponent;
 
-use Livewire\Component;
-
-class RegisterCostumer extends Component
+class RegisterCostumer extends ModalComponent
 {
-    public function form()
+    public function render()
     {
-        return view('livewire.costumer.form');
+        return view('livewire.costumer.register-costumer');
     }
     public function update()
     {

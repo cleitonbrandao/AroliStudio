@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class RegisterCostumer extends Component
 {
-    public function form()
+    public function render()
     {
         return view('livewire.costumer.form');
     }

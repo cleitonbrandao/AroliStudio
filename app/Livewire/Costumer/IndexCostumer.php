@@ -3,12 +3,10 @@
 namespace App\Livewire\Costumer;
 
 use App\Models\Costumer;
-use App\Traits\WithModal;
-use Livewire\Component;
+use LivewireUI\Modal\ModalComponent;
 
-class IndexCostumer extends Component
+class IndexCostumer extends ModalComponent
 {
-    use WithModal;
 
     public function index()
     {

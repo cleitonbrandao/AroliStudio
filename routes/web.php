@@ -64,7 +64,7 @@ Route::middleware([
 
     Route::name('root.')->prefix('form')->group(function () {
         Route::get('/employee', [RegisterEmployee::class, 'form'])->name('form.employee');
-        Route::get('/costumer', [RegisterCostumer::class, 'form'])->name('form.costumer');
+        Route::get('/costumer', [RegisterCostumer::class, 'render'])->name('form.costumer');
         Route::get('/service', [RegisterService::class, 'form'])->name('form.service');
         Route::get('/product', [RegisterProduct::class, 'form'])->name('form.product');
         Route::get('/package', [RegisterPackage::class, 'form'])->name('form.package');
