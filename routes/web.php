@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CostumerController;
 
+use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
@@ -71,6 +72,7 @@ Route::middleware([
         Route::get('/service', [RegisterService::class, 'form'])->name('form.service');
         Route::get('/product', [RegisterProduct::class, 'form'])->name('form.product');
         Route::get('/package', [RegisterPackage::class, 'form'])->name('form.package');
+//        Route::get('/form/package', RegisterPackage::class);
     });
 
     Route::name('root.')->prefix('commercial')->group(function () {
@@ -83,6 +85,7 @@ Route::middleware([
         Route::post('/costumer', [CostumerController::class, 'store'])->name('register.costumer');
         Route::post('/product', [ProductController::class, 'store'])->name('register.product');
         Route::post('/service', [ServiceController::class, 'store'])->name('register.service');
+        Route::post('/package', [PackageController::class, 'store'])->name('register.package');
     });
 
     Route::name('root.')->prefix('update')->group(function () {
