@@ -25,7 +25,7 @@ class AnySearch extends Component
         $this->updatedSearch($this->search);
         return view('livewire.components.any-search', ['products' => $this->products]);
     }
-    public function updatedSearch($value)
+    public function updatedSearch($value): void
     {
         if (strlen($value) >= 3) {
             $this->showDropdown = true;
@@ -34,8 +34,10 @@ class AnySearch extends Component
     }
     public function addItem($item):void
     {
+        $this->items = Cache::get('items', []);
         $this->items[] = $item;
         $this->showDropdown = false;
         Cache::put('items', $this->items);
+        $this->dispatch('items-update');
     }
 }

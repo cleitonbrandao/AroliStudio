@@ -8,6 +8,7 @@ use Livewire\Component;
 
 class ItemPackage extends Component
 {
+    #[On('items-update')]
     public function render()
     {
         return view('livewire.service.item-package');

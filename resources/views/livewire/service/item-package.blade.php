@@ -1,10 +1,11 @@
 <div class="flex flex-row flex-wrap gap-1 bg-gray-50 p-2">
     @if(cache('items'))
+        @dump(cache('items'))
         @foreach(cache('items') as $key => $item)
             <div wire:key="{{ $key }}" class="flex-initial w-[200px] flex-col gap-1 p-1 bg-white border border-gray-200 rounded-lg shadow light:bg-gray-800 light:border-gray-700">
                 <div class="flex">
                     <a href="#">
-                        <input type="hidden" name="{{ $item['name'] }}[]" value="{{ $item['id'] }}"/>
+                        <input type="hidden" name="items_package[teste]" value="{{ $item['id'] }}"/>
                         <h5 class="font-bold tracking-tight text-gray-900 light:text-white">{{ $item['name'] }}</h5>
                     </a>
                 </div>

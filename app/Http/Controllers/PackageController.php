@@ -30,6 +30,7 @@ class PackageController extends Controller
      */
     public function store(StorePackageRequest $request): RedirectResponse
     {
+        dd($request->all());
         $data = $request->validated();
         Package::create($data['package']);
         return redirect('negotiable');
