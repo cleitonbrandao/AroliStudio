@@ -1,16 +1,17 @@
 <div class="flex flex-row flex-wrap gap-1 bg-gray-50 p-2">
-    @if(cache('items'))
-        @dump(cache('items'))
-        @foreach(cache('items') as $key => $item)
+    @dump(cache('packages_items'))
+    @if(blank($packages_items))
+        @foreach($packages_items['products'] as $key => $products)
+            @dd($products)
             <div wire:key="{{ $key }}" class="flex-initial w-[200px] flex-col gap-1 p-1 bg-white border border-gray-200 rounded-lg shadow light:bg-gray-800 light:border-gray-700">
                 <div class="flex">
                     <a href="#">
-                        <input type="hidden" name="items_package[teste]" value="{{ $item['id'] }}"/>
-                        <h5 class="font-bold tracking-tight text-gray-900 light:text-white">{{ $item['name'] }}</h5>
+                        <input type="hidden" name="items[products][]" value="{{ $products->id }}"/>
+                        <h5 class="font-bold tracking-tight text-gray-900 light:text-white">{{ $products->name }}</h5>
                     </a>
                 </div>
                 <div class="flex">
-                    <p class="font-normal text-gray-700 light:text-gray-400">{{ $item['price'] }}</p>
+                    <p class="font-normal text-gray-700 light:text-gray-400">{{ $products->price }}</p>
                 </div>
                 <div class="flex flex-row justify-between">
                     <div>
@@ -27,5 +28,5 @@
                 </div>
             </div>
         @endforeach
-    @endif
+    @endisset
 </div>

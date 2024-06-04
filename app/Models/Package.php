@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Query\Builder;
 
 class Package extends Model
 {
@@ -33,5 +34,9 @@ class Package extends Model
     public function group(): BelongsToMany
     {
         return $this->belongsToMany(GroupsPackage::class, 'groups_packages', 'package_origin_id', 'id');
+    }
+    public function scopeSearch(Builder $query,string $like,int $limit): void
+    {
+        $query->where('name', 'like', '%' . $like . '%')->limit($limit)->get();
     }
 }

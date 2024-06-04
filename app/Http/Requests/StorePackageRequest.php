@@ -16,7 +16,8 @@ class StorePackageRequest extends FormRequest
     public function messages()
     {
         return [
-            'package.name.unique' => 'Pacote já Cadastrado!'
+            'package.name.unique' => 'Pacote já Cadastrado!',
+            'items.required' => 'Pacote Deve Conter ao menos um Item!'
         ];
     }
 
@@ -32,10 +33,14 @@ class StorePackageRequest extends FormRequest
             'package.name' => ['unique:App\Models\Package,name', 'required', 'string'],
             'package.price' => ['nullable', 'numeric'],
             'package.description' => ['nullable', 'string'],
-            'service' => ['array'],
-            'service.id' => ['nullable'],
-            'product' => ['array'],
-            'product.id' => ['nullable']
+            'items' => ['required'],
+            'items.services' => ['array'],
+            'items.services.service.id' => ['nullable', 'integer'],
+            'items.products' => ['array'],
+            'items.products.product.id' => ['nullable', 'integer'],
+            'items.packages' => ['array'],
+            'items.packages.package.id' => ['nullable', 'integer']
+
         ];
     }
 }
