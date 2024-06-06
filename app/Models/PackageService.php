@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class PackageService extends Model
 {
     use HasFactory;
-
+    protected $table = 'packages_services';
     public function service(): HasMany
     {
-        return $this->hasMany(Service::class, 'package_service_service_id', 'id');
+        return $this->hasMany(Service::class, 'package_id', 'id');
     }
 }

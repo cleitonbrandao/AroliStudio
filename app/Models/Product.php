@@ -18,4 +18,9 @@ class Product extends Model
     protected $fillable = [
         'name', 'price', 'cost_price', 'description'
     ];
+
+    public function packages()
+    {
+        return $this->belongsToMany(Package::class, 'packages_products');
+    }
 }
