@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Casts\MonetaryCorrency;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Service extends Model
 {
@@ -19,8 +19,9 @@ class Service extends Model
     protected $fillable = [
         'name', 'service_time', 'price', 'cost_price', 'description'
     ];
-    public function scopeSearch(Builder $query,string $like,int $limit): void
+
+    public function services(): BelongsToMany
     {
-        $query->where('name', 'like', '%' . $like . '%')->limit($limit)->get();
+        return $this->belongsToMany(Package::class, 'packages_services');
     }
 }

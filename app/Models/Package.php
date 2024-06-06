@@ -6,8 +6,6 @@ use App\Casts\MonetaryCorrency;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Query\Builder;
 
 class Package extends Model
 {
@@ -23,20 +21,12 @@ class Package extends Model
         'name', 'price', 'description'
     ];
 
-    public function services(): HasManyThrough
+    public function products(): BelongsToMany
     {
-        return $this->hasManyThrough(PackageService::class, Package::class);
+        return $this->belongsToMany(Product::class, 'packages_products');
     }
-    public function products(): HasManyThrough
+    public function services(): BelongsToMany
     {
-        return $this->hasManyThrough(PackageProduct::class, PackageProduct::class);
-    }
-    public function group(): BelongsToMany
-    {
-        return $this->belongsToMany(GroupsPackage::class, 'groups_packages', 'package_origin_id', 'id');
-    }
-    public function scopeSearch(Builder $query,string $like,int $limit): void
-    {
-        $query->where('name', 'like', '%' . $like . '%')->limit($limit)->get();
+        return $this->belongsToMany(Service::class, 'packages_services');
     }
 }

@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Package;
+use App\Models\Product;
+use App\Models\Service;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePackageRequest extends FormRequest
@@ -35,11 +38,11 @@ class StorePackageRequest extends FormRequest
             'package.description' => ['nullable', 'string'],
             'items' => ['required'],
             'items.services' => ['array'],
-            'items.services.service.id' => ['nullable', 'integer'],
+            'items.services.service.id' => ['nullable', 'integer', Service::class],
             'items.products' => ['array'],
-            'items.products.product.id' => ['nullable', 'integer'],
+            'items.products.product.id' => ['nullable', 'integer', Product::class],
             'items.packages' => ['array'],
-            'items.packages.package.id' => ['nullable', 'integer']
+            'items.packages.package.id' => ['nullable', 'integer', Package::class]
 
         ];
     }
