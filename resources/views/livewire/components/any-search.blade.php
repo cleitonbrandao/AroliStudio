@@ -11,21 +11,21 @@
         </div>
         <div  x-data="{ open: $wire.entangle('showDropdown') }" id="dropdown"  class="w-full z-10 show bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
             <ul x-show="open" x-on:click.outside="open = false" class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                @foreach($products as $product)
+                @foreach($this->products as $product)
                     <li>
                         <a href="#" class="flex justify-between items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                             <span>{{ $product->name }}</span>
                             <button wire:click="addProduct({{ $product }})" type="button" class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Adicionar</button></a>
                     </li>
                 @endforeach
-                @foreach($services as $service)
+                @foreach($this->services as $service)
                     <li>
                         <a href="#" class="flex justify-between items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                             <span>{{ $service->name }}</span>
                             <button wire:click="addService({{ $service }})" type="button" class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Adicionar</button></a>
                     </li>
                 @endforeach
-                @foreach($packages as $service)
+                @foreach($this->packages as $package)
                     <li>
                         <a href="#" class="flex justify-between items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                             <span>{{ $package->name }}</span>

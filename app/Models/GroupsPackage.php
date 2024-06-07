@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -13,7 +14,7 @@ class GroupsPackage extends Model
 
     protected $table = 'groups_packages';
 
-    public function packages(): HasMany
+    public function packages(): hasMany
     {
         return $this->hasMany(Package::class, 'package_origin_id', 'id');
     }

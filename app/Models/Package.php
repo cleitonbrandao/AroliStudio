@@ -29,4 +29,8 @@ class Package extends Model
     {
         return $this->belongsToMany(Service::class, 'packages_services');
     }
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(GroupsPackage::class, 'groups_packages', 'package_origin_id', 'package_id');
+    }
 }

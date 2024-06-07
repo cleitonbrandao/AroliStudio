@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePackageRequest;
 use App\Models\Package;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Arr;
 
 class PackageController extends Controller
 {
@@ -30,12 +31,18 @@ class PackageController extends Controller
      */
     public function store(StorePackageRequest $request): RedirectResponse
     {
-        dump($request->all());
         $data = $request->validated();
         $package = Package::create($data['package']);
-        $package->products()->attach($data['items']['products']);
-        $package->services()->attach($data['items']['services']);
-        dd($package);
+        if(Arr::exists($data['items'], 'products')){
+            $package->products()->attach($data['items']['products']);
+        }
+        if(Arr::exists($data['items'], 'services')) {
+            $package->services()->attach($data['items']['services']);
+        }
+        if(Arr::exists($data['items'], 'packages')) {
+            $package->groups()->attach($data['items']['packages']);
+        }
+        Cache::forget('packages_items');
         return redirect('negotiable');
     }
 

@@ -27,17 +27,15 @@ class AnySearch extends Component
 
     public function render(): View
     {
-//        $this->updatedSearch($this->search);
         return view('livewire.components.any-search');
     }
-    public function updatedSearch($value): void
+    public function updatedSearch(): void
     {
-        if (strlen($value) >= 3) {
+        if (strlen($this->search) >= 3) {
             $this->showDropdown = true;
-            $this->products = Product::where('name', 'like', '%' . $value . '%')->limit(3)->get();
-            $this->services = Service::where('name', 'like', '%' . $value . '%')->limit(3)->get();
-            $this->packages = Package::where('name', 'like', '%' . $value . '%')->limit(3)->get();
-
+            $this->products = Product::where('name', 'like', '%' . $this->search . '%')->limit(3)->get();
+            $this->services = Service::where('name', 'like', '%' . $this->search . '%')->limit(3)->get();
+            $this->packages = Package::where('name', 'like', '%' . $this->search . '%')->limit(3)->get();
             $this->packages_items = Arr::collapse([$this->products, $this->services, $this->packages]);
         }
     }
@@ -61,8 +59,11 @@ class AnySearch extends Component
     }
     public function addPackage(Package $package): void
     {
-        $this->packages = Cache::get('packages_items.packages', []);
-        $this->packages['packages'] = $package;
-        Cache::put('packages_items', $this->packages,  now()->addMinutes(5));
+        $packagesItems = Cache::get('packages_items', []);
+        $packages = $packagesItems ?? [];
+        $packages[] = $package;
+        $packagesItems = $packages;
+        Cache::put('packages_items', $packagesItems, now()->addMinutes(5));
+        $this->dispatch('items-update');
     }
 }
