@@ -15,7 +15,7 @@ class ProductsPagination extends Component
     {
         return view('livewire.service.products-pagination',
             [
-                'products' => Product::paginate(2)
+                'products' => Product::paginate(5)
             ]
         );
     }

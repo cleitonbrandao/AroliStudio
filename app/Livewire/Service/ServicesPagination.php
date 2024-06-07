@@ -14,7 +14,7 @@ class ServicesPagination extends Component
     {
         return view('livewire.service.services-pagination',
             [
-                'services' =>  Service::paginate(2)
+                'services' =>  Service::paginate(5)
             ]
         );
     }
