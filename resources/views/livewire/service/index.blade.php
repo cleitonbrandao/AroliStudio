@@ -1,4 +1,8 @@
 @extends('layouts.service.home')
 @section('content')
-    <livewire:service.products-pagination />
+    <div class="grid gap-4">
+        <livewire:service.products-pagination />
+        <livewire:service.services-pagination />
+        <livewire:service.packages-pagination />
+    </div>
 @endsection
