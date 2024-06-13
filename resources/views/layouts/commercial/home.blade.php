@@ -12,6 +12,9 @@
                 <x-nav-link class="text-xs" href="{{ route('root.commercial.consumption') }}" :active="request()->routeIs('root.commercial.consumption')">
                     {{ __('Entradas de Consumo') }}
                 </x-nav-link>
+                <x-nav-link class="text-xs" href="#" :active="request()->routeIs('root.commercial.consumption')">
+                    {{ __('Empresas / Fornecedores') }}
+                </x-nav-link>
             </div>
         </div>
     </x-slot>

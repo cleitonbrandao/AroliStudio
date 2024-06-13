@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CostumerController;
 
+use App\Http\Controllers\EnterpriseController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServiceController;
@@ -86,6 +87,7 @@ Route::middleware([
         Route::post('/product', [ProductController::class, 'store'])->name('register.product');
         Route::post('/service', [ServiceController::class, 'store'])->name('register.service');
         Route::post('/package', [PackageController::class, 'store'])->name('register.package');
+        Route::post('/enterprise', [EnterpriseController::class, 'store'])->name('register.enterprise');
     });
 
     Route::name('root.')->prefix('update')->group(function () {
