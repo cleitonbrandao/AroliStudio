@@ -10,16 +10,12 @@ use Livewire\Component;
 class ItemPackage extends Component
 {
     public mixed $packages_items = [];
-    public float $price_cost = 0;
+    public float $price_cost;
     #[On('items-update')]
     public function render()
     {
         $this->packages_items = Cache::get('packages_items', []);
-        foreach ($this->packages_items as $item) {
-            dump($item->cost_price);
-            $this->price_cost += $item->cost_price;
-            dump($this->price_cost);
-        }
+        $this->totalCost();
         return view('livewire.service.item-package');
     }
     public function removeItem($item)
@@ -31,5 +27,20 @@ class ItemPackage extends Component
             Cache::put('packages_items', array_values($items));
             $this->dispatch('remove-items-update');
         }
+    }
+    private function totalCost(): void
+    {
+        $packagesItemsCollection = collect($this->packages_items);
+        $this->price_cost = $packagesItemsCollection->sum(function ($item) {
+            return floatval(
+                str_replace(',','.',
+                    str_replace('.','',
+                            (
+                                $item['cost_price'] ?? $item['price']
+                            )
+                    )
+                )
+            );
+        });
     }
 }

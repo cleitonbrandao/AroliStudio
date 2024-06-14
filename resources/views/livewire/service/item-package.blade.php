@@ -27,4 +27,5 @@
             </div>
         @endforeach
     @endisset
+    <div class=" w-full flex flex-row gap-4 rounded p-1 text-orange-300 bg-amber-50"><h1>Preço Sugerido: </h1><span>R$ {{ $this->price_cost }}</span></div>
 </div>
