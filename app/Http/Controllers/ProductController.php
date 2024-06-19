@@ -13,4 +13,9 @@ class ProductController extends Controller
         Product::create($request->validated());
         return redirect('negotiable');
     }
+    public function update(StoreProductRequest $request): RedirectResponse
+    {
+        Product::updated($request->validated());
+        return redirect('negotiable');
+    }
 }

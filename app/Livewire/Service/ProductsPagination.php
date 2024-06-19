@@ -11,7 +11,14 @@ use Livewire\WithPagination;
 class ProductsPagination extends Component
 {
     use WithPagination;
+    public Product $selectedProduct;
 
+    public function editProduct(Product $product): void
+    {
+        $this->selectedProduct = $product;
+        $this->dispatch('open-modal', name: "product-edit");
+    }
+    #[Computed()]
     public function render(): View
     {
         return view('livewire.service.products-pagination',

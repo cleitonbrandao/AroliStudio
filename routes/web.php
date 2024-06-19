@@ -92,6 +92,7 @@ Route::middleware([
 
     Route::name('root.')->prefix('update')->group(function () {
         Route::patch('/costumer', [RegisterCostumer::class, 'update'])->name('update.costumer');
+        Route::patch('/product', [RegisterProduct::class, 'update'])->name('update.product');
     });
 });
 
