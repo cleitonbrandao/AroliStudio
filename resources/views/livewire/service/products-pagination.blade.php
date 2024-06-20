@@ -31,7 +31,7 @@
                         {{ $product->price }}
                     </td>
                     <td class="px-6 py-4">
-                        <a  wire:click="editProduct({{ $product->id }})" href="#" class="font-medium text-blue-600 light:text-blue-500 hover:underline">Editar</a>
+                        <a  wire:click="modalEditProduct({{ $product->id }})" href="#" class="font-medium text-blue-600 light:text-blue-500 hover:underline">Editar</a>
                     </td>
                 </tr>
             @endforeach

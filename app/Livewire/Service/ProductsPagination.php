@@ -13,7 +13,7 @@ class ProductsPagination extends Component
     use WithPagination;
     public Product $selectedProduct;
 
-    public function editProduct(Product $product): void
+    public function modalEditProduct(Product $product): void
     {
         $this->selectedProduct = $product;
         $this->dispatch('open-modal', name: "product-edit");
