@@ -3,25 +3,25 @@
 namespace App\Livewire\Forms\Service;
 
 use App\Models\Product;
-use Livewire\Attributes\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
 class ProductForm extends Form
 {
     public ?Product $product;
-
-    public string $name;
+    #[Validate]
+    public $name;
     public $price;
     public $cost_price;
-    public string $description;
+    public $description;
 
     public function rules(): array
     {
         return [
             'name' => [
                 'required',
-                Rule::unique('products')->ignore($this->name),
+                ValidationRule::exists('products', 'name'),
                 'min:4',
                 'string'
             ],

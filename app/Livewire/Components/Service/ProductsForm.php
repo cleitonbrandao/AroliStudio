@@ -18,7 +18,7 @@ class ProductsForm extends Component
 
     public function editProduct(): void
     {
-        dump($this->productForm);
+        $this->productForm->validate();
     }
 
     public function render(): View

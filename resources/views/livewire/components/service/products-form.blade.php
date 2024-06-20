@@ -11,7 +11,8 @@
         {{--        NOME--}}
         <div class="flex flex-col w-full p-2">
             <x-label for="name" value="{{ __('Nome') }}" />
-            <input type="text" wire:model="name" id="name" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 light:bg-gray-700 light:border-e-gray-700  light:border-gray-600 light:placeholder-gray-400 light:text-white light:focus:border-blue-500 shadow-sm" placeholder="Nome">
+            <input type="text" wire:model="productForm.name" id="name" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 light:bg-gray-700 light:border-e-gray-700  light:border-gray-600 light:placeholder-gray-400 light:text-white light:focus:border-blue-500 shadow-sm" placeholder="Nome">
+            <div>@error('productForm.name'){{ $message }}@enderror</div>
         </div>
         {{--        PREÇO E PREÇO DE CUSTO--}}
         <div class="flex flex-row flex-wrap items-end w-full">
