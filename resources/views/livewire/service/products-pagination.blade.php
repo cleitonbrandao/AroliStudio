@@ -20,7 +20,7 @@
             </thead>
             <tbody>
             @foreach($products as $product)
-                <tr wire:key="product-{{$product->id}}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <tr wire:key="{{$product->id}}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         {{ $product->name }}
                     </th>
@@ -36,10 +36,10 @@
                 </tr>
             @endforeach
             </tbody>
-            @isset($this->selectedProduct)
-                <x-modal name="product-edit" maxWidth="md" id="{{ $this->selectedProduct->id }}">
+            @isset($selectedProduct)
+                <x-modal name="product-edit" maxWidth="md">
                     <x-slot:slot>
-                        <livewire:components.service.products-form :product="$this->selectedProduct" />
+                        <livewire:components.service.products-form :$selectedProduct />
                     </x-slot:slot>
                 </x-modal>
             @endisset

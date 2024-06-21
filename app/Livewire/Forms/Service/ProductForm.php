@@ -3,14 +3,14 @@
 namespace App\Livewire\Forms\Service;
 
 use App\Models\Product;
-use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
 class ProductForm extends Form
 {
     public ?Product $product;
-    #[Validate]
+    #[Validate('required', 'name', message: 'Nome de Produto Obrigatorio.')]
     public $name;
     public $price;
     public $cost_price;
@@ -20,13 +20,13 @@ class ProductForm extends Form
     {
         return [
             'name' => [
+                Rule::unique('products', 'name')->ignore($this->product->id),
                 'required',
-                ValidationRule::exists('products', 'name'),
                 'min:4',
                 'string'
             ],
             'price' => [
-                'nullable',
+                'nullable'
             ],
             'cost_price' => [
                 'nullable'
@@ -44,5 +44,13 @@ class ProductForm extends Form
         $this->price = $product->price;
         $this->cost_price = $product->cost_price;
         $this->description = $product->description;
+    }
+
+    public function update()
+    {
+        $this->validate();
+        $this->product->update(
+            $this->all()
+        );
     }
 }

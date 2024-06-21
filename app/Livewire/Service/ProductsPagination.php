@@ -5,6 +5,7 @@ namespace App\Livewire\Service;
 use App\Models\Product;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -16,7 +17,7 @@ class ProductsPagination extends Component
     public function modalEditProduct(Product $product): void
     {
         $this->selectedProduct = $product;
-        $this->dispatch('open-modal', name: "product-edit");
+        $this->dispatch('open-modal', name: "product-edit", selectedProduct: $this->selectedProduct);
     }
     #[Computed()]
     public function render(): View
