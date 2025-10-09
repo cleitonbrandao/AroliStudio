@@ -10,6 +10,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -58,4 +60,80 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    /**
+     * Relacionamento com empresas através de memberships (Jetstream)
+     */
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'team_user')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    /**
+     * Relacionamento com memberships
+     */
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(Membership::class);
+    }
+
+    /**
+     * Obter empresas onde o usuário é owner
+     */
+    public function ownedCompanies()
+    {
+        return $this->companies()->wherePivot('role', 'owner');
+    }
+
+    /**
+     * Obter empresas onde o usuário é admin
+     */
+    public function adminCompanies()
+    {
+        return $this->companies()->wherePivot('role', 'admin');
+    }
+
+    /**
+     * Obter empresas onde o usuário é member
+     */
+    public function memberCompanies()
+    {
+        return $this->companies()->wherePivot('role', 'member');
+    }
+
+    /**
+     * Verificar se usuário pertence à empresa
+     */
+    public function belongsToCompany(Company $company): bool
+    {
+        return $this->companies()->where('company_id', $company->id)->exists();
+    }
+
+    /**
+     * Obter role do usuário na empresa
+     */
+    public function getRoleInCompany(Company $company): ?string
+    {
+        $membership = $this->memberships()->where('company_id', $company->id)->first();
+        return $membership ? $membership->role : null;
+    }
+
+    /**
+     * Verificar se usuário pode gerenciar empresa
+     */
+    public function canManageCompany(Company $company): bool
+    {
+        $role = $this->getRoleInCompany($company);
+        return in_array($role, ['owner', 'admin']);
+    }
+
+    /**
+     * Verificar se usuário é owner da empresa
+     */
+    public function isOwnerOfCompany(Company $company): bool
+    {
+        return $this->getRoleInCompany($company) === 'owner';
+    }
 }

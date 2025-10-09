@@ -28,6 +28,9 @@ use App\Livewire\Costumer\HomeCostumer;
 use App\Livewire\Costumer\IndexCostumer;
 use App\Livewire\Costumer\RegisterCostumer;
 
+use App\Livewire\Companies\Index as CompaniesIndex;
+use App\Livewire\Companies\Create as CompaniesCreate;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,6 +49,12 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    // Rotas de empresas
+    Route::name('companies.')->prefix('companies')->group(function () {
+        Route::get('/', CompaniesIndex::class)->name('index');
+        Route::get('/create', CompaniesCreate::class)->name('create');
+    });
+
     Route::name('root.')->prefix('dashboard')->group(function () {
       Route::get('/', [HomeDashBoard::class, 'home'])->name('dashboard.home');
       Route::get('/index', [IndexDashBoard::class, 'index'])->name('dashboard.index');
