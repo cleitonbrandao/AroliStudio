@@ -1,6 +1,33 @@
-version: '3.8'
-
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: aroli_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+    ports:
+      - "8000:80"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_HOST=mysql
+      - DB_DATABASE=aroli_studio
+      - DB_USERNAME=aroli_user
+      - DB_PASSWORD=aroli_password
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - REDIS_HOST=redis
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - aroli_network
+
   mysql:
     image: mysql:8.0
     container_name: aroli_mysql
@@ -18,6 +45,15 @@ services:
     networks:
       - aroli_network
     command: --default-authentication-plugin=mysql_native_password
+
+  redis:
+    image: redis:7-alpine
+    container_name: aroli_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - aroli_network
 
 volumes:
   mysql_data:
