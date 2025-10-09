@@ -1,7 +1,8 @@
-@props(['id', 'maxWidth', 'name'])
+@props(['maxWidth', 'name'])
 
 @php
 $id = $id ?? md5($attributes->wire('model'));
+$name = $name ?? 'default-modal';
 
 $maxWidth = [
     'sm' => 'sm:max-w-sm',
@@ -16,11 +17,9 @@ $maxWidth = [
     x-data="{ show: false, name: '{{ $name }}' }"
     x-show = "show"
     x-on:open-modal.window = "show = ($event.detail.name === name)"
-    x-on:close-modal = "show = false"
+    x-on:close-modal.window= "show = false"
     x-on:close.stop="show = false"
     x-on:keydown.escape.window="show = false"
-    x-show="show"
-    id="{{ $id }}"
     style="display: none;"
     class="jetstream-modal fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"
 >

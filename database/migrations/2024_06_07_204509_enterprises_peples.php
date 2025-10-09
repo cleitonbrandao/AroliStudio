@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('enterprises_peoples', function (Blueprint $table) {
             $table->id();
             $table->foreignId('enterprise_id')
-                ->constrained(table: 'enterprise', indexName: 'enterprise_people_enterprise_id')
+                ->constrained(table: 'enterprises', indexName: 'enterprise_people_enterprise_id')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->foreignId('people_id')

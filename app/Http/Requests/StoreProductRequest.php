@@ -17,7 +17,8 @@ class StoreProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.unique' => 'Produto já Cadastrado.'
+            'name.unique' => 'Produto já Cadastrado.',
+            'name.required' => 'Obrigatorio um nome de produto.'
         ];
     }
 
