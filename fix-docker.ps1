@@ -20,19 +20,19 @@ Start-Sleep -Seconds 30
 
 # Verificar se o vendor existe
 Write-Host "📦 Verificando dependências..." -ForegroundColor Yellow
-docker-compose exec app ls -la vendor/
+docker-compose exec aroli_app ls -la vendor/
 
 # Se não existir, instalar
 Write-Host "📦 Instalando dependências do Composer..." -ForegroundColor Yellow
-docker-compose exec app composer install
+docker-compose exec aroli_app composer install
 
 # Gerar autoloader
 Write-Host "🔄 Gerando autoloader..." -ForegroundColor Yellow
-docker-compose exec app composer dump-autoload
+docker-compose exec aroli_app composer dump-autoload
 
 # Verificar se o .env existe
 Write-Host "📝 Verificando arquivo .env..." -ForegroundColor Yellow
-docker-compose exec app ls -la .env
+docker-compose exec aroli_app ls -la .env
 
 # Se não existir, criar
 if (!(Test-Path ".env")) {
@@ -81,11 +81,11 @@ VITE_APP_NAME="${APP_NAME}"
 
 # Gerar chave da aplicação
 Write-Host "🔑 Gerando chave da aplicação..." -ForegroundColor Yellow
-docker-compose exec app php artisan key:generate
+docker-compose exec aroli_app php artisan key:generate
 
 # Executar migrations
 Write-Host "📊 Executando migrations..." -ForegroundColor Yellow
-docker-compose exec app php artisan migrate
+docker-compose exec aroli_app php artisan migrate
 
 Write-Host "✅ Problemas corrigidos!" -ForegroundColor Green
 Write-Host "🌐 Acesse: http://localhost:8000" -ForegroundColor Cyan
