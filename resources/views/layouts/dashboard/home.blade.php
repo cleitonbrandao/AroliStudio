@@ -12,6 +12,9 @@
                 <x-nav-link class="text-xs" href="{{ route('root.dashboard.index') }}" :active="request()->routeIs('root.dashboard.index')">
                     {{ __('Index') }}
                 </x-nav-link>
+                <x-nav-link class="text-xs" href="{{ route('root.dashboard.hierarchy') }}" :active="request()->routeIs('root.dashboard.hierarchy')">
+                    {{ __('Hierarquia') }}
+                </x-nav-link>
             </div>
         </div>
     </x-slot>

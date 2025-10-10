@@ -9,6 +9,7 @@ use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Dashboard\HomeDashBoard;
 use App\Livewire\Dashboard\IndexDashBoard;
+use App\Livewire\Dashboard\HierarchyManager;
 
 use App\Livewire\Employee\HomeEmployee;
 use App\Livewire\Employee\IndexEmployee;
@@ -30,6 +31,7 @@ use App\Livewire\Costumer\RegisterCostumer;
 
 use App\Livewire\Companies\Index as CompaniesIndex;
 use App\Livewire\Companies\Create as CompaniesCreate;
+use App\Livewire\Companies\Hierarchy as CompaniesHierarchy;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,11 +55,13 @@ Route::middleware([
     Route::name('companies.')->prefix('companies')->group(function () {
         Route::get('/', CompaniesIndex::class)->name('index');
         Route::get('/create', CompaniesCreate::class)->name('create');
+        Route::get('/hierarchy', CompaniesHierarchy::class)->name('hierarchy');
     });
 
     Route::name('root.')->prefix('dashboard')->group(function () {
-      Route::get('/', [HomeDashBoard::class, 'home'])->name('dashboard.home');
-      Route::get('/index', [IndexDashBoard::class, 'index'])->name('dashboard.index');
+            Route::get('/', [HomeDashBoard::class, 'home'])->name('dashboard.home');
+            Route::get('/index', [IndexDashBoard::class, 'index'])->name('dashboard.index');
+            Route::get('/hierarchy', [HierarchyManager::class, 'hierarchy'])->name('dashboard.hierarchy');
     });
 
     Route::name('root.')->prefix('employee')->group(function () {
@@ -105,8 +109,10 @@ Route::middleware([
     });
 });
 
+use Illuminate\Support\Facades\Auth;
+
 Route::fallback(function () {
-    if(!auth()->check()) {
+    if(!Auth::check()) {
         return view('auth.login');
     }
 });

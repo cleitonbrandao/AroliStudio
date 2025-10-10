@@ -17,6 +17,11 @@ class Company extends JetstreamTeam
         'slug',
         'user_id',
         'personal_team',
+        'max_users',
+        'current_users',
+        'plan_type',
+        'is_active',
+        'trial_ends_at',
     ];
 
     /**
@@ -49,7 +54,7 @@ class Company extends JetstreamTeam
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'team_user')
+        return $this->belongsToMany(User::class, 'team_user', 'team_id', 'user_id')
             ->withPivot('role')
             ->withTimestamps();
     }
@@ -99,7 +104,11 @@ class Company extends JetstreamTeam
      */
     public function addUser(User $user, string $role = 'member'): void
     {
-        $this->users()->attach($user->id, ['role' => $role]);
+        $this->users()->attach($user->id, [
+            'role' => $role,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
 
@@ -110,5 +119,76 @@ class Company extends JetstreamTeam
     {
         $membership = $this->memberships()->where('user_id', $user->id)->first();
         return $membership ? $membership->role : null;
+    }
+
+    /**
+     * Relacionamento com assinaturas da empresa
+     */
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(CompanySubscription::class);
+    }
+
+    /**
+     * Assinatura ativa da empresa
+     */
+    public function activeSubscription(): ?CompanySubscription
+    {
+        return $this->subscriptions()
+            ->where('is_active', true)
+            ->where('starts_at', '<=', now())
+            ->where(function ($query) {
+                $query->whereNull('ends_at')
+                      ->orWhere('ends_at', '>', now());
+            })
+            ->first();
+    }
+
+    /**
+     * Verificar se pode adicionar mais usuários
+     */
+    public function canAddUser(): bool
+    {
+        $subscription = $this->activeSubscription();
+        if (!$subscription) {
+            return $this->current_users < $this->max_users;
+        }
+        return $this->current_users < $subscription->max_users;
+    }
+
+    /**
+     * Adicionar usuário e atualizar contador
+     */
+    public function addUserWithCount(User $user, string $role = 'member'): void
+    {
+        $this->addUser($user, $role);
+        $this->increment('current_users');
+    }
+
+    /**
+     * Remover usuário e atualizar contador
+     */
+    public function removeUserWithCount(User $user): void
+    {
+        $this->users()->detach($user->id);
+        $this->decrement('current_users');
+    }
+
+    /**
+     * Obter limite de usuários
+     */
+    public function getUserLimit(): int
+    {
+        $subscription = $this->activeSubscription();
+        return $subscription ? $subscription->max_users : $this->max_users;
+    }
+
+    /**
+     * Verificar se empresa está ativa
+     */
+    public function isActive(): bool
+    {
+        return $this->is_active && 
+               ($this->trial_ends_at === null || $this->trial_ends_at->isFuture());
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
@@ -28,6 +29,7 @@ class Team extends JetstreamTeam
      */
     protected $fillable = [
         'name',
+        'slug',
         'personal_team',
     ];
 
@@ -41,4 +43,27 @@ class Team extends JetstreamTeam
         'updated' => TeamUpdated::class,
         'deleted' => TeamDeleted::class,
     ];
+
+    /**
+     * Boot method to handle automatic slug generation
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        
+        // Gerar slug automaticamente
+        static::creating(function ($team) {
+            if (empty($team->slug)) {
+                $team->slug = Str::slug($team->name);
+                
+                // Garantir unicidade do slug
+                $originalSlug = $team->slug;
+                $counter = 1;
+                while (static::where('slug', $team->slug)->exists()) {
+                    $team->slug = $originalSlug . '-' . $counter;
+                    $counter++;
+                }
+            }
+        });
+    }
 }

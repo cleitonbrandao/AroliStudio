@@ -1,5 +1,5 @@
-# Dockerfile para desenvolvimento - mais simples e rápido
-FROM php:8.1-apache
+# Dockerfile para desenvolvimento - Laravel 11 com PHP 8.2
+FROM php:8.2-apache
 
 # Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
@@ -28,8 +28,8 @@ RUN pecl install redis && docker-php-ext-enable redis
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Instalar Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+# Instalar Node.js 20 (LTS)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
 # Habilitar mod_rewrite do Apache

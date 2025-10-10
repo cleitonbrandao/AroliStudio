@@ -29,6 +29,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'email', 'password',
+        'stripe_id', 'pm_type', 'pm_last_four', 'trial_ends_at',
+        'billing_address', 'billing_city', 'billing_state', 
+        'billing_postal_code', 'billing_country',
     ];
 
     /**
@@ -50,6 +53,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'trial_ends_at' => 'datetime',
     ];
 
     /**
@@ -108,7 +112,7 @@ class User extends Authenticatable
      */
     public function belongsToCompany(Company $company): bool
     {
-        return $this->companies()->where('company_id', $company->id)->exists();
+        return $this->companies()->where('team_id', $company->id)->exists();
     }
 
     /**
@@ -116,7 +120,7 @@ class User extends Authenticatable
      */
     public function getRoleInCompany(Company $company): ?string
     {
-        $membership = $this->memberships()->where('company_id', $company->id)->first();
+        $membership = $this->memberships()->where('team_id', $company->id)->first();
         return $membership ? $membership->role : null;
     }
 
@@ -135,5 +139,67 @@ class User extends Authenticatable
     public function isOwnerOfCompany(Company $company): bool
     {
         return $this->getRoleInCompany($company) === 'owner';
+    }
+
+    /**
+     * Relacionamento com assinaturas
+     */
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    /**
+     * Assinatura ativa do usuário
+     */
+    public function activeSubscription(): ?Subscription
+    {
+        return $this->subscriptions()
+            ->where('stripe_status', 'active')
+            ->where(function ($query) {
+                $query->whereNull('ends_at')
+                      ->orWhere('ends_at', '>', now());
+            })
+            ->first();
+    }
+
+    /**
+     * Verificar se usuário tem assinatura ativa
+     */
+    public function hasActiveSubscription(): bool
+    {
+        return $this->activeSubscription() !== null;
+    }
+
+    /**
+     * Verificar se está em trial
+     */
+    public function isOnTrial(): bool
+    {
+        return $this->trial_ends_at && $this->trial_ends_at->isFuture();
+    }
+
+    /**
+     * Obter limite de empresas do usuário
+     */
+    public function getCompanyLimit(): int
+    {
+        $subscription = $this->activeSubscription();
+        if (!$subscription) {
+            return 1; // Limite gratuito
+        }
+
+        $companySubscription = $subscription->companySubscriptions()->first();
+        return $companySubscription ? $companySubscription->max_companies : 1;
+    }
+
+    /**
+     * Verificar se pode criar mais empresas
+     */
+    public function canCreateCompany(): bool
+    {
+        $currentCompanies = $this->ownedTeams()->count();
+        $limit = $this->getCompanyLimit();
+        return $currentCompanies < $limit;
     }
 }
