@@ -34,7 +34,7 @@ class Membership extends JetstreamMembership
      */
     public function team(): BelongsTo
     {
-        return $this->belongsTo(Company::class, 'team_id');
+        return $this->belongsTo(Team::class, 'team_id');
     }
 
     /**

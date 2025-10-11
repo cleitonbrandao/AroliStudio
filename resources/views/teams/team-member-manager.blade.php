@@ -141,11 +141,13 @@
                                     <!-- Manage Team Member Role -->
                                     @if (Gate::check('updateTeamMember', $team) && Laravel\Jetstream\Jetstream::hasRoles())
                                         <button class="ms-2 text-sm text-gray-400 underline" wire:click="manageRole('{{ $user->id }}')">
-                                            {{ Laravel\Jetstream\Jetstream::findRole($user->membership->role)->name }}
+                                            @php $roleObj = Laravel\Jetstream\Jetstream::findRole($user->membership->role ?? null); @endphp
+                                            {{ $roleObj ? $roleObj->name : ($user->membership->role ?? 'Sem role') }}
                                         </button>
                                     @elseif (Laravel\Jetstream\Jetstream::hasRoles())
                                         <div class="ms-2 text-sm text-gray-400">
-                                            {{ Laravel\Jetstream\Jetstream::findRole($user->membership->role)->name }}
+                                            @php $roleObj = Laravel\Jetstream\Jetstream::findRole($user->membership->role ?? null); @endphp
+                                            {{ $roleObj ? $roleObj->name : ($user->membership->role ?? 'Sem role') }}
                                         </div>
                                     @endif
 

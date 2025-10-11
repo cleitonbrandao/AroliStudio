@@ -7,8 +7,7 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
-use App\Livewire\Dashboard\HomeDashBoard;
-use App\Livewire\Dashboard\IndexDashBoard;
+use Illuminate\Support\Facades\Mail;
 use App\Livewire\Dashboard\HierarchyManager;
 
 use App\Livewire\Employee\HomeEmployee;
@@ -105,6 +104,7 @@ Route::middleware([
         Route::patch('/costumer', [RegisterCostumer::class, 'update'])->name('update.costumer');
         Route::patch('/product', [RegisterProduct::class, 'update'])->name('update.product');
     });
+
 });
 
 use Illuminate\Support\Facades\Auth;
