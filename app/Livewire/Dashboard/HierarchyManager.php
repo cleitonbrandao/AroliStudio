@@ -6,10 +6,11 @@ use Livewire\Component;
 use App\Models\User;
 use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Company;
+use Livewire\Attributes\Layout;
 
 use Illuminate\Support\Facades\Log;
 
+#[Layout('layouts.dashboard.home')]
 class HierarchyManager extends Component
 {
     public $companies;
@@ -23,16 +24,24 @@ class HierarchyManager extends Component
     ];
 
     public function mount()
-    {
-        $user = Auth::user();
-        $this->companies = $user->companies;
-        if ($this->companies->count() > 0) {
-            $this->selectedCompany = $this->companies->first()->id;
-            $this->loadMembers();
-        } else {
-            Log::info('Usuário sem empresas ou acesso ao dashboard/hierarchy', ['user_id' => $user->id, 'email' => $user->email]);
-        }
+{
+    $user = Auth::user(); // Garante que os teams estão atualizados
+    $companies = $user->teams;
+
+    Log::info('Debug HierarchyManager', [
+        'user_id' => $user->id,
+        'companies' => $companies->pluck('name','id')->toArray(),
+    ]);
+
+    if ($companies->count() > 0) {
+        $this->companies = $companies;
+        $this->selectedCompany = $companies->first()->id;
+        $this->loadMembers();
+    } else {
+        $this->companies = collect();
+        Log::info('Usuário sem empresas ou acesso ao dashboard/hierarchy', ['user_id' => $user->id, 'email' => $user->email]);
     }
+}
 
     public function updatedSelectedCompany()
     {
@@ -41,8 +50,8 @@ class HierarchyManager extends Component
 
     public function loadMembers()
     {
-        $company = Company::find($this->selectedCompany);
-        $this->members = $company ? $company->users()->withPivot('role')->get() : [];
+    $team = Team::find($this->selectedCompany);
+    $this->members = $team ? $team->users()->withPivot('role')->get() : [];
     }
 
     public function hierarchy()

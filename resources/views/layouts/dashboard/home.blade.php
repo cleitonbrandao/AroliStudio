@@ -6,21 +6,15 @@
             </h2>
             <!-- Navigation Links -->
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <x-nav-link class="text-xs" href="{{ route('root.dashboard.home') }}" :active="request()->routeIs('root.dashboard.home')">
+                <x-nav-link class="text-xs" href="{{ route('root.dashboard.hierarchy') }}" :active="request()->routeIs('root.dashboard.home')">
                     {{ __('Home') }}
-                </x-nav-link>
-                <x-nav-link class="text-xs" href="{{ route('root.dashboard.index') }}" :active="request()->routeIs('root.dashboard.index')">
-                    {{ __('Index') }}
-                </x-nav-link>
-                <x-nav-link class="text-xs" href="{{ route('root.dashboard.hierarchy') }}" :active="request()->routeIs('root.dashboard.hierarchy')">
-                    {{ __('Hierarquia') }}
                 </x-nav-link>
             </div>
         </div>
     </x-slot>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @yield('content')
+            {{ $slot }}
         </div>
     </div>
 </x-app-layout>

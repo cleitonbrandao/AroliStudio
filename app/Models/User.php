@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Models;
+use App\Models\Team;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -65,15 +65,8 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    /**
-     * Relacionamento com empresas através de memberships (Jetstream)
-     */
-    public function companies(): BelongsToMany
-    {
-        return $this->belongsToMany(Company::class, 'team_user')
-            ->withPivot('role')
-            ->withTimestamps();
-    }
+
+    // Use apenas os relacionamentos padrão do Jetstream (teams, HasTeams)
 
     /**
      * Relacionamento com memberships
@@ -83,62 +76,44 @@ class User extends Authenticatable
         return $this->hasMany(Membership::class);
     }
 
+
+    // Métodos utilitários para teams (empresas) usando Jetstream
+
     /**
-     * Obter empresas onde o usuário é owner
+     * Verifica se o usuário pertence ao team (empresa)
      */
-    public function ownedCompanies()
+    public function belongsToTeam(?Team $team): bool
     {
-        return $this->companies()->wherePivot('role', 'owner');
+        if (!$team) {
+            return false;
+        }
+        return $this->teams()->where('team_id', $team->id)->exists();
     }
 
     /**
-     * Obter empresas onde o usuário é admin
+     * Obtém o papel do usuário no team (empresa)
      */
-    public function adminCompanies()
+    public function getRoleInTeam(Team $team): ?string
     {
-        return $this->companies()->wherePivot('role', 'admin');
-    }
-
-    /**
-     * Obter empresas onde o usuário é member
-     */
-    public function memberCompanies()
-    {
-        return $this->companies()->wherePivot('role', 'member');
-    }
-
-    /**
-     * Verificar se usuário pertence à empresa
-     */
-    public function belongsToCompany(Company $company): bool
-    {
-        return $this->companies()->where('team_id', $company->id)->exists();
-    }
-
-    /**
-     * Obter role do usuário na empresa
-     */
-    public function getRoleInCompany(Company $company): ?string
-    {
-        $membership = $this->memberships()->where('team_id', $company->id)->first();
+        $membership = $this->memberships()->where('team_id', $team->id)->first();
         return $membership ? $membership->role : null;
     }
 
     /**
-     * Verificar se usuário pode gerenciar empresa
+     * Verifica se o usuário pode gerenciar o team (empresa)
      */
-    public function canManageCompany(Company $company): bool
+    public function canManageTeam(Team $team): bool
     {
-        $role = $this->getRoleInCompany($company);
+        $role = $this->getRoleInTeam($team);
         return in_array($role, ['owner', 'admin']);
     }
 
     /**
-     * Verificar se usuário é owner da empresa
+     * Verifica se o usuário é owner do team (empresa)
      */
-    public function isOwnerOfCompany(Company $company): bool
+    public function isOwnerOfTeam(Team $team): bool
     {
-        return $this->getRoleInCompany($company) === 'owner';
+        return $this->getRoleInTeam($team) === 'owner';
     }
 
     /**

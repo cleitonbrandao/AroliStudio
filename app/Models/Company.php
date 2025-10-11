@@ -54,9 +54,7 @@ class Company extends JetstreamTeam
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'team_user', 'team_id', 'user_id')
-            ->withPivot('role')
-            ->withTimestamps();
+        return $this->belongsToMany(User::class, 'team_user', 'team_id', 'user_id')->withPivot('role');
     }
 
     /**

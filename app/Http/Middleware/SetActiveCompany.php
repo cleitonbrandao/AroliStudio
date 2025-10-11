@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Company;
+use App\Models\Team;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,16 +38,14 @@ class SetActiveCompany
             // Disponibilizar empresa ativa globalmente
             if ($request->session()->has('active_company_id')) {
                 $companyId = $request->session()->get('active_company_id');
-                $activeCompany = Company::find($companyId);
-                
-                        if ($activeCompany && $user->belongsToTeam($activeCompany)) {
+                $activeTeam = Team::find($companyId);
+                if ($activeTeam && $user->belongsToTeam($activeTeam)) {
                     // Compartilhar com views
-                    view()->share('activeCompany', $activeCompany);
-                    
+                    view()->share('activeCompany', $activeTeam);
                     // Disponibilizar no container
-                    app()->instance('activeCompany', $activeCompany);
+                    app()->instance('activeCompany', $activeTeam);
                 } else {
-                    // Se a empresa não existe ou usuário não pertence, limpar sessão
+                    // Se o team não existe ou usuário não pertence, limpar sessão
                     $request->session()->forget('active_company_id');
                 }
             }

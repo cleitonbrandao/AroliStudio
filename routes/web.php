@@ -59,9 +59,7 @@ Route::middleware([
     });
 
     Route::name('root.')->prefix('dashboard')->group(function () {
-            Route::get('/', [HomeDashBoard::class, 'home'])->name('dashboard.home');
-            Route::get('/index', [IndexDashBoard::class, 'index'])->name('dashboard.index');
-            Route::get('/hierarchy', [HierarchyManager::class, 'hierarchy'])->name('dashboard.hierarchy');
+            Route::get('/', HierarchyManager::class)->name('dashboard.hierarchy');
     });
 
     Route::name('root.')->prefix('employee')->group(function () {

@@ -1,8 +1,7 @@
 <?php
-
 namespace App\Livewire\Companies;
 
-use App\Models\Company;
+use App\Actions\Jetstream\CreateTeam;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -26,22 +25,20 @@ class Create extends Component
 
         try {
             DB::transaction(function () {
-                // Criar empresa usando Jetstream
-                $company = Auth::user()->ownedTeams()->create([
+                $user = Auth::user();
+                $team = app(CreateTeam::class)->create($user, [
                     'name' => $this->name,
+                    'personal_team' => false,
                 ]);
 
-                // Adicionar usuário como owner (automático no Jetstream)
-                $company->users()->attach(Auth::user(), ['role' => 'owner']);
-
                 // Definir como empresa ativa e current team
-                session(['active_company_id' => $company->id]);
-                Auth::user()->forceFill([
-                    'current_team_id' => $company->id,
-                ])->save();
+                session(['active_company_id' => $team->id]);
+                // Recarregar o usuário para garantir instância Eloquent
+                $freshUser = \App\Models\User::find($user->id);
+                $freshUser->current_team_id = $team->id;
+                $freshUser->save();
 
                 session()->flash('success', 'Empresa criada com sucesso!');
-                
                 return redirect()->route('companies.index');
             });
         } catch (\Exception $e) {
