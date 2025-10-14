@@ -1,5 +1,3 @@
-@extends('layouts.employee.home')
-@section('content')
+<div>
     <x-validation-errors class="mb-4" />
-
-@endsection
+</div>

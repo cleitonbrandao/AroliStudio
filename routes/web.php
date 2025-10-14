@@ -7,10 +7,8 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Mail;
 use App\Livewire\Dashboard\HierarchyManager;
 
-use App\Livewire\Employee\HomeEmployee;
 use App\Livewire\Employee\IndexEmployee;
 use App\Livewire\Employee\RegisterEmployee;
 
@@ -62,8 +60,8 @@ Route::middleware([
     });
 
     Route::name('root.')->prefix('employee')->group(function () {
-        Route::get('/', [HomeEmployee::class, 'home'])->name('employee');
-        Route::get('/index', [IndexEmployee::class, 'index'])->name('employee.index');
+        Route::get('/', IndexEmployee::class)->name('employee');
+        Route::get('/index', IndexEmployee::class)->name('employee.index');
     });
 
     Route::name('root.')->prefix('costumer')->group(function (){
@@ -78,7 +76,7 @@ Route::middleware([
     });
 
     Route::name('root.')->prefix('form')->group(function () {
-        Route::get('/employee', [RegisterEmployee::class, 'render'])->name('form.employee');
+        Route::get('/employee', RegisterEmployee::class)->name('form.employee');
         Route::get('/costumer', [RegisterCostumer::class, 'render'])->name('form.costumer');
         Route::get('/service', [RegisterService::class, 'render'])->name('form.service');
         Route::get('/product', [RegisterProduct::class, 'render'])->name('form.product');

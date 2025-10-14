@@ -17,7 +17,7 @@
     </x-slot>
     <div class="py-12">
         <div class="flex max-w-7xl mx-auto sm:px-6 lg:px-8 justify-center">
-            @yield('content')
+            {{ $slot }}
         </div>
     </div>
 </x-app-layout>
