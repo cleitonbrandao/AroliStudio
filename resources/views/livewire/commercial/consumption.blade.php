@@ -1,4 +1,1 @@
-@extends('layouts.commercial.home')
-@section('content')
-
-@endsection
+<div>Consumidor</div>

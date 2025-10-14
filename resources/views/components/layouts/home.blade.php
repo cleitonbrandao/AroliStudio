@@ -11,7 +11,11 @@
             </h2>
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                 @foreach ($navLinks as $link)
-                    <x-nav-link class="text-xs" href="{{ route($link['route']) }}" :active="request()->routeIs($link['active'])">
+                    @php
+                        $isRoute = isset($link['route']) && $link['route'] !== '#' && !str_starts_with($link['route'], 'http');
+                        $href = $isRoute ? route($link['route']) : ($link['route'] ?? '#');
+                    @endphp
+                    <x-nav-link class="text-xs" href="{{ $href }}" :active="$isRoute ? request()->routeIs($link['active']) : false">
                         {{ $link['text'] }}
                     </x-nav-link>
                 @endforeach

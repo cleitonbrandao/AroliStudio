@@ -85,9 +85,9 @@ Route::middleware([
     });
 
     Route::name('root.')->prefix('commercial')->group(function () {
-        Route::get('/', [HomeCommercial::class, 'home'])->name('commercial');
-        Route::get('/summary', [SummaryCommercial::class, 'summary'])->name('commercial.summary');
-        Route::get('/consumption', [Consumption::class, 'home'])->name('commercial.consumption');
+        Route::get('/', SummaryCommercial::class)->name('commercial.summary');
+        Route::get('/summary', SummaryCommercial::class)->name('commercial.summary');
+        Route::get('/consumption', Consumption::class)->name('commercial.consumption');
     });
 
     Route::name('root.')->prefix('register')->group(function () {
