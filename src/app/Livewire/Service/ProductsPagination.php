@@ -3,6 +3,7 @@
 namespace App\Livewire\Service;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
@@ -25,7 +26,8 @@ class ProductsPagination extends Component
     {
         return view('livewire.service.products-pagination',
             [
-                'products' => Product::paginate(5)
+                'products' => Product::where('team_id', Auth::user()->currentTeam->id)
+                                 ->paginate(5)
             ]
         );
     }
