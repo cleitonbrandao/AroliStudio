@@ -10,7 +10,6 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use LivewireUI\Modal\ModalComponent;
-use Livewire\Attributes\Layout;
 
 class ProductsForm extends ModalComponent
 {
@@ -47,15 +46,16 @@ class ProductsForm extends ModalComponent
     {
         // Se não estiver em modal, usa o layout de página
         if (!$this->isModal()) {
-            return view(Blades::FORM_PRODUCTS, [
-                'title' => 'Cadastrar Produto',
-                'navLinks' => [
-                    ['text' => 'Lista', 'route' => 'root.negotiable', 'active' => 'root.negotiable'],
-                    ['text' => 'Cadastrar - Produtos', 'route' => 'root.form.product', 'active' => 'root.form.product'],
-                    ['text' => 'Cadastrar - Serviços', 'route' => 'root.form.service', 'active' => 'root.form.service'],
-                    ['text' => 'Cadastrar - Pacotes', 'route' => 'root.form.package', 'active' => 'root.form.package'],
-                ]
-            ])->layout(Blades::SERVICE);
+            return view(Blades::FORM_PRODUCTS)
+                ->layout('layouts.service.home', [
+                    'title' => 'Cadastrar Produto',
+                    'navLinks' => [
+                        ['text' => 'Lista', 'route' => 'root.negotiable', 'active' => 'root.negotiable'],
+                        ['text' => 'Cadastrar - Produtos', 'route' => 'root.form.product', 'active' => 'root.form.product'],
+                        ['text' => 'Cadastrar - Serviços', 'route' => 'root.form.service', 'active' => 'root.form.service'],
+                        ['text' => 'Cadastrar - Pacotes', 'route' => 'root.form.package', 'active' => 'root.form.package'],
+                    ]
+                ]);
         }
         return view(Blades::FORM_PRODUCTS);
     }

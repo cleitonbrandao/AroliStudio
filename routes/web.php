@@ -84,7 +84,7 @@ Route::middleware([
     });
 
     Route::name('root.')->prefix('commercial')->group(function () {
-        Route::get('/', SummaryCommercial::class)->name('commercial.summary');
+        Route::get('/', SummaryCommercial::class)->name('commercial.index');
         Route::get('/summary', SummaryCommercial::class)->name('commercial.summary');
         Route::get('/consumption', Consumption::class)->name('commercial.consumption');
     });
