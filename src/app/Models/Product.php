@@ -16,8 +16,13 @@ class Product extends Model
     protected $table = 'products';
 
     protected $fillable = [
-        'name', 'price', 'cost_price', 'description'
+        'team_id', 'name', 'price', 'cost_price', 'description'
     ];
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
 
     public function packages()
     {

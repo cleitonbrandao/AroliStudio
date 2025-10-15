@@ -78,7 +78,7 @@ Route::middleware([
         Route::get('/employee', RegisterEmployee::class)->name('form.employee');
         Route::get('/costumer', [RegisterCostumer::class, 'render'])->name('form.costumer');
         Route::get('/service', RegisterService::class)->name('form.service');
-        Route::get('/product', \App\Livewire\Components\Service\ProductsForm::class)->name('form.product');
+        Route::get('/product', RegisterProduct::class)->name('form.product');
         Route::get('/package', RegisterPackage::class)->name('form.package');
 //        Route::get('/form/package', RegisterPackage::class);
     });
@@ -91,7 +91,6 @@ Route::middleware([
 
     Route::name('root.')->prefix('register')->group(function () {
         Route::post('/costumer', [CostumerController::class, 'store'])->name('register.costumer');
-        Route::post('/product', [ProductController::class, 'store'])->name('register.product');
         Route::post('/service', [ServiceController::class, 'store'])->name('register.service');
         Route::post('/package', [PackageController::class, 'store'])->name('register.package');
         Route::post('/enterprise', [EnterpriseController::class, 'store'])->name('register.enterprise');
@@ -99,7 +98,11 @@ Route::middleware([
 
     Route::name('root.')->prefix('update')->group(function () {
         Route::patch('/costumer', [RegisterCostumer::class, 'update'])->name('update.costumer');
-        Route::patch('/product', [RegisterProduct::class, 'update'])->name('update.product');
+        Route::patch('/product/{product}', [ProductController::class, 'update'])->name('update.product');
+    });
+
+    Route::name('root.')->prefix('delete')->group(function () {
+        Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('delete.product');
     });
 
 });

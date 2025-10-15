@@ -5,17 +5,58 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProductRequest;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+    /**
+     * Store a newly created product.
+     */
     public function store(StoreProductRequest $request): RedirectResponse
     {
-        Product::create($request->validated());
-        return redirect('negotiable');
+        $validated = $request->validated();
+        
+        // Vincula o produto ao team atual do usuário
+        $validated['team_id'] = Auth::user()->currentTeam->id;
+        
+        Product::create($validated);
+        
+        return redirect()
+            ->route('root.negotiable')
+            ->with('success', 'Produto cadastrado com sucesso!');
     }
-    public function update(StoreProductRequest $request): RedirectResponse
+
+    /**
+     * Update the specified product.
+     */
+    public function update(StoreProductRequest $request, Product $product): RedirectResponse
     {
-        Product::updated($request->validated());
-        return redirect('negotiable');
+        // Verifica se o produto pertence ao team do usuário
+        if ($product->team_id !== Auth::user()->currentTeam->id) {
+            abort(403, 'Você não tem permissão para editar este produto.');
+        }
+        
+        $product->update($request->validated());
+        
+        return redirect()
+            ->route('root.negotiable')
+            ->with('success', 'Produto atualizado com sucesso!');
+    }
+    
+    /**
+     * Remove the specified product.
+     */
+    public function destroy(Product $product): RedirectResponse
+    {
+        // Verifica se o produto pertence ao team do usuário
+        if ($product->team_id !== Auth::user()->currentTeam->id) {
+            abort(403, 'Você não tem permissão para excluir este produto.');
+        }
+        
+        $product->delete();
+        
+        return redirect()
+            ->route('root.negotiable')
+            ->with('success', 'Produto excluído com sucesso!');
     }
 }
