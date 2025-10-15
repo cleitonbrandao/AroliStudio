@@ -70,17 +70,16 @@ Route::middleware([
     });
 
     Route::name('root.')->prefix('negotiable')->group(function () {
-        Route::get('/', [HomeService::class, 'home'])->name('negotiable');
-        Route::get('service/index', [IndexService::class, 'index'])->name('service.index');
+        Route::get('/', IndexService::class)->name('negotiable');
         Route::get('product/index', [ProductController::class, 'index'])->name('product.index');
     });
 
     Route::name('root.')->prefix('form')->group(function () {
         Route::get('/employee', RegisterEmployee::class)->name('form.employee');
         Route::get('/costumer', [RegisterCostumer::class, 'render'])->name('form.costumer');
-        Route::get('/service', [RegisterService::class, 'render'])->name('form.service');
-        Route::get('/product', [RegisterProduct::class, 'render'])->name('form.product');
-        Route::get('/package', [RegisterPackage::class, 'render'])->name('form.package');
+        Route::get('/service', RegisterService::class)->name('form.service');
+        Route::get('/product', \App\Livewire\Components\Service\ProductsForm::class)->name('form.product');
+        Route::get('/package', RegisterPackage::class)->name('form.package');
 //        Route::get('/form/package', RegisterPackage::class);
     });
 

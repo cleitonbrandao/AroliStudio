@@ -31,18 +31,12 @@
                         {{ $product->price }}
                     </td>
                     <td class="px-6 py-4">
-                        <a type="button" x-on:click="$wire.modalEditProduct({{ $product->id }})" href="#" class="font-medium text-blue-600 light:text-blue-500 hover:underline">Editar</a>
+                        <button type="button" x-on:click="window.Livewire.dispatch('openModal', { component: 'components.service.products-form', arguments: { productId: {{ $product->id }} } })" class="font-medium text-blue-600 light:text-blue-500 hover:underline">Editar</button>
                     </td>
                 </tr>
             @endforeach
             </tbody>
-            @isset($this->selectedProduct)
-                <x-modal name="product-edit" maxWidth="md">
-                    <x-slot:slot>
-                        <livewire:components.service.products-form :productId="$selectedProduct->id" />
-                    </x-slot:slot>
-                </x-modal>
-            @endisset
+            {{-- O modal será aberto automaticamente pelo wire-elements-modal --}}
         </table>
         <div class="p-2">
             {{ $products->links('pagination') }}

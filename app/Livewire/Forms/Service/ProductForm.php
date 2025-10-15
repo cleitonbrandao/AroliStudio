@@ -9,9 +9,8 @@ use Livewire\Form;
 
 class ProductForm extends Form
 {
-    public ?Product $product;
+    public ?Product $product = null;
     #[Validate(rule: 'required', message: 'Obrigatorio um nome de prouto.')]
-    #[Validate(rule: 'unique:products', attribute: 'name', message: 'Produto já cadastrado.')]
     public $name;
     public $price;
     public $cost_price;
