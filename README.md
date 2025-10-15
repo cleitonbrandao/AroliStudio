@@ -18,7 +18,7 @@ Adicione a seguinte entrada ao arquivo `hosts` do seu sistema operacional para m
 **Windows:** `C:/Windows/System32/drivers/etc/hosts`
 
 ```
-127.0.0.1   raconsultoria.com.br
+127.0.0.1   arolistudio.com.br
 ```
 
 ### Configuração de Arquivos de Ambiente

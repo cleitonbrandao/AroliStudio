@@ -172,20 +172,20 @@ services:
         networks:
             - backend
 
-    php-worker:
-        restart: always
-        build:
-            context: ./docker/php-worker
-            args:
-                - PROJECT_NAME=${COMPOSE_PROJECT_NAME}
-        volumes:
-            - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
-        depends_on:
-            - php-fpm
-            - mysql
-            - redis
-        networks:
-            - backend
+    #php-worker:
+    #    restart: always
+    #    build:
+    #        context: ./docker/php-worker
+    #        args:
+    #            - PROJECT_NAME=${COMPOSE_PROJECT_NAME}
+    #    volumes:
+    #        - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
+    #    depends_on:
+    #        - php-fpm
+    #        - mysql
+    #        - redis
+    #    networks:
+    #        - backend
 
     #php-worker-2:
     #    restart: always
