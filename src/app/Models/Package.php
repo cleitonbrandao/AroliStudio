@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Casts\MonetaryCorrency;
+use App\Casts\MonetaryCurrency;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -14,7 +14,7 @@ class Package extends Model
     protected $table = 'packages';
 
     protected $casts = [
-        'price' => MonetaryCorrency::class
+        'price' => MonetaryCurrency::class
     ];
 
     protected $fillable = [

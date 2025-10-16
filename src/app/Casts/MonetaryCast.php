@@ -2,8 +2,10 @@
 
 namespace App\Casts;
 
+use Brick\Money\Money;
+
 /**
- * Trait para aplicar automaticamente o cast MonetaryCorrency em atributos monetários.
+ * Trait para aplicar automaticamente o cast MonetaryCurrency em atributos monetários.
  * 
  * COMO USAR:
  * 
@@ -20,12 +22,12 @@ namespace App\Casts;
  * 
  * 2. Defina quais atributos são monetários no array $monetaryAttributes
  * 
- * 3. A trait aplicará automaticamente o cast MonetaryCorrency com locale/moeda da sessão
+ * 3. A trait aplicará automaticamente o cast MonetaryCurrency usando brick/money
  * 
  * 4. OPCIONAL: Para configuração customizada por atributo:
  * 
  *    protected array $monetaryAttributes = [
- *        'price' => ['currency' => 'USD', 'locale' => 'en_US'],
+ *        'price' => ['currency' => 'USD'],
  *        'cost_price' => [], // Usa padrões da sessão
  *    ];
  * 
@@ -34,6 +36,7 @@ namespace App\Casts;
  *    Schema::create('products', function (Blueprint $table) {
  *        $table->id();
  *        $table->decimal('price', 15, 3)->default(0.000)->comment('Preço de venda');
+ *        $table->string('currency', 3)->default('BRL')->comment('Código ISO da moeda');
  *        $table->decimal('cost_price', 15, 3)->default(0.000)->comment('Preço de custo');
  *        $table->timestamps();
  *    });
@@ -66,21 +69,21 @@ trait MonetaryCast
             $this->casts = [];
         }
 
-        // Aplica MonetaryCorrency para cada atributo monetário
+        // Aplica MonetaryCurrency para cada atributo monetário
         foreach ($this->monetaryAttributes as $key => $config) {
             // Se for array indexado: ['price', 'cost'] → usa config padrão
             if (is_numeric($key)) {
                 $attribute = $config;
-                $this->casts[$attribute] = MonetaryCorrency::class;
+                $this->casts[$attribute] = MonetaryCurrency::class;
             } 
             // Se for array associativo: ['price' => ['currency' => 'USD']] → usa config customizada
             else {
                 $attribute = $key;
                 $currency = $config['currency'] ?? null;
-                $locale = $config['locale'] ?? null;
+                $currencyColumn = $config['currencyColumn'] ?? null;
                 
                 // Cria cast com parâmetros customizados
-                $this->casts[$attribute] = MonetaryCorrency::class . ($currency || $locale ? ":$currency,$locale" : '');
+                $this->casts[$attribute] = MonetaryCurrency::class . ($currency || $currencyColumn ? ":$currency,$currencyColumn" : '');
             }
         }
     }
@@ -89,9 +92,10 @@ trait MonetaryCast
      * Helper para formatar múltiplos atributos monetários de uma vez.
      * 
      * Útil para exibir valores em views sem chamar get() manualmente.
+     * Retorna Money objects que podem ser formatados com formatTo().
      *
      * @param array<string> $attributes Lista de atributos para formatar
-     * @return array<string, string|null> Array associativo [atributo => valor_formatado]
+     * @return array<string, Money|null> Array associativo [atributo => Money_instance]
      */
     public function formatMonetary(array $attributes = []): array
     {
@@ -104,7 +108,7 @@ trait MonetaryCast
 
         $formatted = [];
         foreach ($attributes as $attribute) {
-            // Usa o cast get() para formatar
+            // Retorna Money instance (não string formatada)
             $formatted[$attribute] = $this->getAttribute($attribute);
         }
 
@@ -112,14 +116,14 @@ trait MonetaryCast
     }
 
     /**
-     * Helper para obter o valor raw (float) sem formatação.
+     * Helper para obter o valor raw (string decimal) sem formatação.
      * 
-     * Útil para cálculos onde você precisa do float puro.
+     * Útil para cálculos onde você precisa do decimal puro do banco.
      *
      * @param string $attribute Nome do atributo
-     * @return float|null Valor float ou null
+     * @return string|null Valor decimal ou null
      */
-    public function getRawMonetary(string $attribute): ?float
+    public function getRawMonetary(string $attribute): ?string
     {
         return $this->attributes[$attribute] ?? null;
     }
@@ -128,9 +132,10 @@ trait MonetaryCast
      * Helper para setar valor monetário de forma explícita.
      * 
      * Passa pelo cast set() para garantir parsing correto.
+     * Aceita Money instance, valores numéricos ou strings formatadas.
      *
      * @param string $attribute Nome do atributo
-     * @param mixed $value Valor a setar (string formatada ou numérico)
+     * @param mixed $value Valor a setar (Money, string formatada ou numérico)
      * @return self
      */
     public function setMonetary(string $attribute, mixed $value): self

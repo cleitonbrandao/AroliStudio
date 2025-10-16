@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Casts\MonetaryCorrency;
+use App\Casts\MonetaryCurrency;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,8 +10,8 @@ class Product extends Model
 {
     use HasFactory;
     protected $casts = [
-        'price' => MonetaryCorrency::class,
-        'cost_price' => MonetaryCorrency::class
+        'price' => MonetaryCurrency::class,
+        'cost_price' => MonetaryCurrency::class
     ];
     protected $table = 'products';
 
