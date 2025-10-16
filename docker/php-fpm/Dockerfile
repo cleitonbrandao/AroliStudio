@@ -1422,8 +1422,11 @@ RUN if [ ${INSTALL_FAKETIME} = true ]; then \
 ;fi
 
 # Install wkhtmltopdf
-RUN apt-get update && \
-    apt-get install -y wkhtmltopdf
+ARG INSTALL_WKHTMLTOPDF=false
+RUN if [ ${INSTALL_WKHTMLTOPDF} = true ]; then \
+    apt-get update && \
+    apt-get install -y wkhtmltopdf \
+;fi
 
 # Configure locale.
 ARG LOCALE=POSIX
