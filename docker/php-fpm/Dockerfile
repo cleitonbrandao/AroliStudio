@@ -280,7 +280,7 @@ ARG INSTALL_PHPDBG=false
 
 RUN if [ ${INSTALL_PHPDBG} = true ]; then \
     # Load the xdebug extension only with phpunit commands
-    apt-get install -yqq --force-yes php${LARADOCK_PHP_VERSION}-phpdbg \
+    apt-get install -yqq php${LARADOCK_PHP_VERSION}-phpdbg \
 ;fi
 
 ###########################################################################
@@ -1240,7 +1240,7 @@ ARG NEW_RELIC=${NEW_RELIC}
 ARG NEW_RELIC_KEY=${NEW_RELIC_KEY}
 ARG NEW_RELIC_APP_NAME=${NEW_RELIC_APP_NAME}
 
-RUN if [ ${NEW_RELIC} = true ] ]; then \
+RUN if [ ${NEW_RELIC} = true ]; then \
   curl -L http://download.newrelic.com/php_agent/archive/10.15.0.4/newrelic-php5-10.15.0.4-linux.tar.gz | tar -C /tmp -zx && \
   export NR_INSTALL_USE_CP_NOT_LN=1 && \
   export NR_INSTALL_SILENT=1 && \
@@ -1422,8 +1422,11 @@ RUN if [ ${INSTALL_FAKETIME} = true ]; then \
 ;fi
 
 # Install wkhtmltopdf
-RUN apt-get update && \
-    apt-get install -y wkhtmltopdf
+ARG INSTALL_WKHTMLTOPDF=false
+RUN if [ ${INSTALL_WKHTMLTOPDF} = true ]; then \
+    apt-get update && \
+    apt-get install -y wkhtmltopdf \
+;fi
 
 # Configure locale.
 ARG LOCALE=POSIX
