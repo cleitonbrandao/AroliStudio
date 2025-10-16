@@ -18,8 +18,13 @@ class Package extends Model
     ];
 
     protected $fillable = [
-        'name', 'price', 'description'
+        'team_id', 'name', 'price', 'description'
     ];
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
 
     public function products(): BelongsToMany
     {

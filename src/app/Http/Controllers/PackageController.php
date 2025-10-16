@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePackageRequest;
 use App\Models\Package;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Arr;
 
@@ -32,6 +34,10 @@ class PackageController extends Controller
     public function store(StorePackageRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        
+        // Adiciona team_id do usuário atual
+        $data['package']['team_id'] = Auth::user()->currentTeam->id;
+        
         $package = Package::create($data['package']);
         if(Arr::exists($data['items'], 'products')){
             $package->products()->attach($data['items']['products']);

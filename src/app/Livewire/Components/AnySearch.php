@@ -10,6 +10,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
@@ -32,10 +33,20 @@ class AnySearch extends Component
     public function updatedSearch(): void
     {
         if (strlen($this->search) >= 3) {
+            $teamId = Auth::user()->currentTeam->id;
             $this->showDropdown = true;
-            $this->products = Product::where('name', 'like', '%' . $this->search . '%')->limit(3)->get();
-            $this->services = Service::where('name', 'like', '%' . $this->search . '%')->limit(3)->get();
-            $this->packages = Package::where('name', 'like', '%' . $this->search . '%')->limit(3)->get();
+            $this->products = Product::where('team_id', $teamId)
+                                     ->where('name', 'like', '%' . $this->search . '%')
+                                     ->limit(3)
+                                     ->get();
+            $this->services = Service::where('team_id', $teamId)
+                                     ->where('name', 'like', '%' . $this->search . '%')
+                                     ->limit(3)
+                                     ->get();
+            $this->packages = Package::where('team_id', $teamId)
+                                     ->where('name', 'like', '%' . $this->search . '%')
+                                     ->limit(3)
+                                     ->get();
             $this->packages_items = Arr::collapse([$this->products, $this->services, $this->packages]);
         }
     }

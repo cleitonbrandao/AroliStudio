@@ -17,8 +17,13 @@ class Service extends Model
         'cost_price' => MonetaryCorrency::class
     ];
     protected $fillable = [
-        'name', 'service_time', 'price', 'cost_price', 'description'
+        'team_id', 'name', 'service_time', 'price', 'cost_price', 'description'
     ];
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
 
     public function services(): BelongsToMany
     {
