@@ -44,9 +44,42 @@ class MonetaryCorrency implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        // Remove formatação e salva apenas o número
-        $cleanValue = preg_replace('/[^\d.,]/', '', $value);
-        $cleanValue = str_replace(',', '.', $cleanValue);
+        // Se já for numérico, retorna formatado
+        if (is_numeric($value)) {
+            return number_format((float)$value, 2, '.', '');
+        }
+        
+        // Remove espaços e símbolos de moeda
+        $cleanValue = trim($value);
+        $cleanValue = preg_replace('/[^\d.,\-]/', '', $cleanValue);
+        
+        // Detecta o formato baseado na posição dos separadores
+        // Se houver vírgula após o ponto, é formato brasileiro (1.234,56)
+        // Se houver ponto após a vírgula, é formato americano (1,234.56)
+        $lastComma = strrpos($cleanValue, ',');
+        $lastDot = strrpos($cleanValue, '.');
+        
+        if ($lastComma !== false && $lastDot !== false) {
+            // Ambos presentes - determinar qual é o separador decimal
+            if ($lastComma > $lastDot) {
+                // Formato brasileiro: 1.234,56
+                $cleanValue = str_replace('.', '', $cleanValue); // Remove separador de milhares
+                $cleanValue = str_replace(',', '.', $cleanValue); // Vírgula vira ponto decimal
+            } else {
+                // Formato americano: 1,234.56
+                $cleanValue = str_replace(',', '', $cleanValue); // Remove separador de milhares
+            }
+        } elseif ($lastComma !== false) {
+            // Só vírgula presente - pode ser decimal brasileiro ou milhar americano
+            // Assume decimal se houver apenas uma vírgula e 2 dígitos depois
+            if (substr_count($cleanValue, ',') === 1 && preg_match('/,\d{1,2}$/', $cleanValue)) {
+                $cleanValue = str_replace(',', '.', $cleanValue);
+            } else {
+                $cleanValue = str_replace(',', '', $cleanValue);
+            }
+        }
+        // Se só houver ponto, mantém como está (formato americano)
+        
         return number_format((float)$cleanValue, 2, '.', '');
     }
 }
