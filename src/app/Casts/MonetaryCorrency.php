@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Number;
 
-class MonetaryCorrency implements CastsAttributes
+class MonetaryCurrency implements CastsAttributes
 {
     /**
      * @param string|null $currency Código da moeda (BRL, USD, EUR, etc.) - Se null, usa da sessão
