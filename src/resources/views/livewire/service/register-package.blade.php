@@ -29,7 +29,7 @@
 
                 <div class="w-full p-2">
                     <label for="description" class="block mb-2 text-sm font-medium text-gray-900 light:text-white">Detalhes</label>
-                    <textarea id="description" name="package[description]" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 light:bg-gray-700 light:border-gray-600 light:placeholder-gray-400 light:text-white light:focus:ring-blue-500 light:focus:border-blue-500" placeholder="Descrição do Pacote...">{{ old('description') }}</textarea>
+                    <textarea id="description" name="package[description]" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 light:bg-gray-700 light:border-gray-600 light:placeholder-gray-400 light:text-white light:focus:ring-blue-500 light:focus:border-blue-500" placeholder="Descrição do Pacote...">{{ old('package.description') }}</textarea>
                 </div>
             </div>
         <livewire:service.items-package />
