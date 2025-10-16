@@ -26,9 +26,10 @@ class MonetaryCorrencyTest extends TestCase
         $cast = new MonetaryCorrency();
         $model = $this->createMockModel();
         
-        // Formato brasileiro: 1.234,56
+        // Formato brasileiro: 1.234,56 → 1234.560 (3 casas decimais)
         $result = $cast->set($model, 'price', '1.234,56', []);
-        $this->assertEquals('1234.56', $result);
+        $this->assertEquals(1234.560, $result);
+        $this->assertIsFloat($result);
     }
 
     #[Test]
@@ -37,9 +38,10 @@ class MonetaryCorrencyTest extends TestCase
         $cast = new MonetaryCorrency();
         $model = $this->createMockModel();
         
-        // Formato americano: 1,234.56
+        // Formato americano: 1,234.56 → 1234.560
         $result = $cast->set($model, 'price', '1,234.56', []);
-        $this->assertEquals('1234.56', $result);
+        $this->assertEquals(1234.560, $result);
+        $this->assertIsFloat($result);
     }
 
     #[Test]
@@ -48,9 +50,10 @@ class MonetaryCorrencyTest extends TestCase
         $cast = new MonetaryCorrency();
         $model = $this->createMockModel();
         
-        // Formato brasileiro: 234,56
+        // Formato brasileiro: 234,56 → 234.560
         $result = $cast->set($model, 'price', '234,56', []);
-        $this->assertEquals('234.56', $result);
+        $this->assertEquals(234.560, $result);
+        $this->assertIsFloat($result);
     }
 
     #[Test]
@@ -59,9 +62,10 @@ class MonetaryCorrencyTest extends TestCase
         $cast = new MonetaryCorrency();
         $model = $this->createMockModel();
         
-        // Formato americano: 234.56
+        // Formato americano: 234.56 → 234.560
         $result = $cast->set($model, 'price', '234.56', []);
-        $this->assertEquals('234.56', $result);
+        $this->assertEquals(234.560, $result);
+        $this->assertIsFloat($result);
     }
 
     #[Test]
@@ -72,10 +76,13 @@ class MonetaryCorrencyTest extends TestCase
         
         // Com símbolos de moeda
         $result = $cast->set($model, 'price', 'R$ 1.234,56', []);
-        $this->assertEquals('1234.56', $result);
+        $this->assertEquals(1234.560, $result);
         
         $result = $cast->set($model, 'price', '$1,234.56', []);
-        $this->assertEquals('1234.56', $result);
+        $this->assertEquals(1234.560, $result);
+        
+        $result = $cast->set($model, 'price', '€ 1.234,56', []);
+        $this->assertEquals(1234.560, $result);
     }
 
     #[Test]
@@ -84,12 +91,15 @@ class MonetaryCorrencyTest extends TestCase
         $cast = new MonetaryCorrency();
         $model = $this->createMockModel();
         
-        // Valores numéricos puros
+        // Valores numéricos puros com 3 casas decimais
         $result = $cast->set($model, 'price', 1234.56, []);
-        $this->assertEquals('1234.56', $result);
+        $this->assertEquals(1234.560, $result);
         
         $result = $cast->set($model, 'price', 1234, []);
-        $this->assertEquals('1234.00', $result);
+        $this->assertEquals(1234.000, $result);
+        
+        $result = $cast->set($model, 'price', 1234.567, []);
+        $this->assertEquals(1234.567, $result);
     }
 
     #[Test]
@@ -100,10 +110,13 @@ class MonetaryCorrencyTest extends TestCase
         
         // Valores negativos
         $result = $cast->set($model, 'price', '-1.234,56', []);
-        $this->assertEquals('-1234.56', $result);
+        $this->assertEquals(-1234.560, $result);
         
         $result = $cast->set($model, 'price', '-1,234.56', []);
-        $this->assertEquals('-1234.56', $result);
+        $this->assertEquals(-1234.560, $result);
+        
+        $result = $cast->set($model, 'price', -1234.56, []);
+        $this->assertEquals(-1234.560, $result);
     }
 
     #[Test]
@@ -114,7 +127,7 @@ class MonetaryCorrencyTest extends TestCase
         
         // Números grandes: 1.234.567,89
         $result = $cast->set($model, 'price', '1.234.567,89', []);
-        $this->assertEquals('1234567.89', $result);
+        $this->assertEquals(1234567.890, $result);
     }
 
     #[Test]
@@ -125,7 +138,7 @@ class MonetaryCorrencyTest extends TestCase
         
         // Números grandes: 1,234,567.89
         $result = $cast->set($model, 'price', '1,234,567.89', []);
-        $this->assertEquals('1234567.89', $result);
+        $this->assertEquals(1234567.890, $result);
     }
 
     #[Test]
@@ -169,15 +182,59 @@ class MonetaryCorrencyTest extends TestCase
         
         // Zero
         $result = $cast->set($model, 'price', '0', []);
-        $this->assertEquals('0.00', $result);
+        $this->assertEquals(0.000, $result);
         
-        // Valor muito pequeno
+        // Valor muito pequeno com 3 casas decimais
         $result = $cast->set($model, 'price', '0,01', []);
-        $this->assertEquals('0.01', $result);
+        $this->assertEquals(0.010, $result);
         
-        // String vazia (será convertido para 0)
+        $result = $cast->set($model, 'price', '0,001', []);
+        $this->assertEquals(0.001, $result);
+        
+        // Precisão: 12.345 (importante para cálculos)
+        $result = $cast->set($model, 'price', '12,345', []);
+        $this->assertEquals(12.345, $result);
+    }
+    
+    #[Test]
+    public function it_returns_null_for_invalid_values()
+    {
+        $cast = new MonetaryCorrency();
+        $model = $this->createMockModel();
+        
+        // String vazia retorna null (não exception)
         $result = $cast->set($model, 'price', '', []);
-        $this->assertEquals('0.00', $result);
+        $this->assertNull($result);
+        
+        // Null retorna null
+        $result = $cast->set($model, 'price', null, []);
+        $this->assertNull($result);
+        
+        // String inválida retorna null
+        $result = $cast->set($model, 'price', 'abc', []);
+        $this->assertNull($result);
+        
+        // Símbolos sem números retorna null
+        $result = $cast->set($model, 'price', 'R$', []);
+        $this->assertNull($result);
+    }
+    
+    #[Test]
+    public function it_handles_three_decimal_precision()
+    {
+        $cast = new MonetaryCorrency();
+        $model = $this->createMockModel();
+        
+        // Testa precisão de 3 casas decimais (importante para evitar perda em cálculos)
+        $result = $cast->set($model, 'price', 10.12345, []);
+        $this->assertEquals(10.123, $result); // Arredonda para 3 casas
+        
+        $result = $cast->set($model, 'price', '10,12345', []);
+        $this->assertEquals(10.123, $result);
+        
+        // Valores pequenos mantêm precisão
+        $result = $cast->set($model, 'price', 0.001, []);
+        $this->assertEquals(0.001, $result);
     }
 
     /**
