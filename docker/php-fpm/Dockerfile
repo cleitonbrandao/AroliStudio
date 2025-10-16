@@ -280,7 +280,7 @@ ARG INSTALL_PHPDBG=false
 
 RUN if [ ${INSTALL_PHPDBG} = true ]; then \
     # Load the xdebug extension only with phpunit commands
-    apt-get install -yqq --force-yes php${LARADOCK_PHP_VERSION}-phpdbg \
+    apt-get install -yqq php${LARADOCK_PHP_VERSION}-phpdbg \
 ;fi
 
 ###########################################################################
