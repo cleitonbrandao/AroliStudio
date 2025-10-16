@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePackageRequest;
 use App\Models\Package;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Arr;
