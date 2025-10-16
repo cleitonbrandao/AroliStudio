@@ -1,66 +1,93 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Guia de Configuração do Projeto
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Visão Geral
+Este projeto é uma aplicação Laravel que utiliza Docker para gerenciamento de ambiente. Ele inclui serviços como MySQL, Redis, e PHP-FPM configurados para rodar em contêineres Docker.
 
-## About Laravel
+## Configuração Inicial
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Requisitos
+Certifique-se de ter os seguintes softwares instalados:
+- Docker (versão mínima recomendada: 20.10)
+- Docker Compose (versão mínima recomendada: 1.29)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Configuração do Host
+Adicione a seguinte entrada ao arquivo `hosts` do seu sistema operacional para mapear o domínio local:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Linux:** `/etc/hosts`
 
-## Learning Laravel
+**Windows:** `C:/Windows/System32/drivers/etc/hosts`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```
+127.0.0.1   arolistudio.com.br
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Configuração de Arquivos de Ambiente
+1. Copie os arquivos de exemplo `.env` para criar os arquivos de configuração necessários:
+   ```
+   cp .env_sample .env
+   ```
+2. Edite o arquivo `.env` para configurar as variáveis de ambiente, como credenciais de banco de dados, chaves de API, e outras configurações específicas do projeto.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Login no GitHub Container Registry
+Antes de buildar as imagens Docker, faça login no GitHub Container Registry:
+```powershell
+ echo <token do git> | docker login ghcr.io -u <user do git> --password-stdin
+```
+Substitua `<token do git>` pelo seu token de acesso do GitHub e `<user do git>` pelo seu usuário do GitHub.
 
-## Laravel Sponsors
+### Subindo os Contêineres
+Para iniciar os serviços Docker, execute os seguintes comandos:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. Construa as imagens Docker:
+   ```
+   docker-compose build --no-cache
+   ```
+2. Inicie os contêineres em segundo plano:
+   ```
+   docker-compose up -d
+   ```
+3. Verifique se os contêineres estão rodando:
+   ```
+   docker-compose ps
+   ```
 
-### Premium Partners
+## Comandos Úteis
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Limpeza e Recriação
+Se precisar limpar e recriar os contêineres, use os comandos:
 
-## Contributing
+1. Parar e remover os contêineres:
+   ```
+   docker-compose down
+   ```
+2. Remover volumes associados:
+   ```
+   docker-compose down -v
+   ```
+3. Subir novamente os contêineres:
+   ```
+   docker-compose up -d
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Logs
+Para visualizar os logs dos serviços:
+```bash
+   docker-compose logs -f
+```
 
-## Code of Conduct
+## Estrutura do Projeto
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Diretórios Principais
+- **docker/**: Contém configurações para os serviços Docker, como MySQL, Nginx e PHP-FPM.
+- **src/**: Código-fonte da aplicação Laravel.
+- **config/**: Arquivos de configuração do Laravel.
+- **database/**: Migrações, seeders e banco de dados SQLite (se aplicável).
+- **public/**: Arquivos públicos, como `index.php` e assets.
+- **resources/**: Arquivos de frontend, como views Blade, CSS e JavaScript.
+- **routes/**: Arquivos de rotas da aplicação.
+- **tests/**: Testes unitários e de funcionalidade.
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Configuração Adicional
+- Certifique-se de configurar corretamente os certificados SSL no diretório `docker/nginx/ssl/` para habilitar HTTPS.
+- Caso o diretório `docker/nginx/ssl/` esteja vazio, um certificado autoassinado será gerado automaticamente.
+- Utilize o arq
