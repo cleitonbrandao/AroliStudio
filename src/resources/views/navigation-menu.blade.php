@@ -135,6 +135,11 @@
                             </form>
                         </x-slot>
                     </x-dropdown>
+                </div>      
+                
+                <!-- Language & Currency Switcher -->
+                <div class="ms-3 flex items-center">
+                    <livewire:components.language-currency-switcher />
                 </div>
             </div>
 
