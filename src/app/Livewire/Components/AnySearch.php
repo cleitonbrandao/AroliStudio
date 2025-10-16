@@ -35,20 +35,28 @@ class AnySearch extends Component
         if (strlen($this->search) >= 3) {
             $teamId = Auth::user()->currentTeam->id;
             $this->showDropdown = true;
-            $this->products = Product::where('team_id', $teamId)
-                                     ->where('name', 'like', '%' . $this->search . '%')
-                                     ->limit(3)
-                                     ->get();
-            $this->services = Service::where('team_id', $teamId)
-                                     ->where('name', 'like', '%' . $this->search . '%')
-                                     ->limit(3)
-                                     ->get();
-            $this->packages = Package::where('team_id', $teamId)
-                                     ->where('name', 'like', '%' . $this->search . '%')
-                                     ->limit(3)
-                                     ->get();
+            $this->products = $this->fetchLimitedByTeam(Product::class, $teamId, $this->search);
+            $this->services = $this->fetchLimitedByTeam(Service::class, $teamId, $this->search);
+            $this->packages = $this->fetchLimitedByTeam(Package::class, $teamId, $this->search);
             $this->packages_items = Arr::collapse([$this->products, $this->services, $this->packages]);
         }
+    }
+
+    /**
+     * Fetch limited results by team and search term for a given model.
+     *
+     * @param string $modelClass
+     * @param int $teamId
+     * @param string $term
+     * @param int $limit
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    private function fetchLimitedByTeam(string $modelClass, int $teamId, string $term, int $limit = 3)
+    {
+        return $modelClass::where('team_id', $teamId)
+            ->where('name', 'like', '%' . $term . '%')
+            ->limit($limit)
+            ->get();
     }
     public function addProduct(Product $product):void
     {
