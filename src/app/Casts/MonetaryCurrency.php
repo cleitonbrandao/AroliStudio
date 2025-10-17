@@ -2,6 +2,7 @@
 
 namespace App\Casts;
 
+use App\Support\MoneyWrapper;
 use Brick\Math\RoundingMode;
 use Brick\Money\Context\CustomContext;
 use Brick\Money\Currency;
@@ -111,18 +112,22 @@ class MonetaryCurrency implements CastsAttributes
     }
 
     /**
-     * Accessor: Converte valor DECIMAL do banco em instância Money.
+     * Accessor: Converte valor DECIMAL do banco em instância MoneyWrapper.
      * 
-     * Retorna um objeto Brick\Money\Money com o valor e moeda configurados.
-     * Permite operações aritméticas type-safe e formatação precisa.
+     * Retorna um objeto MoneyWrapper com helpers convenientes:
+     * - ->formatted() : Formatado com símbolo e 2 casas decimais
+     * - ->toDecimal() : Apenas o valor com 2 casas decimais
+     * - ->toLocalizedDecimal() : Valor formatado sem símbolo
+     * - ->getCurrencyCode() : Código da moeda (BRL, USD)
+     * - ->getCurrencySymbol() : Símbolo (R$, $)
      *
      * @param Model $model Instância do model
      * @param string $key Nome do atributo
      * @param mixed $value Valor DECIMAL do banco (string: "1234.567")
      * @param array<string, mixed> $attributes Todos os atributos do model
-     * @return Money|null Instância Money ou null se valor for null
+     * @return MoneyWrapper|null Instância MoneyWrapper ou null se valor for null
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes): ?Money
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?MoneyWrapper
     {
         if ($value === null || $value === '') {
             return null;
@@ -136,7 +141,10 @@ class MonetaryCurrency implements CastsAttributes
             $context = new CustomContext(self::DECIMAL_PRECISION);
             
             // Cria instância Money preservando 3 casas decimais
-            return Money::of($value, $currency, $context, RoundingMode::HALF_UP);
+            $money = Money::of($value, $currency, $context, RoundingMode::HALF_UP);
+            
+            // Retorna wrapped para facilitar uso
+            return new MoneyWrapper($money);
         } catch (\Throwable $e) {
             Log::error("MonetaryCurrency: Erro ao criar Money instance", [
                 'value' => $value,
@@ -151,16 +159,17 @@ class MonetaryCurrency implements CastsAttributes
     }
 
     /**
-     * Mutator: Converte Money ou valor numérico para string DECIMAL.
+     * Mutator: Converte Money/MoneyWrapper ou valor numérico para string DECIMAL.
      * 
      * Aceita:
+     * - Instância de MoneyWrapper (extrai o Money interno)
      * - Instância de Money (extrai o amount)
      * - Valores numéricos (int, float, string numérica)
      * - Null/vazio (retorna null)
      *
      * @param Model $model Instância do model
      * @param string $key Nome do atributo
-     * @param mixed $value Valor a ser armazenado (Money, numeric, null)
+     * @param mixed $value Valor a ser armazenado (MoneyWrapper, Money, numeric, null)
      * @param array<string, mixed> $attributes Todos os atributos do model
      * @return string|null String decimal "1234.567" ou null
      */
@@ -172,6 +181,11 @@ class MonetaryCurrency implements CastsAttributes
         }
 
         try {
+            // Se for MoneyWrapper, extrai o Money interno
+            if ($value instanceof MoneyWrapper) {
+                $value = $value->getMoney();
+            }
+            
             // Se for uma instância de Money, extrai o amount
             if ($value instanceof Money) {
                 // Opcionalmente, atualiza a coluna de moeda no model
@@ -226,25 +240,21 @@ class MonetaryCurrency implements CastsAttributes
     /**
      * Serializa o valor para array/JSON.
      * 
-     * Retorna um array com amount e currency para facilitar consumo em APIs.
+     * Retorna um array com amount (2 casas decimais), currency, formatted e symbol.
      *
      * @param Model $model Instância do model
      * @param string $key Nome do atributo
-     * @param Money|null $value Instância Money
+     * @param MoneyWrapper|null $value Instância MoneyWrapper
      * @param array<string, mixed> $attributes Todos os atributos do model
-     * @return array<string, mixed>|null Array ['amount' => '1234.567', 'currency' => 'BRL'] ou null
+     * @return array<string, mixed>|null Array com dados formatados ou null
      */
     public function serialize(Model $model, string $key, mixed $value, array $attributes): ?array
     {
-        if (!$value instanceof Money) {
+        if (!$value instanceof MoneyWrapper) {
             return null;
         }
 
-        return [
-            'amount' => $value->getAmount()->toScale(self::DECIMAL_PRECISION, RoundingMode::HALF_UP),
-            'currency' => $value->getCurrency()->getCurrencyCode(),
-            'formatted' => $this->formatMoney($value),
-        ];
+        return $value->toArray();
     }
 
     /**

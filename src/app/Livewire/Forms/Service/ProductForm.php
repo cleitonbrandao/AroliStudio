@@ -48,8 +48,9 @@ class ProductForm extends Form
     {
         $this->product = $product;
         $this->name = $product->name;
-        $this->price = $product->price;
-        $this->cost_price = $product->cost_price;
+        // Usa helper toDecimal() para obter valor com 2 casas decimais
+        $this->price = $product->price?->toDecimal();
+        $this->cost_price = $product->cost_price?->toDecimal();
         $this->description = $product->description;
         $this->team_id = $product->team_id; // Preserva o team_id ao editar
     }

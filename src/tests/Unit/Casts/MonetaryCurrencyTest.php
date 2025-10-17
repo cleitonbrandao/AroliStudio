@@ -3,6 +3,7 @@
 namespace Tests\Unit\Casts;
 
 use App\Casts\MonetaryCurrency;
+use App\Support\MoneyWrapper;
 use Brick\Math\RoundingMode;
 use Brick\Money\Context\CustomContext;
 use Brick\Money\Money;
@@ -20,16 +21,17 @@ class MonetaryCurrencyTest extends TestCase
     }
 
     #[Test]
-    public function it_converts_decimal_string_to_money_instance()
+    public function it_converts_decimal_string_to_money_wrapper()
     {
         $cast = new MonetaryCurrency();
         $model = $this->createMockModel(['currency' => 'BRL']);
 
         $result = $cast->get($model, 'price', '1234.567', ['currency' => 'BRL']);
 
-        $this->assertInstanceOf(Money::class, $result);
-        $this->assertEquals('1234.567', $result->getAmount()->__toString());
-        $this->assertEquals('BRL', $result->getCurrency()->getCurrencyCode());
+        $this->assertInstanceOf(MoneyWrapper::class, $result);
+        $this->assertEquals('1234.57', $result->toDecimal()); // 2 casas decimais
+        $this->assertEquals('BRL', $result->getCurrencyCode());
+        $this->assertStringContainsString('R$', $result->formatted());
     }
 
     #[Test]
@@ -92,8 +94,8 @@ class MonetaryCurrencyTest extends TestCase
 
         $result = $cast->get($model, 'price', '1234.567', ['currency' => 'USD']);
 
-        $this->assertInstanceOf(Money::class, $result);
-        $this->assertEquals('USD', $result->getCurrency()->getCurrencyCode());
+        $this->assertInstanceOf(MoneyWrapper::class, $result);
+        $this->assertEquals('USD', $result->getCurrencyCode());
     }
 
     #[Test]
@@ -104,8 +106,8 @@ class MonetaryCurrencyTest extends TestCase
 
         $result = $cast->get($model, 'price', '1234.567', ['currency' => 'BRL']);
 
-        $this->assertInstanceOf(Money::class, $result);
-        $this->assertEquals('EUR', $result->getCurrency()->getCurrencyCode());
+        $this->assertInstanceOf(MoneyWrapper::class, $result);
+        $this->assertEquals('EUR', $result->getCurrencyCode());
     }
 
     #[Test]
@@ -116,8 +118,8 @@ class MonetaryCurrencyTest extends TestCase
 
         $result = $cast->get($model, 'price', '1234.567', []);
 
-        $this->assertInstanceOf(Money::class, $result);
-        $this->assertEquals('BRL', $result->getCurrency()->getCurrencyCode());
+        $this->assertInstanceOf(MoneyWrapper::class, $result);
+        $this->assertEquals('BRL', $result->getCurrencyCode());
     }
 
     #[Test]
@@ -171,11 +173,11 @@ class MonetaryCurrencyTest extends TestCase
         $model = $this->createMockModel(['currency' => 'BRL']);
 
         // 1234.5675 deve arredondar para 1234.568 (HALF_UP)
-        $money = $cast->get($model, 'price', '1234.5675', ['currency' => 'BRL']);
+        $wrapper = $cast->get($model, 'price', '1234.5675', ['currency' => 'BRL']);
         
-        // Brick\Money já arredonda internamente
-        $this->assertInstanceOf(Money::class, $money);
-        $this->assertEquals('1234.568', $money->getAmount()->toScale(3)->__toString());
+        // Verifica arredondamento - toDecimal() retorna com 2 casas decimais
+        $this->assertInstanceOf(MoneyWrapper::class, $wrapper);
+        $this->assertEquals('1234.57', $wrapper->toDecimal()); // 2 casas para exibição
     }
 
     #[Test]
@@ -184,17 +186,18 @@ class MonetaryCurrencyTest extends TestCase
         $cast = new MonetaryCurrency();
         $model = $this->createMockModel();
 
-        $context = new CustomContext(3);
-        $money = Money::of(1234.567, 'BRL', $context);
-        $result = $cast->serialize($model, 'price', $money, []);
+        // Usa get() para obter MoneyWrapper
+        $wrapper = $cast->get($model, 'price', '1234.567', ['currency' => 'BRL']);
+        $result = $cast->serialize($model, 'price', $wrapper, []);
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('amount', $result);
         $this->assertArrayHasKey('currency', $result);
         $this->assertArrayHasKey('formatted', $result);
-        $this->assertEquals('1234.567', $result['amount']);
+        $this->assertArrayHasKey('symbol', $result);
+        $this->assertEquals('1234.57', $result['amount']); // 2 casas decimais
         $this->assertEquals('BRL', $result['currency']);
-        $this->assertStringContainsString('1', $result['formatted']);
+        $this->assertStringContainsString('R$', $result['formatted']);
     }
 
     #[Test]
