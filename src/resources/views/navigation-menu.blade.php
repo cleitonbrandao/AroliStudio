@@ -138,9 +138,7 @@
                 </div>      
                 
                 <!-- Language & Currency Switcher -->
-                <div class="ms-3 flex items-center">
-                    <livewire:components.language-currency-switcher />
-                </div>
+                <x-locale-switcher />
             </div>
 
             <!-- Hamburger -->
