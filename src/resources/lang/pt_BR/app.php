@@ -51,6 +51,12 @@ return [
     'language_currency' => 'Idioma e Moeda',
     'portuguese_brazil' => 'Português (Brasil)',
     'english' => 'Inglês',
+    'locale_changed' => 'Idioma alterado com sucesso!',
+    'invalid_locale' => 'Idioma inválido',
+    'locale_pt_BR' => 'Português (Brasil)',
+    'locale_en' => 'English (US)',
+    'locale_es' => 'Español',
+    'locale_de' => 'Deutsch',
 
     // Botões e Ações
     'save' => 'Salvar',

@@ -34,11 +34,18 @@ class MoneyWrapper
     /**
      * Formata para exibição com 2 casas decimais, usando locale do usuário.
      * 
+     * O locale determina:
+     * - Formato dos números (1.234,57 vs 1,234.57)
+     * - Posição do símbolo (R$ 1.234,57 vs $1,234.57)
+     * - Separadores de milhares e decimais
+     * 
      * @param string|null $locale Locale customizado (pt_BR, en_US, etc.)
+     *                            Se null, usa App::getLocale() (definido pelo usuário)
      * @return string Valor formatado (ex: "R$ 1.234,57" ou "$1,234.57")
      */
     public function formatted(?string $locale = null): string
     {
+        // Usa locale do usuário (da sessão via SetLocale middleware)
         $locale = $locale ?? App::getLocale();
         
         try {
@@ -46,8 +53,10 @@ class MoneyWrapper
             $rounded = $this->money->getAmount()->toScale(2, RoundingMode::HALF_UP);
             $moneyRounded = Money::of($rounded, $this->money->getCurrency(), new CustomContext(2));
             
+            // brick/money usa ext-intl para formatação correta do locale
             return $moneyRounded->formatTo($locale);
         } catch (\Throwable $e) {
+            // Fallback manual se ext-intl não estiver disponível
             return $this->manualFormat($locale);
         }
     }

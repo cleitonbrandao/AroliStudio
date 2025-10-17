@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\CostumerController;
-
 use App\Http\Controllers\EnterpriseController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServiceController;
@@ -41,7 +41,9 @@ use App\Livewire\Companies\Hierarchy as CompaniesHierarchy;
 |
 */
 
-
+// Rota pública para mudar locale (não requer autenticação)
+Route::post('/locale/change', [LocaleController::class, 'change'])->name('locale.change');
+Route::get('/locale/current', [LocaleController::class, 'current'])->name('locale.current');
 
 Route::middleware([
     'auth:sanctum',
