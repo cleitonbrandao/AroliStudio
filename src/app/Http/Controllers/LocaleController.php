@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -32,13 +33,28 @@ class LocaleController extends Controller
     {
         $locale = $request->input('locale', config('app.locale'));
         
+        // Log para debug
+        Log::info('LocaleController: Mudando locale', [
+            'from' => app()->getLocale(),
+            'to' => $locale,
+            'session_id' => session()->getId(),
+        ]);
+        
         // Valida se o locale é suportado
         if (!in_array($locale, self::VALID_LOCALES)) {
+            Log::warning('LocaleController: Locale inválido', ['locale' => $locale]);
             return redirect()->back()->with('error', __('app.invalid_locale'));
         }
         
         // Salva o locale na sessão
         Session::put('locale', $locale);
+        Session::save(); // Força salvar imediatamente
+        
+        // Log de confirmação
+        Log::info('LocaleController: Locale salvo na sessão', [
+            'locale' => Session::get('locale'),
+            'currency' => config("currency.locale_currency_map.{$locale}", config('currency.default')),
+        ]);
         
         // Obtém a moeda correspondente ao locale
         $currency = config("currency.locale_currency_map.{$locale}", config('currency.default'));
