@@ -8,10 +8,13 @@ use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
 use Laravel\Jetstream\Team as JetstreamTeam;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use OwenIt\Auditing\Auditable;
 
-class Team extends JetstreamTeam
+class Team extends JetstreamTeam implements AuditableContract
 {
     use HasFactory;
+    use Auditable;
 
     /**
      * The attributes that should be cast.
