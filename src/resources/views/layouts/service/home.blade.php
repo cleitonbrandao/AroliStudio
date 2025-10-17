@@ -7,5 +7,7 @@
         ['text' => __('app.register_packages'), 'route' => 'root.form.package', 'active' => 'root.form.package']
     ]"
 >
-    {{ $slot ?? '' }}
+    <div class="w-full">
+        {{ $slot ?? '' }}
+    </div>
 </x-layouts.home>

@@ -6,6 +6,7 @@ use App\Casts\MonetaryCurrency;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,8 +20,13 @@ class Service extends Model
         'cost_price' => MonetaryCurrency::class
     ];
     protected $fillable = [
-        'name', 'service_time', 'price', 'cost_price', 'description'
+        'team_id', 'name', 'service_time', 'price', 'cost_price', 'description'
     ];
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
 
     public function packages(): BelongsToMany
     {

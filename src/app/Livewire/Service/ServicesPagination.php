@@ -5,7 +5,7 @@ namespace App\Livewire\Service;
 use App\Models\Service;
 use Livewire\Component;
 use Livewire\WithPagination;
-
+use Illuminate\Support\Facades\Auth;
 class ServicesPagination extends Component
 {
     use WithPagination;

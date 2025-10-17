@@ -10,6 +10,6 @@ class RegisterPackage extends Component
 {
     public function render()
     {
-        return view('livewire.service.form-package');
+        return view('livewire.service.register-package');
     }
 }

@@ -4,7 +4,7 @@ namespace App\Livewire\Service;
 
 use App\Models\Package;
 use Livewire\Component;
-
+use Illuminate\Support\Facades\Auth;
 class PackagesPagination extends Component
 {
     public function render()
