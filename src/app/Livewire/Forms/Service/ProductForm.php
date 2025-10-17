@@ -48,9 +48,28 @@ class ProductForm extends Form
     {
         $this->product = $product;
         $this->name = $product->name;
-        // Usa helper toDecimal() para obter valor com 2 casas decimais
-        $this->price = $product->price?->formatted();
-        $this->cost_price = $product->cost_price?->formatted();
+        
+        // Converte para formato decimal do locale atual para exibição no input
+        $locale = app()->getLocale();
+        $isPortuguese = str_starts_with($locale, 'pt');
+        
+        // Obtém o valor decimal (ex: "1234.57")
+        $priceDecimal = $product->price?->toDecimal();
+        $costDecimal = $product->cost_price?->toDecimal();
+        
+        // Formata para o locale do usuário
+        if ($priceDecimal) {
+            $this->price = $isPortuguese 
+                ? str_replace('.', ',', number_format((float)$priceDecimal, 2, ',', '.'))
+                : number_format((float)$priceDecimal, 2, '.', ',');
+        }
+        
+        if ($costDecimal) {
+            $this->cost_price = $isPortuguese
+                ? str_replace('.', ',', number_format((float)$costDecimal, 2, ',', '.'))
+                : number_format((float)$costDecimal, 2, '.', ',');
+        }
+        
         $this->description = $product->description;
         $this->team_id = $product->team_id; // Preserva o team_id ao editar
     }
@@ -67,8 +86,8 @@ class ProductForm extends Form
         // Cria o produto com os dados validados
         Product::create([
             'name' => $this->name,
-            'price' => $this->price,
-            'cost_price' => $this->cost_price,
+            'price' => $this->sanitizeMoneyValue($this->price),
+            'cost_price' => $this->sanitizeMoneyValue($this->cost_price),
             'description' => $this->description,
             'team_id' => $this->team_id,
         ]);
@@ -85,10 +104,60 @@ class ProductForm extends Form
 
         $this->product->update([
             'name' => $this->name,
-            'price' => $this->price,
-            'cost_price' => $this->cost_price,
+            'price' => $this->sanitizeMoneyValue($this->price),
+            'cost_price' => $this->sanitizeMoneyValue($this->cost_price),
             'description' => $this->description,
             // team_id não pode ser alterado na edição (protege contra manipulação)
         ]);
+    }
+
+    /**
+     * Sanitiza valor monetário para formato decimal.
+     * Remove formatação de locale e garante que seja um decimal válido.
+     * 
+     * @param mixed $value Valor que pode estar formatado (1.234,56 ou 1,234.56)
+     * @return string|null Valor decimal (1234.56) ou null
+     */
+    private function sanitizeMoneyValue(mixed $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        // Se já for numérico simples (ex: "1234.56"), retorna direto
+        if (is_numeric($value)) {
+            return (string) $value;
+        }
+
+        // Remove espaços
+        $value = trim($value);
+        
+        // Remove símbolos de moeda (R$, $, €, etc)
+        $value = preg_replace('/[R\$€£¥\s]/u', '', $value);
+        
+        // Detecta o formato baseado nos separadores
+        $lastComma = strrpos($value, ',');
+        $lastDot = strrpos($value, '.');
+        
+        // Ambos presentes
+        if ($lastComma !== false && $lastDot !== false) {
+            if ($lastComma > $lastDot) {
+                // Formato brasileiro: 1.234,56 → 1234.56
+                $value = str_replace('.', '', $value);
+                $value = str_replace(',', '.', $value);
+            } else {
+                // Formato americano: 1,234.56 → 1234.56
+                $value = str_replace(',', '', $value);
+            }
+        } 
+        // Apenas vírgula
+        elseif ($lastComma !== false) {
+            // Assume formato brasileiro: 1234,56 → 1234.56
+            $value = str_replace(',', '.', $value);
+        }
+        // Apenas ponto ou nada - já está no formato correto
+        
+        // Garante que é numérico
+        return is_numeric($value) ? (string) $value : null;
     }
 }
