@@ -57,6 +57,10 @@ return [
     'locale_en' => 'English (US)',
     'locale_es' => 'Español',
     'locale_de' => 'Deutsch',
+    'no_team_selected' => 'No team selected.',
+    'no_permission_change_locale' => 'Only managers and owners can change the language.',
+    'locale_change_restricted' => 'Only team managers and owners can change the language.',
+    'current_language' => 'Current language',
 
     // Buttons and Actions
     'save' => 'Save',
