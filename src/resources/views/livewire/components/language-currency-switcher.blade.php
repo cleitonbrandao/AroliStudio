@@ -19,7 +19,7 @@
         </svg>
     </button>
 
-    <!-- Dropdown Menu Compacto -->
+    <!-- Compact Dropdown Menu -->
     <div 
         x-show="open" 
         @click.away="open = false"
