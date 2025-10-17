@@ -31,6 +31,7 @@ class Team extends JetstreamTeam
         'name',
         'slug',
         'personal_team',
+        'locale',
     ];
 
     /**
@@ -65,5 +66,14 @@ class Team extends JetstreamTeam
                 }
             }
         });
+    }
+
+    /**
+     * Get the locale for this team.
+     * Falls back to app default if not set.
+     */
+    public function getLocaleAttribute($value): string
+    {
+        return $value ?? config('app.locale', 'pt_BR');
     }
 }
