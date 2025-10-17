@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Casts\MonetaryCurrency;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Auth;
 
 class Package extends Model
 {
@@ -32,5 +34,10 @@ class Package extends Model
     public function groups(): BelongsToMany
     {
         return $this->belongsToMany(GroupsPackage::class, 'groups_packages', 'package_origin_id', 'package_id');
+    }
+
+    public function scopeAuth(Builder $query): void
+    {
+        $query->where('team_id', Auth::user()->currentTeam->id);
     }
 }

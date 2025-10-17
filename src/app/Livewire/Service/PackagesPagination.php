@@ -11,7 +11,7 @@ class PackagesPagination extends Component
     {
         return view('livewire.service.packages-pagination',
             [
-                'packages' => Package::paginate(5)
+                'packages' => Package::auth()->paginate(5)
             ]
         );
     }

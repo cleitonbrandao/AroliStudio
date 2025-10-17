@@ -26,8 +26,7 @@ class ProductsPagination extends Component
     {
         return view('livewire.service.products-pagination',
             [
-                'products' => Product::where('team_id', Auth::user()->currentTeam->id)
-                                 ->paginate(5)
+                'products' => Product::auth()->paginate(5)
             ]
         );
     }
