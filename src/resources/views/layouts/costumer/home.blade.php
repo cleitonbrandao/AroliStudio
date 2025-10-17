@@ -1,8 +1,8 @@
 <x-layouts.home 
-    title="Clientes"
+    :title="__('app.customers')"
     :navLinks="[
-        ['text' => 'Lista', 'route' => 'root.costumer.index', 'active' => 'root.costumer.index'],
-        ['text' => 'Cadastrar', 'route' => 'root.form.costumer', 'active' => 'root.form.costumer']
+        ['text' => __('app.list'), 'route' => 'root.costumer.index', 'active' => 'root.costumer.index'],
+        ['text' => __('app.register'), 'route' => 'root.form.costumer', 'active' => 'root.form.costumer']
     ]"
 >
     {{ $slot ?? '' }}

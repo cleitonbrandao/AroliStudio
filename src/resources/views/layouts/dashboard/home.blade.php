@@ -1,7 +1,7 @@
 <x-layouts.home 
-    title="Dashboard"
+    :title="__('app.dashboard')"
     :navLinks="[
-        ['text' => 'Home', 'route' => 'root.dashboard.hierarchy', 'active' => 'root.dashboard.home']
+        ['text' => __('app.home'), 'route' => 'root.dashboard.hierarchy', 'active' => 'root.dashboard.home']
     ]"
 >
     {{ $slot }}
