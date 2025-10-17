@@ -45,6 +45,11 @@ use App\Livewire\Companies\Hierarchy as CompaniesHierarchy;
 Route::post('/locale/change', [LocaleController::class, 'change'])->name('locale.change');
 Route::get('/locale/current', [LocaleController::class, 'current'])->name('locale.current');
 
+// Rota customizada para aceitar convites (permite acesso sem autenticação)
+Route::get('/team-invitations/{invitation}', [\App\Http\Controllers\TeamInvitationController::class, 'accept'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('team-invitations.accept');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
