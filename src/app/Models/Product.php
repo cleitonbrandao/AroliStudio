@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
-use App\Casts\MonetaryCorrency;
+use App\Casts\MonetaryCurrency;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Product extends Model
 {
     use HasFactory;
     protected $casts = [
-        'price' => MonetaryCorrency::class,
-        'cost_price' => MonetaryCorrency::class
+        'price' => MonetaryCurrency::class,
+        'cost_price' => MonetaryCurrency::class
     ];
     protected $table = 'products';
 
@@ -27,5 +28,10 @@ class Product extends Model
     public function packages()
     {
         return $this->belongsToMany(Package::class, 'packages_products');
+    }
+
+    public function scopeAuth($query)
+    {
+        $query->where('team_id', Auth::user()->currentTeam->id);
     }
 }

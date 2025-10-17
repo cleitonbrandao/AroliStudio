@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
-use App\Casts\MonetaryCorrency;
+use App\Casts\MonetaryCurrency;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Auth;
 
 class Service extends Model
 {
@@ -13,20 +16,25 @@ class Service extends Model
     protected $table = 'services';
 
     protected $casts = [
-        'price' => MonetaryCorrency::class,
-        'cost_price' => MonetaryCorrency::class
+        'price' => MonetaryCurrency::class,
+        'cost_price' => MonetaryCurrency::class
     ];
     protected $fillable = [
         'team_id', 'name', 'service_time', 'price', 'cost_price', 'description'
     ];
 
-    public function team()
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
-    public function services(): BelongsToMany
+    public function packages(): BelongsToMany
     {
         return $this->belongsToMany(Package::class, 'packages_services');
+    }
+    
+    public function scopeAuth(Builder $query): void
+    {
+        $query->where('team_id', Auth::user()->currentTeam->id);
     }
 }

@@ -11,8 +11,7 @@ class PackagesPagination extends Component
     {
         return view('livewire.service.packages-pagination',
             [
-                'packages' => Package::where('team_id', Auth::user()->currentTeam->id)
-                ->paginate(5)
+                'packages' => Package::auth()->paginate(5)
             ]
         );
     }

@@ -14,8 +14,7 @@ class ServicesPagination extends Component
     {
         return view('livewire.service.services-pagination',
             [
-                'services' =>  Service::where('team_id', Auth::user()->currentTeam->id)
-                ->paginate(5)
+                'services' =>  Service::auth()->paginate(5)
             ]
         );
     }
