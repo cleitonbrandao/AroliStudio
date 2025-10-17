@@ -34,6 +34,9 @@ class MoneyWrapper
     /**
      * Formata para exibição com 2 casas decimais, usando locale do usuário.
      * 
+     * IMPORTANTE: Usa a moeda ARMAZENADA no banco, não a moeda do locale.
+     * Para mostrar com a moeda do locale do usuário, use formattedWithLocaleCurrency().
+     * 
      * O locale determina:
      * - Formato dos números (1.234,57 vs 1,234.57)
      * - Posição do símbolo (R$ 1.234,57 vs $1,234.57)
@@ -58,6 +61,40 @@ class MoneyWrapper
         } catch (\Throwable $e) {
             // Fallback manual se ext-intl não estiver disponível
             return $this->manualFormat($locale);
+        }
+    }
+
+    /**
+     * Formata usando a MOEDA DO LOCALE do usuário (não a moeda do banco).
+     * 
+     * Útil quando você quer exibir valores com o símbolo da moeda do idioma escolhido.
+     * Por exemplo: produto salvo em BRL, mas usuário escolheu inglês = mostra como USD.
+     * 
+     * ATENÇÃO: Este método NÃO faz conversão de câmbio! Apenas muda o símbolo.
+     * Se precisa de conversão real de moeda, implemente um serviço de câmbio.
+     * 
+     * @param string|null $locale Locale customizado (pt_BR, en_US, etc.)
+     * @return string Valor formatado com moeda do locale (ex: "$1,234.57" se locale=en)
+     */
+    public function formattedWithLocaleCurrency(?string $locale = null): string
+    {
+        $locale = $locale ?? App::getLocale();
+        
+        // Busca a moeda mapeada para este locale
+        $localeCurrency = config('currency.locale_currency_map')[$locale] ?? 'BRL';
+        
+        try {
+            // Arredonda para 2 casas decimais
+            $rounded = $this->money->getAmount()->toScale(2, RoundingMode::HALF_UP);
+            
+            // Cria Money com a moeda do locale (SEM conversão, só o símbolo)
+            $moneyWithLocaleCurrency = Money::of($rounded, $localeCurrency, new CustomContext(2));
+            
+            // Formata com o locale
+            return $moneyWithLocaleCurrency->formatTo($locale);
+        } catch (\Throwable $e) {
+            // Fallback manual
+            return $this->manualFormatWithCurrency($locale, $localeCurrency);
         }
     }
 
@@ -160,6 +197,33 @@ class MoneyWrapper
     {
         $amount = (float)$this->toDecimal();
         $symbol = $this->getCurrencySymbol();
+
+        // Formato brasileiro
+        if (str_starts_with($locale, 'pt')) {
+            return sprintf('%s %s', $symbol, number_format($amount, 2, ',', '.'));
+        }
+
+        // Formato americano/internacional
+        return sprintf('%s%s', $symbol, number_format($amount, 2, '.', ','));
+    }
+
+    /**
+     * Formatação manual com moeda customizada.
+     */
+    private function manualFormatWithCurrency(string $locale, string $currencyCode): string
+    {
+        $amount = (float)$this->toDecimal();
+        
+        // Mapeia símbolos de moeda
+        $symbols = [
+            'BRL' => 'R$',
+            'USD' => '$',
+            'EUR' => '€',
+            'GBP' => '£',
+            'JPY' => '¥',
+        ];
+        
+        $symbol = $symbols[$currencyCode] ?? $currencyCode;
 
         // Formato brasileiro
         if (str_starts_with($locale, 'pt')) {

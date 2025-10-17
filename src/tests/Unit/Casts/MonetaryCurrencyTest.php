@@ -264,6 +264,35 @@ class MonetaryCurrencyTest extends TestCase
         $this->assertTrue($model->hasAttribute('currency') || in_array('currency', $model->fillable));
     }
 
+    #[Test]
+    public function it_formats_with_locale_currency()
+    {
+        $cast = new MonetaryCurrency();
+        $model = $this->createMockModel(['currency' => 'BRL']);
+
+        $price = $cast->get($model, 'price', '1234.567', ['currency' => 'BRL']);
+
+        // Português (BRL)
+        App::setLocale('pt_BR');
+        $formatted = $price->formattedWithLocaleCurrency();
+        $this->assertStringContainsString('R$', $formatted);
+        $this->assertStringContainsString('1', $formatted);
+
+        // Inglês (USD)
+        App::setLocale('en');
+        $formatted = $price->formattedWithLocaleCurrency();
+        $this->assertStringContainsString('$', $formatted);
+        $this->assertStringNotContainsString('R$', $formatted); // Não deve ter R$
+        $this->assertStringContainsString('1', $formatted);
+
+        // Alemão (EUR)
+        App::setLocale('de');
+        $formatted = $price->formattedWithLocaleCurrency();
+        $this->assertStringContainsString('€', $formatted);
+        $this->assertStringNotContainsString('R$', $formatted); // Não deve ter R$
+        $this->assertStringContainsString('1', $formatted);
+    }
+
     /**
      * Cria um mock de Model para testes.
      *
