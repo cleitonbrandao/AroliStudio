@@ -3,7 +3,7 @@
     x-data="{ open: false }"
     @locale-changed.window="window.location.reload()"
 >
-    <!-- Botão Minimalista -->
+    <!-- Minimalist Button -->
     <button 
         @click="open = !open" 
         type="button" 
