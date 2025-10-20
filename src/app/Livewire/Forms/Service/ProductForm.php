@@ -58,15 +58,16 @@ class ProductForm extends Form
         $costDecimal = $product->cost_price?->toDecimal();
         
         // Formata para o locale do usuário
+        // number_format já retorna no formato correto: '1.234,57' (pt) ou '1,234.57' (en)
         if ($priceDecimal) {
             $this->price = $isPortuguese 
-                ? str_replace('.', ',', number_format((float)$priceDecimal, 2, ',', '.'))
+                ? number_format((float)$priceDecimal, 2, ',', '.')
                 : number_format((float)$priceDecimal, 2, '.', ',');
         }
         
         if ($costDecimal) {
             $this->cost_price = $isPortuguese
-                ? str_replace('.', ',', number_format((float)$costDecimal, 2, ',', '.'))
+                ? number_format((float)$costDecimal, 2, ',', '.')
                 : number_format((float)$costDecimal, 2, '.', ',');
         }
         
