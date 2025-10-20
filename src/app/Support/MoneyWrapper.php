@@ -16,6 +16,18 @@ use Illuminate\Support\Facades\Session;
  */
 class MoneyWrapper
 {
+    /**
+     * Mapeamento de códigos de moeda para símbolos.
+     * Centralizado para evitar duplicação e facilitar adição de novas moedas.
+     */
+    private const CURRENCY_SYMBOLS = [
+        'BRL' => 'R$',
+        'USD' => '$',
+        'EUR' => '€',
+        'GBP' => '£',
+        'JPY' => '¥',
+    ];
+
     protected Money $money;
 
     public function __construct(Money $money)
@@ -143,15 +155,7 @@ class MoneyWrapper
      */
     public function getCurrencySymbol(): string
     {
-        $symbols = [
-            'BRL' => 'R$',
-            'USD' => '$',
-            'EUR' => '€',
-            'GBP' => '£',
-            'JPY' => '¥',
-        ];
-
-        return $symbols[$this->getCurrencyCode()] ?? $this->getCurrencyCode();
+        return self::CURRENCY_SYMBOLS[$this->getCurrencyCode()] ?? $this->getCurrencyCode();
     }
 
     /**
@@ -214,16 +218,8 @@ class MoneyWrapper
     {
         $amount = (float)$this->toDecimal();
         
-        // Mapeia símbolos de moeda
-        $symbols = [
-            'BRL' => 'R$',
-            'USD' => '$',
-            'EUR' => '€',
-            'GBP' => '£',
-            'JPY' => '¥',
-        ];
-        
-        $symbol = $symbols[$currencyCode] ?? $currencyCode;
+        // Usa o mapeamento centralizado de símbolos
+        $symbol = self::CURRENCY_SYMBOLS[$currencyCode] ?? $currencyCode;
 
         // Formato brasileiro
         if (str_starts_with($locale, 'pt')) {

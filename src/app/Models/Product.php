@@ -6,10 +6,13 @@ use App\Casts\MonetaryCurrency;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use OwenIt\Auditing\Auditable;
 
-class Product extends Model
+class Product extends Model implements AuditableContract
 {
     use HasFactory;
+    use Auditable;
     protected $casts = [
         'price' => MonetaryCurrency::class,
         'cost_price' => MonetaryCurrency::class
