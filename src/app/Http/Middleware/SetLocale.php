@@ -5,7 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetLocale
@@ -17,20 +18,45 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Obtém o locale da sessão ou usa o padrão
-        $locale = Session::get('locale', config('app.locale'));
+        // Obtém o locale do currentTeam do usuário autenticado
+        $locale = $this->resolveLocale($request);
+        
+        // Log para debug (apenas em ambiente de desenvolvimento)
+        if (config('app.debug')) {
+            Log::debug('SetLocale middleware', [
+                'user_id' => Auth::id(),
+                'team_id' => Auth::user()?->currentTeam?->id,
+                'team_locale' => Auth::user()?->currentTeam?->locale,
+                'final_locale' => $locale,
+                'route' => $request->path(),
+            ]);
+        }
         
         // Define o locale da aplicação
         App::setLocale($locale);
         
         // Define a moeda baseada no locale
         $currency = config("currency.locale_currency_map.{$locale}", config('currency.default'));
-        Session::put('currency', $currency);
         
-        // Disponibiliza a moeda para todas as views
+        // Disponibiliza para todas as views
         view()->share('currentCurrency', $currency);
         view()->share('currentLocale', $locale);
         
         return $next($request);
+    }
+
+    /**
+     * Resolve o locale a ser usado.
+     * Prioridade: Team → Config Padrão
+     */
+    private function resolveLocale(Request $request): string
+    {
+        // Se usuário está autenticado e tem currentTeam
+        if (Auth::check() && Auth::user()->currentTeam) {
+            return Auth::user()->currentTeam->locale ?? config('app.locale');
+        }
+        
+        // Fallback para locale padrão da aplicação
+        return config('app.locale');
     }
 }

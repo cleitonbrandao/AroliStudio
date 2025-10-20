@@ -28,7 +28,7 @@
                         {{ $product->description }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $product->price }}
+                        {{ $product->price->formattedWithLocaleCurrency() }}
                     </td>
                     <td class="px-6 py-4">
                         <button type="button" x-on:click="window.Livewire.dispatch('openModal', { component: 'components.service.products-form', arguments: { productId: {{ $product->id }} } })" class="font-medium text-blue-600 light:text-blue-500 hover:underline">Editar</button>

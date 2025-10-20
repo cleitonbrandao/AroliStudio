@@ -51,6 +51,16 @@ return [
     'language_currency' => 'Idioma e Moeda',
     'portuguese_brazil' => 'Português (Brasil)',
     'english' => 'Inglês',
+    'locale_changed' => 'Idioma alterado com sucesso!',
+    'invalid_locale' => 'Idioma inválido',
+    'locale_pt_BR' => 'Português (Brasil)',
+    'locale_en' => 'English (US)',
+    'locale_es' => 'Español',
+    'locale_de' => 'Deutsch',
+    'no_team_selected' => 'Nenhum time selecionado.',
+    'no_permission_change_locale' => 'Apenas gerentes e proprietários podem alterar o idioma.',
+    'locale_change_restricted' => 'Apenas gerentes e proprietários do time podem alterar o idioma.',
+    'current_language' => 'Idioma atual',
 
     // Botões e Ações
     'save' => 'Salvar',

@@ -48,9 +48,19 @@ return [
     'log_out' => 'Log Out',
 
     // Language and Currency
-    'language_currency' => 'Language & Currency',
+    'language_currency' => 'Language and Currency',
     'portuguese_brazil' => 'Portuguese (Brazil)',
     'english' => 'English',
+    'locale_changed' => 'Language changed successfully!',
+    'invalid_locale' => 'Invalid language',
+    'locale_pt_BR' => 'Português (Brasil)',
+    'locale_en' => 'English (US)',
+    'locale_es' => 'Español',
+    'locale_de' => 'Deutsch',
+    'no_team_selected' => 'No team selected.',
+    'no_permission_change_locale' => 'Only managers and owners can change the language.',
+    'locale_change_restricted' => 'Only team managers and owners can change the language.',
+    'current_language' => 'Current language',
 
     // Buttons and Actions
     'save' => 'Save',

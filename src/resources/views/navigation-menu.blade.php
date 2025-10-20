@@ -138,9 +138,7 @@
                 </div>      
                 
                 <!-- Language & Currency Switcher -->
-                <div class="ms-3 flex items-center">
-                    <livewire:components.language-currency-switcher />
-                </div>
+                <x-locale-switcher />
             </div>
 
             <!-- Hamburger -->
@@ -237,4 +235,29 @@
             </div>
         </div>
     </div>
+
+    {{-- Toast para mudança de locale --}}
+    @if (session('locale_changed'))
+        <div x-data="{ show: true }" 
+             x-show="show" 
+             x-init="setTimeout(() => show = false, 3000)"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform translate-y-2"
+             x-transition:enter-end="opacity-100 transform translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             role="status"
+             aria-live="polite"
+             aria-atomic="true"
+             class="fixed top-20 right-4 z-50 p-4 bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded-lg shadow-lg border border-indigo-200 dark:border-indigo-700 max-w-sm"
+        >
+            <div class="flex items-center gap-3">
+                <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="font-medium">{{ session('locale_changed') }}</span>
+            </div>
+        </div>
+    @endif
 </nav>

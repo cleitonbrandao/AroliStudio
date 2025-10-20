@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\CostumerController;
-
 use App\Http\Controllers\EnterpriseController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServiceController;
@@ -41,13 +41,15 @@ use App\Livewire\Companies\Hierarchy as CompaniesHierarchy;
 |
 */
 
-
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    // Rotas de locale (requer autenticação)
+    Route::post('/locale/change', [LocaleController::class, 'change'])->name('locale.change');
+    Route::get('/locale/current', [LocaleController::class, 'current'])->name('locale.current');
+    
     // Rotas de empresas
     Route::name('companies.')->prefix('companies')->group(function () {
         Route::get('/', CompaniesIndex::class)->name('index');
