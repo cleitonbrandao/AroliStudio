@@ -33,6 +33,11 @@ class LocaleController extends Controller
      */
     public function change(Request $request)
     {
+        // Guard: Verifica se usuário está autenticado
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', __('app.authentication_required'));
+        }
+        
         $user = Auth::user();
         $team = $user->currentTeam;
         
@@ -115,6 +120,17 @@ class LocaleController extends Controller
      */
     public function current()
     {
+        // Guard: Verifica se usuário está autenticado
+        if (!Auth::check()) {
+            return response()->json([
+                'locale' => config('app.locale'),
+                'currency' => config('currency.default'),
+                'available_locales' => self::VALID_LOCALES,
+                'can_change' => false,
+                'authenticated' => false,
+            ], 401);
+        }
+        
         $user = Auth::user();
         $team = $user->currentTeam;
         

@@ -41,15 +41,15 @@ use App\Livewire\Companies\Hierarchy as CompaniesHierarchy;
 |
 */
 
-// Rota pública para mudar locale (não requer autenticação)
-Route::post('/locale/change', [LocaleController::class, 'change'])->name('locale.change');
-Route::get('/locale/current', [LocaleController::class, 'current'])->name('locale.current');
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    // Rotas de locale (requer autenticação)
+    Route::post('/locale/change', [LocaleController::class, 'change'])->name('locale.change');
+    Route::get('/locale/current', [LocaleController::class, 'current'])->name('locale.current');
+    
     // Rotas de empresas
     Route::name('companies.')->prefix('companies')->group(function () {
         Route::get('/', CompaniesIndex::class)->name('index');
