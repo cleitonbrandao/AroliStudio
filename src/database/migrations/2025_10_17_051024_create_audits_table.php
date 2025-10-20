@@ -43,6 +43,6 @@ return new class extends Migration
         $connection = config('audit.drivers.database.connection', config('database.default'));
         $tableName = config('audit.drivers.database.table', 'audits');
 
-        Schema::connection($connection)->drop($tableName);
+        Schema::connection($connection)->dropIfExists($tableName);
     }
 };
