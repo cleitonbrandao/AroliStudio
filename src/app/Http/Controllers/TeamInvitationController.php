@@ -41,6 +41,7 @@ class TeamInvitationController extends Controller
             session([
                 'team_invitation_id' => $invitation->id,
                 'team_invitation_email' => $invitation->email,
+                'team_invitation_team' => $invitation->team->name,
             ]);
             
             // Mostra a página com detalhes do convite
