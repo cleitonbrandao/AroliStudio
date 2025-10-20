@@ -21,14 +21,16 @@ class SetLocale
         // Obtém o locale do currentTeam do usuário autenticado
         $locale = $this->resolveLocale($request);
         
-        // Log para debug
-        Log::debug('SetLocale middleware', [
-            'user_id' => Auth::id(),
-            'team_id' => Auth::user()?->currentTeam?->id,
-            'team_locale' => Auth::user()?->currentTeam?->locale,
-            'final_locale' => $locale,
-            'route' => $request->path(),
-        ]);
+        // Log para debug (apenas em ambiente de desenvolvimento)
+        if (config('app.debug')) {
+            Log::debug('SetLocale middleware', [
+                'user_id' => Auth::id(),
+                'team_id' => Auth::user()?->currentTeam?->id,
+                'team_locale' => Auth::user()?->currentTeam?->locale,
+                'final_locale' => $locale,
+                'route' => $request->path(),
+            ]);
+        }
         
         // Define o locale da aplicação
         App::setLocale($locale);
