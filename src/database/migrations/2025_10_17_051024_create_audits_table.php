@@ -8,6 +8,11 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * 
+     * Performance Note: For high-volume applications, consider configuring
+     * a separate database connection for audits to reduce contention on the
+     * primary database. Configure this in config/audit.php:
+     * 'drivers.database.connection' => 'audit_db'
      */
     public function up(): void
     {

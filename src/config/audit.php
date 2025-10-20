@@ -160,6 +160,11 @@ return [
     |
     | Available audit drivers and respective configurations.
     |
+    | Performance Tip: For high-volume applications, configure a separate
+    | database connection for audits to reduce write contention. Example:
+    | 'connection' => env('AUDIT_DB_CONNECTION', 'audit_db')
+    | Then define 'audit_db' connection in config/database.php
+    |
     */
 
     'drivers' => [
