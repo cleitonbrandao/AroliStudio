@@ -41,16 +41,22 @@ use App\Livewire\Companies\Hierarchy as CompaniesHierarchy;
 |
 */
 
+
+// Custom route to accept invitations (allows access without authentication)
+Route::get('/team-invitations/{invitation}', [\App\Http\Controllers\TeamInvitationController::class, 'accept'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('team-invitations.accept');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    // Rotas de locale (requer autenticação)
+    // Locale routes (requires authentication)
     Route::post('/locale/change', [LocaleController::class, 'change'])->name('locale.change');
     Route::get('/locale/current', [LocaleController::class, 'current'])->name('locale.current');
     
-    // Rotas de empresas
+    // Company routes
     Route::name('companies.')->prefix('companies')->group(function () {
         Route::get('/', CompaniesIndex::class)->name('index');
         Route::get('/create', CompaniesCreate::class)->name('create');
