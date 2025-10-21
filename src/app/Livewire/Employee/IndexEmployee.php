@@ -98,7 +98,7 @@ class IndexEmployee extends Component
     {
         // Jetstream uses 'membership' as pivot alias, not 'pivot'
         // See: vendor/laravel/jetstream/src/Team.php -> users() method
-        return $member->membership->role ?? 'member';
+        return $member->membership?->role ?? 'member';
     }
 
     /**
