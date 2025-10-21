@@ -64,6 +64,18 @@ return [
     'locale_change_restricted' => 'Only team managers and owners can change the language.',
     'current_language' => 'Current language',
 
+    // Team Members
+    'role' => 'Role',
+    'role_owner' => 'Owner',
+    'role_admin' => 'Administrator',
+    'role_member' => 'Member',
+    'actions' => 'Actions',
+    'you' => 'You',
+    'no_permission_view_members' => 'You do not have permission to view team members.',
+    'search_members' => 'Search members',
+    'no_members_found' => 'No members found with this search term.',
+    'no_members_yet' => 'No members in the team yet.',
+
     // Buttons and Actions
     'save' => 'Save',
     'cancel' => 'Cancel',
@@ -91,5 +103,8 @@ return [
     'loading' => 'Loading...',
     'no_results' => 'No results found',
     'confirm_delete' => 'Are you sure you want to delete?',
+
+    'name' => 'Name',
+    'email' => 'Email',
 
 ];

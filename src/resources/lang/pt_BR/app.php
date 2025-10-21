@@ -64,6 +64,18 @@ return [
     'locale_change_restricted' => 'Apenas gerentes e proprietários do time podem alterar o idioma.',
     'current_language' => 'Idioma atual',
 
+    // Team Members
+    'role' => 'Função',
+    'role_owner' => 'Proprietário',
+    'role_admin' => 'Administrador',
+    'role_member' => 'Membro',
+    'actions' => 'Ações',
+    'you' => 'Você',
+    'no_permission_view_members' => 'Você não tem permissão para visualizar os membros da equipe.',
+    'search_members' => 'Buscar membros',
+    'no_members_found' => 'Nenhum membro encontrado com este termo de busca.',
+    'no_members_yet' => 'Nenhum membro na equipe ainda.',
+
     // Botões e Ações
     'save' => 'Salvar',
     'cancel' => 'Cancelar',
