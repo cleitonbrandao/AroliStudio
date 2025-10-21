@@ -51,8 +51,8 @@ class ProductForm extends Form
         }
         $this->product = $product;
         $this->name = $product->name;
-        $this->price = $product->price->formattedWithLocaleCurrency();
-        $this->cost_price = $product->cost_price->formattedWithLocaleCurrency();
+        $this->price = $product->price?->formattedWithLocaleCurrency();
+        $this->cost_price = $product->cost_price?->formattedWithLocaleCurrency();
         $this->description = $product->description;
         $this->team_id = $product->team_id; // Preserva o team_id ao editar
     }
