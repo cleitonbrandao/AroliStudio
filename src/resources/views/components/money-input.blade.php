@@ -124,7 +124,7 @@
     <input 
         type="text" 
         id="{{ $id }}"
-        wire:keydown="{{ $wireModel }}"
+        wire:model="{{ $wireModel }}"
         x-data="{ formatted: '' }"
         x-init="
             formatted = $wire.get('{{ $wireModel }}') || '';
