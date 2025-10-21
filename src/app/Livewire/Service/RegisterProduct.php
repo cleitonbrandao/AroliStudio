@@ -20,7 +20,7 @@ class RegisterProduct extends Component
         
         if (!$user || !$user->currentTeam) {
             session()->flash('error', 'Você precisa estar associado a uma equipe para criar produtos.');
-            return $this->redirect(route('dashboard'), navigate: true);
+            return $this->redirect(route('root.dashboard.hierarchy'), navigate: true);
         }
         
         $this->form->team_id = $user->currentTeam->id;

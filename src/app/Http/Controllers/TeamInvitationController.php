@@ -55,7 +55,7 @@ class TeamInvitationController extends Controller
 
         // Verifica se o convite é para o email do usuário autenticado
         if ($invitation->email !== Auth::user()->email) {
-            return redirect()->route('dashboard')->with([
+            return redirect()->route('root.dashboard.hierarchy')->with([
                 'error' => __('team-invitations.This invitation was sent to :email, but you are logged in as :current_email.', [
                     'email' => $invitation->email,
                     'current_email' => Auth::user()->email,
@@ -74,7 +74,7 @@ class TeamInvitationController extends Controller
         // Deleta o convite
         $invitation->delete();
 
-        return redirect()->route('dashboard')->with([
+        return redirect()->route('root.dashboard.hierarchy')->with([
             'success' => __('team-invitations.You are now part of the :team team!', ['team' => $invitation->team->name]),
         ]);
     }
