@@ -14,8 +14,7 @@ use OwenIt\Auditing\Auditable;
 
 class Service extends Model implements AuditableContract
 {
-    use HasFactory;
-    use Auditable;
+    use HasFactory, Auditable;
     protected $table = 'services';
 
     protected $casts = [
@@ -23,7 +22,12 @@ class Service extends Model implements AuditableContract
         'cost_price' => MonetaryCurrency::class
     ];
     protected $fillable = [
-        'team_id', 'name', 'service_time', 'price', 'cost_price', 'description'
+        'team_id',
+        'name',
+        'service_time',
+        'price',
+        'cost_price',
+        'description'
     ];
 
     public function team(): BelongsTo
@@ -35,7 +39,7 @@ class Service extends Model implements AuditableContract
     {
         return $this->belongsToMany(Package::class, 'packages_services');
     }
-    
+
     public function scopeAuth(Builder $query): void
     {
         $query->where('team_id', Auth::user()->currentTeam->id);

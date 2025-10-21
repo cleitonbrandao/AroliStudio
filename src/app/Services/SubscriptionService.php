@@ -64,7 +64,7 @@ class SubscriptionService
     {
         $currentCompanies = $user->ownedTeams()->count();
         $subscription = $user->activeSubscription();
-        
+
         if (!$subscription) {
             return [
                 'can_create' => $currentCompanies < 1,
@@ -90,9 +90,7 @@ class SubscriptionService
      */
     public function canCompanyAddUser(Company $company): array
     {
-        $subscription = $company->activeSubscription();
-        
-        if (!$subscription) {
+        if (!$company->hasActiveSubscription()) {
             return [
                 'can_add' => $company->current_users < $company->max_users,
                 'current' => $company->current_users,
@@ -101,6 +99,7 @@ class SubscriptionService
             ];
         }
 
+        $subscription = $company->activeSubscription();
         return [
             'can_add' => $company->current_users < $subscription->max_users,
             'current' => $company->current_users,
@@ -175,14 +174,14 @@ class SubscriptionService
         return DB::transaction(function () use ($subscription) {
             // Cancelar no Stripe (implementar quando integrar)
             // $subscription->cancel();
-            
+
             $subscription->update([
                 'stripe_status' => 'cancelled',
                 'ends_at' => now()->addDays(30), // Grace period
             ]);
 
             // Desativar assinaturas das empresas
-            $subscription->companySubscriptions()->update([
+            $subscription->company()->update([
                 'is_active' => false,
                 'ends_at' => now()->addDays(30),
             ]);

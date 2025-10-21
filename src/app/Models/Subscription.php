@@ -38,7 +38,7 @@ class Subscription extends Model
     /**
      * Relacionamento com assinaturas de empresas
      */
-    public function companySubscriptions(): HasMany
+    public function company(): HasMany
     {
         return $this->hasMany(CompanySubscription::class);
     }
@@ -48,7 +48,7 @@ class Subscription extends Model
      */
     public function isActive(): bool
     {
-        return $this->stripe_status === 'active' && 
+        return $this->stripe_status === 'active' &&
                ($this->ends_at === null || $this->ends_at->isFuture());
     }
 

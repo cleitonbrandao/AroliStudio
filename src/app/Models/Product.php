@@ -20,7 +20,11 @@ class Product extends Model implements AuditableContract
     protected $table = 'products';
 
     protected $fillable = [
-        'team_id', 'name', 'price', 'cost_price', 'description'
+        'team_id',
+        'name',
+        'price',
+        'cost_price',
+        'description'
     ];
 
     public function team()
