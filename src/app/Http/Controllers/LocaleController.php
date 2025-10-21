@@ -86,31 +86,17 @@ class LocaleController extends Controller
         ]);
     }
 
-    /**
-     * Verifica se o usuário pode alterar o locale do team.
-     * Regra: Apenas Owner ou Manager podem alterar.
+        /**
+     * Check if user can change locale
      * 
-     * @param \App\Models\User $user
-     * @param \App\Models\Team $team
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Team  $team
      * @return bool
      */
     private function canChangeLocale($user, $team): bool
     {
-        // Owner sempre pode
-        if ($team->user_id === $user->id) {
-            return true;
-        }
-        
-        // Verifica se tem role 'manager' no team
-        $membership = $team->users()
-            ->where('user_id', $user->id)
-            ->first();
-        
-        if ($membership && $membership->pivot->role === 'manager') {
-            return true;
-        }
-        
-        return false;
+        // Use the existing method from User model
+        return $user->canManageTeam($team);
     }
 
     /**
