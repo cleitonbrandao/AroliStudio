@@ -2,21 +2,23 @@
 
 namespace App\Livewire\Service;
 
+use App\Support\MoneyWrapper;
+use Brick\Money\Money;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ItemPackage extends Component
 {
     public mixed $packages_items = [];
-    public float $price_cost;
     
     #[On('items-update')]
     public function render()
     {
         $this->packages_items = Cache::get('packages_items', []);
-        $this->totalCost();
         $this->dispatchItemsToParent();
         return view('livewire.service.item-package');
     }
@@ -26,7 +28,6 @@ class ItemPackage extends Component
     {
         Cache::forget('packages_items');
         $this->packages_items = [];
-        $this->price_cost = 0;
     }
     
     public function removeItem($item)
@@ -38,20 +39,25 @@ class ItemPackage extends Component
             Cache::put('packages_items', array_values($items));
             $this->dispatch('remove-items-update');
             $this->packages_items = Cache::get('packages_items', []);
-            $this->totalCost();
             $this->dispatchItemsToParent();
         }
     }
     
-    private function totalCost(): void
+    /**
+     * Computed property para calcular o custo total formatado.
+     * Retorna MoneyWrapper para formatação consistente com locale.
+     */
+    #[Computed]
+    public function priceCost(): MoneyWrapper
     {
         $packagesItemsCollection = collect($this->packages_items);
-        $this->price_cost = $packagesItemsCollection->sum(function ($item) {
+        
+        $totalDecimal = $packagesItemsCollection->sum(function ($item) {
             // Tenta usar cost_price primeiro, depois price
-            $priceField = $item->price ?? $item->cost_price;
+            $priceField = $item->cost_price ?? $item->price;
             
             // Se o campo retornar MoneyWrapper, converte para decimal
-            if ($priceField instanceof \App\Support\MoneyWrapper) {
+            if ($priceField instanceof MoneyWrapper) {
                 return (float) $priceField->toDecimal();
             }
             
@@ -64,6 +70,12 @@ class ItemPackage extends Component
             // Se já for numérico, retorna direto
             return floatval($priceField ?? 0);
         });
+        
+        // Obtém a moeda do time atual
+        $currency = Auth::user()->currentTeam->currency ?? 'BRL';
+        
+        // Cria Money instance e retorna wrapped
+        return MoneyWrapper::make($totalDecimal, $currency);
     }
     
     /**

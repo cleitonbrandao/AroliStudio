@@ -28,8 +28,8 @@
             </div>
         @endforeach
     @endif
-    <div class="w-full flex flex-row gap-4 rounded p-1 text-orange-300 bg-amber-50">
-        <h1>{{ __('app.cost_price') }}: </h1>
-        <span>R$ {{ number_format($this->price_cost, 2, ',', '.') }}</span>
+    <div class="w-full flex flex-row gap-4 rounded p-1 text-orange-300 bg-amber-50 dark:bg-amber-900 dark:text-orange-400">
+        <h1 class="font-semibold">{{ __('app.cost_price') }}: </h1>
+        <span class="font-bold">{{ $this->priceCost->formattedWithLocaleCurrency() }}</span>
     </div>
 </div>
