@@ -33,7 +33,7 @@ class User extends Authenticatable implements AuditableContract
     protected $fillable = [
         'name', 'email', 'password',
         'stripe_id', 'pm_type', 'pm_last_four', 'trial_ends_at',
-        'billing_address', 'billing_city', 'billing_state', 
+        'billing_address', 'billing_city', 'billing_state',
         'billing_postal_code', 'billing_country',
     ];
 
@@ -167,7 +167,7 @@ class User extends Authenticatable implements AuditableContract
             return 1; // Limite gratuito
         }
 
-        $companySubscription = $subscription->companySubscriptions()->first();
+        $companySubscription = $subscription->company()->first();
         return $companySubscription ? $companySubscription->max_companies : 1;
     }
 

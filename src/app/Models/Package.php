@@ -13,8 +13,7 @@ use OwenIt\Auditing\Auditable;
 
 class Package extends Model implements AuditableContract
 {
-    use HasFactory;
-    use Auditable;
+    use HasFactory, Auditable;
 
     protected $table = 'packages';
 
@@ -23,7 +22,10 @@ class Package extends Model implements AuditableContract
     ];
 
     protected $fillable = [
-        'team_id', 'name', 'price', 'description'
+        'team_id',
+        'name',
+        'price',
+        'description'
     ];
 
     public function team()

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Dom\Attr;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 use Laravel\Jetstream\Events\TeamCreated;
@@ -13,8 +15,7 @@ use OwenIt\Auditing\Auditable;
 
 class Team extends JetstreamTeam implements AuditableContract
 {
-    use HasFactory;
-    use Auditable;
+    use HasFactory, Auditable;
 
     /**
      * The attributes that should be cast.
@@ -32,7 +33,6 @@ class Team extends JetstreamTeam implements AuditableContract
      */
     protected $fillable = [
         'name',
-        'slug',
         'personal_team',
         'locale',
     ];
@@ -48,35 +48,59 @@ class Team extends JetstreamTeam implements AuditableContract
         'deleted' => TeamDeleted::class,
     ];
 
-    /**
-     * Boot method to handle automatic slug generation
-     */
-    protected static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-        
-        // Gerar slug automaticamente
         static::creating(function ($team) {
             if (empty($team->slug)) {
-                $team->slug = Str::slug($team->name);
-                
-                // Garantir unicidade do slug
-                $originalSlug = $team->slug;
-                $counter = 1;
-                while (static::where('slug', $team->slug)->exists()) {
-                    $team->slug = $originalSlug . '-' . $counter;
-                    $counter++;
-                }
+                $team->slug = $team->factorySlug();
             }
         });
+
+        static::updating(function ($team) {
+            if ($team->isDirty('name') || empty($team->slug)) {
+                $team->slug = $team->factorySlug();
+            }
+        });
+    }
+
+    public function slugIsUnique(string $slug): bool
+    {
+        $query = static::where('slug', $slug);
+
+        if ($this->exists) {
+            $query->where('id', '!=', $this->id);
+        }
+
+        return !$query->exists();
+    }
+
+    public function factorySlug(): string
+    {
+        $maxLength = 255;
+        $base = Str::slug($this->name ?: 'team');
+        $base = Str::limit($base, $maxLength, '');
+
+        $slug = $base;
+        $i = 1;
+
+        while (!$this->slugIsUnique($slug)) {
+            $suffix = '-' . $i++;
+            $allowed = $maxLength - strlen($suffix);
+            $slug = Str::limit($base, max(1, $allowed), '') . $suffix;
+        }
+
+        return $slug;
     }
 
     /**
      * Get the locale for this team.
      * Falls back to app default if not set.
      */
-    public function getLocaleAttribute($value): string
+    public function locale($value): Attribute
     {
-        return $value ?? config('app.locale', 'pt_BR');
+        return new Attribute(
+            get: fn(): string => $value,
+            set: fn($value): string => $value ?? config('app.locale', 'pt_BR'),
+        );
     }
 }
