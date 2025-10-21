@@ -278,7 +278,8 @@ services:
         image: node:18-alpine
         working_dir: /app
         volumes:
-            - ./docker/vite:/app
+            # Mount the real frontend code (contains package.json) into /app inside the container
+            - ./src:/app
         command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
         ports:
             - "5173:5173"
