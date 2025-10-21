@@ -33,6 +33,8 @@ return [
     'register_products' => 'Cadastrar - Produtos',
     'register_services' => 'Cadastrar - Serviços',
     'register_packages' => 'Cadastrar - Pacotes',
+    'cost_price' => 'Preço de custo',
+    'suggested_price' => 'Preço Sugerido',
 
     // Gerenciamento de Equipe
     'manage_team' => 'Gerenciar Equipe',

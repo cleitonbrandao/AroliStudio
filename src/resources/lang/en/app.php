@@ -33,6 +33,8 @@ return [
     'register_products' => 'Register - Products',
     'register_services' => 'Register - Services',
     'register_packages' => 'Register - Packages',
+    'cost_price' => 'Cost Price',
+    'suggested_price' => 'Suggested Price',
 
     // Team Management
     'manage_team' => 'Manage Team',
