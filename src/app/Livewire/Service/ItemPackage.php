@@ -47,15 +47,22 @@ class ItemPackage extends Component
     {
         $packagesItemsCollection = collect($this->packages_items);
         $this->price_cost = $packagesItemsCollection->sum(function ($item) {
-            return floatval(
-                str_replace(',','.',
-                    str_replace('.','',
-                            (
-                                $item['cost_price'] ?? $item['price']
-                            )
-                    )
-                )
-            );
+            // Tenta usar cost_price primeiro, depois price
+            $priceField = $item->price ?? $item->cost_price;
+            
+            // Se o campo retornar MoneyWrapper, converte para decimal
+            if ($priceField instanceof \App\Support\MoneyWrapper) {
+                return (float) $priceField->toDecimal();
+            }
+            
+            // Se for string formatada (ex: "1.234,56"), limpa e converte
+            if (is_string($priceField)) {
+                $cleaned = str_replace(',', '.', str_replace('.', '', $priceField));
+                return floatval($cleaned);
+            }
+            
+            // Se já for numérico, retorna direto
+            return floatval($priceField ?? 0);
         });
     }
     
