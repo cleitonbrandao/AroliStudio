@@ -17,10 +17,104 @@
         'JPY' => '¥',
     ];
     
-    $symbol = $symbols[$localeCurrency] ?? 'R$';
+    $symbol = $currencySymbol ?? ($symbols[$localeCurrency] ?? 'R$');
+    
+    // Determina o formato do locale
+    $isPortuguese = str_starts_with($locale, 'pt');
+    $decimalSeparator = $isPortuguese ? ',' : '.';
+    $thousandsSeparator = $isPortuguese ? '.' : ',';
+    
+    // Mapeia locale Laravel para locale JavaScript
+    $jsLocale = match($locale) {
+        'pt_BR', 'pt' => 'pt-BR',
+        'en', 'en_US' => 'en-US',
+        'es', 'es_ES' => 'es-ES',
+        'de', 'de_DE' => 'de-DE',
+        default => 'en-US',
+    };
 @endphp
 
-<div class="relative w-full">
+<div 
+    class="relative w-full"
+    x-data="{
+        value: @entangle($wireModel).live,
+        displayValue: '',
+        isPortuguese: {{ $isPortuguese ? 'true' : 'false' }},
+        locale: '{{ $jsLocale }}',
+        
+        init() {
+            this.displayValue = this.formatMoney(this.value || '');
+            
+            // Observa mudanças no wire model (quando vem do backend)
+            this.\$watch('value', (newVal) => {
+                if (document.activeElement !== this.\$refs.input) {
+                    this.displayValue = this.formatMoney(newVal || '');
+                }
+            });
+        },
+        
+        formatMoney(value) {
+            if (!value) return '';
+            
+            // Se já estiver formatado, desformata primeiro
+            let cleanValue = this.unformatMoney(value);
+            if (!cleanValue) return '';
+            
+            // Converte para número
+            let number = parseFloat(cleanValue);
+            if (isNaN(number)) return '';
+            
+            // Usa o locale dinâmico do backend
+            return number.toLocaleString(this.locale, { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            });
+        },
+        
+        unformatMoney(value) {
+            if (!value) return '';
+            
+            // Remove tudo exceto números, ponto e vírgula
+            let cleanValue = String(value).replace(/[^\d.,]/g, '');
+            
+            if (this.isPortuguese) {
+                // Remove pontos de milhar e substitui vírgula por ponto
+                return cleanValue.replace(/\./g, '').replace(',', '.');
+            } else {
+                // Remove vírgulas de milhar
+                return cleanValue.replace(/,/g, '');
+            }
+        },
+        
+        handleInput(event) {
+            let input = event.target.value;
+            
+            // Remove tudo que não é número
+            let numbersOnly = input.replace(/\D/g, '');
+            
+            if (!numbersOnly) {
+                this.displayValue = '';
+                this.value = '';
+                return;
+            }
+            
+            // Trata como centavos
+            let cents = parseInt(numbersOnly);
+            let decimal = (cents / 100).toFixed(2);
+            
+            // Atualiza o valor Livewire (sempre em formato decimal)
+            this.value = decimal;
+            
+            // Atualiza o display formatado
+            this.displayValue = this.formatMoney(decimal);
+        },
+        
+        handleBlur() {
+            // Garante formatação ao sair do campo
+            this.displayValue = this.formatMoney(this.value || '');
+        }
+    }"
+>
     <!-- Símbolo da moeda -->
     <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none z-10">
         <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">{{ $symbol }}</span>
