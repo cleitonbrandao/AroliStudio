@@ -20,7 +20,7 @@ class ProductsForm extends ModalComponent
     {
         $this->productId = $productId;
         if ($productId) {
-            $this->form->setProduct(Product::findOrFail($productId));
+            $this->form->setProduct($productId);
         }
     }
 

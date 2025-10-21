@@ -96,10 +96,10 @@ class Team extends JetstreamTeam implements AuditableContract
      * Get the locale for this team.
      * Falls back to app default if not set.
      */
-    public function locale($value): Attribute
+    public function locale(): Attribute
     {
         return new Attribute(
-            get: fn(): string => $value,
+            get: fn($value): string => $value,
             set: fn($value): string => $value ?? config('app.locale', 'pt_BR'),
         );
     }
