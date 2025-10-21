@@ -27,6 +27,15 @@
     $isPortuguese = str_starts_with($locale, 'pt');
     $decimalSeparator = $isPortuguese ? ',' : '.';
     $thousandsSeparator = $isPortuguese ? '.' : ',';
+    
+    // Mapeia locale Laravel para locale JavaScript
+    $jsLocale = match($locale) {
+        'pt_BR', 'pt' => 'pt-BR',
+        'en', 'en_US' => 'en-US',
+        'es', 'es_ES' => 'es-ES',
+        'de', 'de_DE' => 'de-DE',
+        default => 'en-US',
+    };
 @endphp
 
 <div 
@@ -35,6 +44,7 @@
         value: @entangle($wireModel).live,
         displayValue: '',
         isPortuguese: {{ $isPortuguese ? 'true' : 'false' }},
+        locale: '{{ $jsLocale }}',
         
         init() {
             this.displayValue = this.formatMoney(this.value || '');
@@ -58,19 +68,11 @@
             let number = parseFloat(cleanValue);
             if (isNaN(number)) return '';
             
-            if (this.isPortuguese) {
-                // Formato brasileiro: 1.234,56
-                return number.toLocaleString('pt-BR', { 
-                    minimumFractionDigits: 2, 
-                    maximumFractionDigits: 2 
-                });
-            } else {
-                // Formato internacional: 1,234.56
-                return number.toLocaleString('en-US', { 
-                    minimumFractionDigits: 2, 
-                    maximumFractionDigits: 2 
-                });
-            }
+            // Usa o locale dinâmico do backend
+            return number.toLocaleString(this.locale, { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            });
         },
         
         unformatMoney(value) {
