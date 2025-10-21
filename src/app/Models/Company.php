@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,24 +30,48 @@ class Company extends JetstreamTeam
      */
     protected $table = 'teams';
 
-    protected static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-        
-        // Gerar slug automaticamente
         static::creating(function ($company) {
             if (empty($company->slug)) {
-                $company->slug = Str::slug($company->name);
-                
-                // Garantir unicidade do slug
-                $originalSlug = $company->slug;
-                $counter = 1;
-                while (static::where('slug', $company->slug)->exists()) {
-                    $company->slug = $originalSlug . '-' . $counter;
-                    $counter++;
-                }
+                $company->slug = $company->factorySlug();
             }
         });
+
+        static::updating(function ($company) {
+            if ($company->isDirty('name') || empty($company->slug)) {
+                $company->slug = $company->factorySlug();
+            }
+        });
+    }
+
+    public function slugIsUnique(string $slug): bool
+    {
+        $query = static::where('slug', $slug);
+
+        if ($this->exists) {
+            $query->where('id', '!=', $this->id);
+        }
+
+        return !$query->exists();
+    }
+
+    public function factorySlug(): string
+    {
+        $maxLength = 255;
+        $base = Str::slug($this->name ?: 'company');
+        $base = Str::limit($base, $maxLength, '');
+
+        $slug = $base;
+        $i = 1;
+
+        while (!$this->slugIsUnique($slug)) {
+            $suffix = '-' . $i++;
+            $allowed = $maxLength - strlen($suffix);
+            $slug = Str::limit($base, max(1, $allowed), '') . $suffix;
+        }
+
+        return $slug;
     }
 
     /**
@@ -111,11 +136,14 @@ class Company extends JetstreamTeam
 
 
     /**
-     * Obter role do usuário na empresa
+     * Obter cargo do usuário na empresa
      */
     public function getUserRole(User $user): ?string
     {
-        $membership = $this->memberships()->where('user_id', $user->id)->first();
+        $membership = $this->memberships()
+            ->where('user_id', $user->id)
+            ->first();
+
         return $membership ? $membership->role : null;
     }
 
@@ -127,18 +155,20 @@ class Company extends JetstreamTeam
         return $this->hasMany(CompanySubscription::class);
     }
 
+    public function hasActiveSubscription(): bool
+    {
+        return $this->subscriptions()
+            ->active()
+            ->exists();
+    }
+
     /**
      * Assinatura ativa da empresa
      */
     public function activeSubscription(): ?CompanySubscription
     {
         return $this->subscriptions()
-            ->where('is_active', true)
-            ->where('starts_at', '<=', now())
-            ->where(function ($query) {
-                $query->whereNull('ends_at')
-                      ->orWhere('ends_at', '>', now());
-            })
+            ->active()
             ->first();
     }
 
@@ -186,7 +216,7 @@ class Company extends JetstreamTeam
      */
     public function isActive(): bool
     {
-        return $this->is_active && 
-               ($this->trial_ends_at === null || $this->trial_ends_at->isFuture());
+        return $this->is_active &&
+            ($this->trial_ends_at === null || $this->trial_ends_at->isFuture());
     }
 }

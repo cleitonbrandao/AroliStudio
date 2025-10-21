@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -48,8 +49,8 @@ class CompanySubscription extends Model
      */
     public function isActive(): bool
     {
-        return $this->is_active && 
-               $this->starts_at->isPast() && 
+        return $this->is_active &&
+               $this->starts_at->isPast() &&
                ($this->ends_at === null || $this->ends_at->isFuture());
     }
 
@@ -81,5 +82,27 @@ class CompanySubscription extends Model
             'current_users' => $this->company->current_users,
             'current_companies' => $this->subscription->user->ownedTeams()->count(),
         ];
+    }
+
+    public function scopeActive(Builder $query): void
+    {
+        $query->where('is_active', true)
+            ->where('starts_at', '<=', now())
+            ->where(function ($q) {
+                $q->whereNull('ends_at')
+                  ->orWhere('ends_at', '>', now());
+            });
+    }
+
+    public function scopeInactive(Builder $query): void
+    {
+        $query->where(function ($q) {
+            $q->where('is_active', false)
+              ->orWhere('starts_at', '>', now())
+              ->orWhere(function ($q2) {
+                  $q2->whereNotNull('ends_at')
+                     ->where('ends_at', '<=', now());
+              });
+        });
     }
 }
