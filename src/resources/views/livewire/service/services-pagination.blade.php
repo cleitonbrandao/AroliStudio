@@ -28,7 +28,7 @@
                         {{ $service->description }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $service->price }}
+                        {{ $service->price->formattedWithLocaleCurrency() }}
                     </td>
                     <td class="px-6 py-4">
                         <a href="#" class="font-medium text-blue-600 light:text-blue-500 hover:underline">Editar</a>
