@@ -29,7 +29,7 @@
         @endforeach
     @endif
     <div class="w-full flex flex-row gap-4 rounded p-1 text-orange-300 bg-amber-50">
-        <h1>Preço Sugerido: </h1>
+        <h1>{{ __('app.cost_price') }}: </h1>
         <span>R$ {{ number_format($this->price_cost, 2, ',', '.') }}</span>
     </div>
 </div>
