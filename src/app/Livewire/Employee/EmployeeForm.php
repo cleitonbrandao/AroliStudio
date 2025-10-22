@@ -64,7 +64,7 @@ class EmployeeForm extends Component
         
         if (!$team) {
             session()->flash('error', __('app.no_team_selected'));
-            $this->redirect(route('employees.index'));
+            $this->redirect(route('root.employee.index'));
             return;
         }
 
@@ -72,7 +72,7 @@ class EmployeeForm extends Component
 
         if (!$user) {
             session()->flash('error', __('app.employee_not_found'));
-            $this->redirect(route('employees.index'));
+            $this->redirect(route('root.employee.index'));
             return;
         }
 
@@ -190,7 +190,7 @@ class EmployeeForm extends Component
         ]);
 
         session()->flash('success', __('app.employee_created_successfully'));
-        $this->redirect(route('employees.index'));
+        $this->redirect(route('root.employee.index'), navigate: true);
     }
 
     /**
@@ -220,7 +220,7 @@ class EmployeeForm extends Component
         ]);
 
         session()->flash('success', __('app.employee_updated_successfully'));
-        $this->redirect(route('employees.index'));
+        $this->redirect(route('root.employee.index'), navigate: true);
     }
 
     /**
@@ -228,7 +228,7 @@ class EmployeeForm extends Component
      */
     public function cancel(): void
     {
-        $this->redirect(route('employees.index'));
+        $this->redirect(route('root.employee.index'), navigate: true);
     }
 
     /**
