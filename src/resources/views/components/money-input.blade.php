@@ -1,15 +1,11 @@
 @props([
     'id' => '',
-    'name' => '',
-    'value' => '',
     'wireModel' => '',
-    'placeholder' => '',
+    'placeholder' => '0,00',
     'required' => false,
-    'currencySymbol' => null,
 ])
 
 @php
-    // Obtém o símbolo da moeda baseado no locale atual
     $locale = app()->getLocale();
     $localeCurrency = config('currency.locale_currency_map')[$locale] ?? 'BRL';
     
@@ -27,6 +23,15 @@
     $isPortuguese = str_starts_with($locale, 'pt');
     $decimalSeparator = $isPortuguese ? ',' : '.';
     $thousandsSeparator = $isPortuguese ? '.' : ',';
+    
+    // Mapeia locale Laravel para locale JavaScript
+    $jsLocale = match($locale) {
+        'pt_BR', 'pt' => 'pt-BR',
+        'en', 'en_US' => 'en-US',
+        'es', 'es_ES' => 'es-ES',
+        'de', 'de_DE' => 'de-DE',
+        default => 'en-US',
+    };
 @endphp
 
 <div 
@@ -35,6 +40,7 @@
         value: @entangle($wireModel).live,
         displayValue: '',
         isPortuguese: {{ $isPortuguese ? 'true' : 'false' }},
+        locale: '{{ $jsLocale }}',
         
         init() {
             this.displayValue = this.formatMoney(this.value || '');
@@ -58,19 +64,11 @@
             let number = parseFloat(cleanValue);
             if (isNaN(number)) return '';
             
-            if (this.isPortuguese) {
-                // Formato brasileiro: 1.234,56
-                return number.toLocaleString('pt-BR', { 
-                    minimumFractionDigits: 2, 
-                    maximumFractionDigits: 2 
-                });
-            } else {
-                // Formato internacional: 1,234.56
-                return number.toLocaleString('en-US', { 
-                    minimumFractionDigits: 2, 
-                    maximumFractionDigits: 2 
-                });
-            }
+            // Usa o locale dinâmico do backend
+            return number.toLocaleString(this.locale, { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            });
         },
         
         unformatMoney(value) {
@@ -122,15 +120,48 @@
         <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">{{ $symbol }}</span>
     </div>
     
-    <!-- Input com máscara monetária -->
+    <!-- Input com wire:model e máscara via Alpine.js -->
     <input 
         type="text" 
         id="{{ $id }}"
-        name="{{ $name }}"
-        x-ref="input"
-        x-model="displayValue"
-        @input="handleInput($event)"
-        @blur="handleBlur()"
+        wire:keydown="{{ $wireModel }}"
+        x-data="{ formatted: '' }"
+        x-init="
+            formatted = $wire.get('{{ $wireModel }}') || '';
+            if (formatted) {
+                let num = parseFloat(formatted);
+                if (!isNaN(num)) {
+                    $el.value = num.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                }
+            }
+        "
+        x-on:input="
+            let input = $el.value;
+            let numbersOnly = input.replace(/\D/g, '');
+            if (!numbersOnly) {
+                $el.value = '';
+                $wire.set('{{ $wireModel }}', '');
+                return;
+            }
+            let cents = parseInt(numbersOnly);
+            let decimal = (cents / 100).toFixed(2);
+            let num = parseFloat(decimal);
+            $el.value = num.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            
+            let cursorPos = $el.value.length;
+            $el.setSelectionRange(cursorPos, cursorPos);
+            
+            $wire.set('{{ $wireModel }}', decimal);
+        "
+        x-on:blur="
+            let val = $wire.get('{{ $wireModel }}');
+            if (val) {
+                let num = parseFloat(val);
+                if (!isNaN(num)) {
+                    $el.value = num.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                }
+            }
+        "
         {{ $attributes->merge(['class' => 'block p-2.5 w-full ps-12 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 shadow-sm']) }}
         placeholder="{{ $placeholder }}"
         {{ $required ? 'required' : '' }}

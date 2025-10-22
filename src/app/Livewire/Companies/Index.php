@@ -46,7 +46,7 @@ class Index extends Component
             ])->save();
             
             $this->dispatch('company-switched', $company->name);
-            return redirect()->route('dashboard');
+            return redirect()->route('root.dashboard.hierarchy');
         }
         
         session()->flash('error', 'Empresa não encontrada ou você não tem acesso.');

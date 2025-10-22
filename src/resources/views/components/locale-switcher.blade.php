@@ -8,14 +8,14 @@
     
     // Verifica se pode alterar
     $canChange = false;
-    if ($team) {
+    if ($team && $user) {
         // Owner sempre pode
         $canChange = ($team->user_id === $user->id);
         
-        // Manager também pode
+        // Admin/Manager também pode
         if (!$canChange) {
-            $membership = $team->users()->where('user_id', $user->id)->first();
-            $canChange = ($membership && $membership->pivot->role === 'manager');
+            // Usa o método do User model que já existe
+            $canChange = $user->canManageTeam($team);
         }
     }
     

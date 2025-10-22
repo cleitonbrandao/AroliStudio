@@ -33,6 +33,8 @@ return [
     'register_products' => 'Cadastrar - Produtos',
     'register_services' => 'Cadastrar - Serviços',
     'register_packages' => 'Cadastrar - Pacotes',
+    'cost_price' => 'Preço de custo',
+    'suggested_price' => 'Preço Sugerido',
 
     // Gerenciamento de Equipe
     'manage_team' => 'Gerenciar Equipe',
@@ -61,6 +63,18 @@ return [
     'no_permission_change_locale' => 'Apenas gerentes e proprietários podem alterar o idioma.',
     'locale_change_restricted' => 'Apenas gerentes e proprietários do time podem alterar o idioma.',
     'current_language' => 'Idioma atual',
+
+    // Team Members
+    'role' => 'Função',
+    'role_owner' => 'Proprietário',
+    'role_admin' => 'Administrador',
+    'role_member' => 'Membro',
+    'actions' => 'Ações',
+    'you' => 'Você',
+    'no_permission_view_members' => 'Você não tem permissão para visualizar os membros da equipe.',
+    'search_members' => 'Buscar membros',
+    'no_members_found' => 'Nenhum membro encontrado com este termo de busca.',
+    'no_members_yet' => 'Nenhum membro na equipe ainda.',
 
     // Botões e Ações
     'save' => 'Salvar',
