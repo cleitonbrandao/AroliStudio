@@ -2,8 +2,11 @@
 
 namespace App\Listeners;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Laravel\Jetstream\Contracts\AddsTeamMembers;
 use Laravel\Jetstream\TeamInvitation;
 
@@ -90,13 +93,49 @@ class ProcessPendingTeamInvitationAfterLogin
             
             Log::info('Invitation process completed successfully');
             
-        } catch (\Exception $e) {
-            Log::error('Error processing pending invitation', [
+        } catch (ValidationException $e) {
+            Log::warning('Validation error while processing invitation', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'errors' => $e->errors(),
             ]);
             
             session()->forget(['team_invitation_id', 'team_invitation_email', 'team_invitation_team']);
+            session()->flash('error', __('team-invitations.Unable to process invitation due to validation error.'));
+            
+        } catch (AuthorizationException $e) {
+            Log::warning('Authorization error while processing invitation', [
+                'error' => $e->getMessage(),
+                'user_id' => $user->id,
+                'team_id' => $invitation->team_id,
+            ]);
+            
+            session()->forget(['team_invitation_id', 'team_invitation_email', 'team_invitation_team']);
+            session()->flash('error', __('team-invitations.You are not authorized to join this team.'));
+            
+        } catch (QueryException $e) {
+            Log::error('Database error while processing invitation', [
+                'error' => $e->getMessage(),
+                'code' => $e->getCode(),
+            ]);
+            
+            session()->forget(['team_invitation_id', 'team_invitation_email', 'team_invitation_team']);
+            session()->flash('error', __('team-invitations.A database error occurred. Please try again.'));
+            
+        } catch (\Throwable $e) {
+            // Catch any other unexpected errors but let critical errors propagate
+            Log::error('Unexpected error processing pending invitation', [
+                'error' => $e->getMessage(),
+                'type' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+            
+            session()->forget(['team_invitation_id', 'team_invitation_email', 'team_invitation_team']);
+            
+            // Re-throw critical errors
+            if ($e instanceof \Error) {
+                throw $e;
+            }
         }
     }
 }
