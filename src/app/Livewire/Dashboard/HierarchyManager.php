@@ -16,12 +16,29 @@ class HierarchyManager extends Component
     public $companies;
     public $selectedCompany = null;
     public $members = [];
-    public $roles = [
-        'ceo' => 'CEO',
-        'regional_manager' => 'Gerente Regional',
-        'franchisee' => 'Franqueado',
-        'employee' => 'Funcionário',
-    ];
+
+    /**
+     * Get translated role label
+     */
+    public function getRoleLabel(string $role): string
+    {
+        // Try to get translation from team-invitations roles
+        $translationKey = "team-invitations.roles.{$role}";
+        $translated = __($translationKey);
+        
+        // If translation exists and is different from the key, return it
+        if ($translated !== $translationKey) {
+            return $translated;
+        }
+        
+        // Fallback for legacy roles
+        return match ($role) {
+            'owner' => __('app.role_owner'),
+            'admin' => __('app.role_admin'),
+            'member' => __('app.role_member'),
+            default => ucfirst(str_replace('_', ' ', $role)),
+        };
+    }
 
     public function mount()
 {
