@@ -48,9 +48,6 @@ class TeamInvitationController extends Controller
             // FORCE session save before showing view
             $request->session()->save();
             
-            // Mark that there's a pending invitation (this data will be preserved even with regenerate)
-            $request->session()->flash('_team_invitation_pending', true);
-            
             Log::info('Session saved with pending invitation', [
                 'session_id' => $request->session()->getId(),
                 'session_has_invitation' => $request->session()->has('team_invitation_id'),
