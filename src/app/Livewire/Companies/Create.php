@@ -2,6 +2,8 @@
 namespace App\Livewire\Companies;
 
 use App\Actions\Jetstream\CreateTeam;
+use App\Enums\Blade;
+use App\Enums\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -39,7 +41,7 @@ class Create extends Component
                 $freshUser->save();
 
                 session()->flash('success', 'Empresa criada com sucesso!');
-                return redirect()->route('companies.index');
+                return redirect()->route(Route::WEB_COMPANIES_INDEX);
             });
         } catch (\Exception $e) {
             session()->flash('error', 'Erro ao criar empresa: ' . $e->getMessage());
@@ -48,6 +50,6 @@ class Create extends Component
 
     public function render()
     {
-        return view('livewire.companies.create');
+        return view(Blade::LIVEWIRE_COMPANIES_CREATE);
     }
 }

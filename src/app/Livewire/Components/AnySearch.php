@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Components;
 
-
+use App\Enums\Blade;
 use App\Models\Package;
 use App\Models\Product;
 use App\Models\Service;
@@ -28,7 +28,7 @@ class AnySearch extends Component
 
     public function render(): View
     {
-        return view('livewire.components.any-search');
+        return view(Blade::LIVEWIRE_COMPONENTS_ANY_SEARCH);
     }
     public function updatedSearch(): void
     {

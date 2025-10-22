@@ -2,7 +2,8 @@
 
 namespace App\Livewire\Components\Service;
 
-use App\Enums\Blades;
+use App\Enums\Blade;
+use App\Enums\Route;
 use App\Livewire\Forms\Service\ProductForm;
 use App\Models\Product;
 use Illuminate\View\View;
@@ -37,8 +38,6 @@ class ProductsForm extends ModalComponent
         // Se estiver em modal, fecha. Se for página, redireciona.
         if (method_exists($this, 'closeModal')) {
             $this->closeModal();
-        } else {
-            redirect()->route('product.create'); // ajuste para rota desejada
         }
     }
 
@@ -46,18 +45,18 @@ class ProductsForm extends ModalComponent
     {
         // Se não estiver em modal, usa o layout de página
         if (!$this->isModal()) {
-            return view(Blades::FORM_PRODUCTS)
-                ->layout('layouts.service.home', [
+            return view(Blade::LIVEWIRE_SERVICE_FORM_PRODUCTS)
+                ->layout(Blade::LAYOUTS_SERVICE_HOME, [
                     'title' => 'Cadastrar Produto',
                     'navLinks' => [
-                        ['text' => 'Lista', 'route' => 'root.negotiable', 'active' => 'root.negotiable'],
-                        ['text' => 'Cadastrar - Produtos', 'route' => 'root.form.product', 'active' => 'root.form.product'],
-                        ['text' => 'Cadastrar - Serviços', 'route' => 'root.form.service', 'active' => 'root.form.service'],
-                        ['text' => 'Cadastrar - Pacotes', 'route' => 'root.form.package', 'active' => 'root.form.package'],
+                        ['text' => 'Lista', 'route' => Route::WEB_ROOT_NEGOTIABLE, 'active' => Route::WEB_ROOT_NEGOTIABLE],
+                        ['text' => 'Cadastrar - Produtos', 'route' => Route::WEB_ROOT_FORM_PRODUCT, 'active' => Route::WEB_ROOT_FORM_PRODUCT],
+                        ['text' => 'Cadastrar - Serviços', 'route' => Route::WEB_ROOT_FORM_SERVICE, 'active' => Route::WEB_ROOT_FORM_SERVICE],
+                        ['text' => 'Cadastrar - Pacotes', 'route' => Route::WEB_ROOT_FORM_PACKAGE, 'active' => Route::WEB_ROOT_FORM_PACKAGE],
                     ]
                 ]);
         }
-        return view(Blades::FORM_PRODUCTS);
+        return view(Blade::LIVEWIRE_SERVICE_FORM_PRODUCTS);
     }
 
     protected function isModal(): bool
