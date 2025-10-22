@@ -31,6 +31,14 @@
                     placeholder="{{ __('app.search_members') }}"
                 >
             </div>
+            
+            <a href="{{ route('root.employee.create') }}" 
+                class="ml-4 inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition ease-in-out duration-150">
+                <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                {{ __('app.create_employee') }}
+            </a>
         </div>
 
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
@@ -78,7 +86,8 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     @if($member->id !== auth()->id())
-                                        <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                        <a href="{{ route('root.employee.edit', ['userId' => $member->id]) }}" 
+                                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                             {{ __('app.edit') }}
                                         </a>
                                     @else

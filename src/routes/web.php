@@ -11,6 +11,7 @@ use App\Livewire\Dashboard\HierarchyManager;
 
 use App\Livewire\Employee\IndexEmployee;
 use App\Livewire\Employee\RegisterEmployee;
+use App\Livewire\Employee\EmployeeForm;
 
 use App\Livewire\Service\IndexService;
 use App\Livewire\Service\HomeService;
@@ -70,6 +71,8 @@ Route::middleware([
     Route::name('root.')->prefix('employee')->group(function () {
         Route::get('/', IndexEmployee::class)->name('employee');
         Route::get('/index', IndexEmployee::class)->name('employee.index');
+        Route::get('/create', EmployeeForm::class)->name('employee.create');
+        Route::get('/{userId}/edit', EmployeeForm::class)->name('employee.edit');
     });
 
     Route::name('root.')->prefix('costumer')->group(function (){
@@ -83,7 +86,6 @@ Route::middleware([
     });
 
     Route::name('root.')->prefix('form')->group(function () {
-        Route::get('/employee', RegisterEmployee::class)->name('form.employee');
         Route::get('/costumer', [RegisterCostumer::class, 'render'])->name('form.costumer');
         Route::get('/service', RegisterService::class)->name('form.service');
         Route::get('/product', RegisterProduct::class)->name('form.product');

@@ -103,5 +103,27 @@ return [
     'loading' => 'Carregando...',
     'no_results' => 'Nenhum resultado encontrado',
     'confirm_delete' => 'Tem certeza que deseja excluir?',
+    'processing' => 'Processando...',
+    'error_occurred' => 'Ocorreu um erro ao processar sua solicitação.',
+
+    'name' => 'Nome',
+    'email' => 'E-mail',
+    'password' => 'Senha',
+
+    // Employee Form
+    'create_employee' => 'Criar Funcionário',
+    'edit_employee' => 'Editar Funcionário',
+    'create_employee_description' => 'Adicione um novo funcionário à sua equipe',
+    'edit_employee_description' => 'Atualize as informações do funcionário',
+    'enter_name' => 'Digite o nome completo',
+    'enter_email' => 'Digite o endereço de e-mail',
+    'enter_password' => 'Digite a senha',
+    'confirm_password' => 'Confirme a senha',
+    'password_requirements' => 'Mínimo de 8 caracteres',
+    'leave_blank_to_keep' => 'Deixe em branco para manter a senha atual',
+    'employee_created_successfully' => 'Funcionário criado com sucesso!',
+    'employee_updated_successfully' => 'Funcionário atualizado com sucesso!',
+    'employee_not_found' => 'Funcionário não encontrado ou não pertence à sua equipe.',
+    'unauthorized_action' => 'Você não tem permissão para realizar esta ação.',
 
 ];

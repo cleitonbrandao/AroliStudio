@@ -103,8 +103,27 @@ return [
     'loading' => 'Loading...',
     'no_results' => 'No results found',
     'confirm_delete' => 'Are you sure you want to delete?',
+    'processing' => 'Processing...',
+    'error_occurred' => 'An error occurred while processing your request.',
 
     'name' => 'Name',
     'email' => 'Email',
+    'password' => 'Password',
+
+    // Employee Form
+    'create_employee' => 'Create Employee',
+    'edit_employee' => 'Edit Employee',
+    'create_employee_description' => 'Add a new employee to your team',
+    'edit_employee_description' => 'Update employee information',
+    'enter_name' => 'Enter full name',
+    'enter_email' => 'Enter email address',
+    'enter_password' => 'Enter password',
+    'confirm_password' => 'Confirm password',
+    'password_requirements' => 'Minimum 8 characters',
+    'leave_blank_to_keep' => 'Leave blank to keep current password',
+    'employee_created_successfully' => 'Employee created successfully!',
+    'employee_updated_successfully' => 'Employee updated successfully!',
+    'employee_not_found' => 'Employee not found or does not belong to your team.',
+    'unauthorized_action' => 'You do not have permission to perform this action.',
 
 ];
