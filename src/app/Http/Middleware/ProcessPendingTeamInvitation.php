@@ -19,7 +19,7 @@ class ProcessPendingTeamInvitation
      */
     public function handle(Request $request, Closure $next): Response
     {
-        Log::info('ProcessPendingTeamInvitation executado', [
+        Log::info('ProcessPendingTeamInvitation executed', [
             'is_authenticated' => Auth::check(),
             'has_session_invitation' => session()->has('team_invitation_id'),
             'session_invitation_id' => session('team_invitation_id'),
@@ -28,7 +28,7 @@ class ProcessPendingTeamInvitation
             'url' => $request->url(),
         ]);
         
-        // Se o usuário acabou de logar e há um convite pendente na sessão
+        // If user is authenticated and has a pending invitation in session
         if (Auth::check() && session()->has('team_invitation_id')) {
             $invitationId = session('team_invitation_id');
             $invitationEmail = session('team_invitation_email');
@@ -36,26 +36,26 @@ class ProcessPendingTeamInvitation
             
             $user = Auth::user();
             
-            Log::info('Processando convite pendente', [
+            Log::info('Processing pending invitation', [
                 'invitation_id' => $invitationId,
                 'invitation_email' => $invitationEmail,
                 'user_email' => $user->email,
             ]);
             
-            // Busca o convite
+            // Find the invitation
             $invitation = TeamInvitation::find($invitationId);
             
             if (!$invitation) {
-                Log::warning('Convite não encontrado', ['invitation_id' => $invitationId]);
+                Log::warning('Invitation not found', ['invitation_id' => $invitationId]);
                 session()->forget(['team_invitation_id', 'team_invitation_email', 'team_invitation_team', 'url.intended']);
                 return $next($request);
             }
             
-            // Valida se o convite existe e o email corresponde
+            // Validate if invitation exists and email matches
             if ($invitation->email === $invitationEmail && $invitation->email === $user->email) {
-                Log::info('Emails validados, adicionando usuário ao time');
+                Log::info('Emails validated, adding user to team');
                 
-                // Adiciona o membro ao time
+                // Add member to team
                 app(AddsTeamMembers::class)->add(
                     $invitation->team->owner,
                     $invitation->team,
@@ -63,32 +63,32 @@ class ProcessPendingTeamInvitation
                     $invitation->role
                 );
                 
-                Log::info('Usuário adicionado ao time com sucesso');
+                Log::info('User successfully added to team');
                 
-                // Deleta o convite
+                // Delete the invitation
                 $invitation->delete();
                 
-                // Remove da sessão (incluindo url.intended para evitar redirect para URL com signature expirada)
+                // Remove from session (including url.intended to prevent redirect to expired signed URL)
                 session()->forget([
                     'team_invitation_id', 
                     'team_invitation_email', 
                     'team_invitation_team',
-                    'url.intended' // Remove intended URL que pode ter signature expirada
+                    'url.intended' // Remove intended URL that may have expired signature
                 ]);
                 
-                // Adiciona mensagem de sucesso
+                // Add success message
                 session()->flash('success', __('team-invitations.You are now part of the :team team!', ['team' => $teamName]));
                 
-                // Redireciona para o dashboard após processar o convite
+                // Redirect to dashboard after processing invitation
                 return redirect()->route('root.dashboard.hierarchy');
             } else {
-                Log::warning('Validação de emails falhou', [
+                Log::warning('Email validation failed', [
                     'invitation_email' => $invitation->email,
                     'session_email' => $invitationEmail,
                     'user_email' => $user->email,
                 ]);
                 
-                // Se houver alguma inconsistência, limpa a sessão
+                // If there's any inconsistency, clear the session
                 session()->forget(['team_invitation_id', 'team_invitation_email', 'team_invitation_team', 'url.intended']);
             }
         }

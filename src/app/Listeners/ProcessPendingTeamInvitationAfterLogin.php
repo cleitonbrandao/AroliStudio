@@ -17,7 +17,7 @@ class ProcessPendingTeamInvitationAfterLogin
         $user = $event->user;
         $request = request();
         
-        Log::info('ProcessPendingTeamInvitationAfterLogin executado', [
+        Log::info('ProcessPendingTeamInvitationAfterLogin executed', [
             'user_id' => $user->id,
             'user_email' => $user->email,
             'has_session_invitation' => session()->has('team_invitation_id'),
@@ -25,9 +25,9 @@ class ProcessPendingTeamInvitationAfterLogin
             'session_invitation_email' => session('team_invitation_email'),
         ]);
         
-        // Verifica se há um convite pendente na sessão
+        // Check if there's a pending invitation in the session
         if (!session()->has('team_invitation_id')) {
-            Log::info('Nenhum convite pendente na sessão');
+            Log::info('No pending invitation found in session');
             return;
         }
         
@@ -35,24 +35,24 @@ class ProcessPendingTeamInvitationAfterLogin
         $invitationEmail = session('team_invitation_email');
         $teamName = session('team_invitation_team');
         
-        Log::info('Convite pendente encontrado na sessão', [
+        Log::info('Pending invitation found in session', [
             'invitation_id' => $invitationId,
             'invitation_email' => $invitationEmail,
             'team_name' => $teamName,
         ]);
         
-        // Busca o convite
+        // Find the invitation
         $invitation = TeamInvitation::find($invitationId);
         
         if (!$invitation) {
-            Log::warning('Convite não encontrado no banco de dados', ['invitation_id' => $invitationId]);
+            Log::warning('Invitation not found in database', ['invitation_id' => $invitationId]);
             session()->forget(['team_invitation_id', 'team_invitation_email', 'team_invitation_team']);
             return;
         }
         
-        // Valida se o email do convite corresponde ao email do usuário que logou
+        // Validate if the invitation email matches the logged-in user's email
         if ($invitation->email !== $user->email) {
-            Log::warning('Email do convite não corresponde ao email do usuário', [
+            Log::warning('Invitation email does not match user email', [
                 'invitation_email' => $invitation->email,
                 'user_email' => $user->email,
             ]);
@@ -61,13 +61,13 @@ class ProcessPendingTeamInvitationAfterLogin
         }
         
         try {
-            Log::info('Adicionando usuário ao time', [
+            Log::info('Adding user to team', [
                 'team_id' => $invitation->team_id,
                 'user_email' => $user->email,
                 'role' => $invitation->role,
             ]);
             
-            // Adiciona o usuário ao time
+            // Add user to team
             app(AddsTeamMembers::class)->add(
                 $invitation->team->owner,
                 $invitation->team,
@@ -75,23 +75,23 @@ class ProcessPendingTeamInvitationAfterLogin
                 $invitation->role
             );
             
-            Log::info('Usuário adicionado ao time com sucesso');
+            Log::info('User successfully added to team');
             
-            // Deleta o convite
+            // Delete the invitation
             $invitation->delete();
             
-            Log::info('Convite deletado com sucesso');
+            Log::info('Invitation deleted successfully');
             
-            // Remove da sessão
+            // Remove from session
             session()->forget(['team_invitation_id', 'team_invitation_email', 'team_invitation_team', 'url.intended']);
             
-            // Adiciona mensagem de sucesso
+            // Add success message
             session()->flash('success', __('team-invitations.You are now part of the :team team!', ['team' => $teamName]));
             
-            Log::info('Processo de convite finalizado com sucesso');
+            Log::info('Invitation process completed successfully');
             
         } catch (\Exception $e) {
-            Log::error('Erro ao processar convite pendente', [
+            Log::error('Error processing pending invitation', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);

@@ -22,43 +22,43 @@ class TeamInvitationController extends Controller
      */
     public function accept(Request $request, TeamInvitation $invitation)
     {
-        // Log para debug
-        Log::info('TeamInvitationController::accept chamado', [
+        // Debug logging
+        Log::info('TeamInvitationController::accept called', [
             'invitation_id' => $invitation->id,
             'invitation_email' => $invitation->email,
             'is_authenticated' => Auth::check(),
             'user_email' => Auth::user()?->email,
         ]);
         
-        // Se o usuário NÃO está autenticado, mostra a página do convite
+        // If user is NOT authenticated, show invitation page
         if (!Auth::check()) {
-            Log::info('Usuário não autenticado, mostrando página do convite');
+            Log::info('User not authenticated, showing invitation page');
             
-            // Detecta o idioma preferido do navegador
+            // Detect browser's preferred language
             $this->setLocaleFromBrowser($request);
             
-            // Armazena na sessão as informações do convite para processar após login/registro
-            // Usa regenerate(true) para manter os dados durante a regeneração da sessão no login
+            // Store invitation information in session to process after login/registration
+            // Use regenerate(true) to maintain data during session regeneration on login
             $request->session()->put([
                 'team_invitation_id' => $invitation->id,
                 'team_invitation_email' => $invitation->email,
                 'team_invitation_team' => $invitation->team->name,
             ]);
             
-            // FORÇA a gravação da sessão antes de mostrar a view
+            // FORCE session save before showing view
             $request->session()->save();
             
-            // Marca que há um convite pendente (este dado será preservado mesmo com regenerate)
+            // Mark that there's a pending invitation (this data will be preserved even with regenerate)
             $request->session()->flash('_team_invitation_pending', true);
             
-            Log::info('Sessão salva com convite pendente', [
+            Log::info('Session saved with pending invitation', [
                 'session_id' => $request->session()->getId(),
                 'session_has_invitation' => $request->session()->has('team_invitation_id'),
                 'invitation_id' => $request->session()->get('team_invitation_id'),
                 'invitation_email' => $request->session()->get('team_invitation_email'),
             ]);
             
-            // Mostra a página com detalhes do convite
+            // Show page with invitation details
             return view('team-invitations.show', [
                 'invitation' => $invitation,
                 'teamName' => $invitation->team->name,
@@ -67,7 +67,7 @@ class TeamInvitationController extends Controller
             ]);
         }
 
-        // Verifica se o convite é para o email do usuário autenticado
+        // Check if invitation is for the authenticated user's email
         if ($invitation->email !== Auth::user()->email) {
             return redirect()->route('root.dashboard.hierarchy')->with([
                 'error' => __('team-invitations.This invitation was sent to :email, but you are logged in as :current_email.', [
