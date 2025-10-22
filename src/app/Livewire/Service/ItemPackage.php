@@ -27,7 +27,7 @@ class ItemPackage extends Component
     public function clearItems()
     {
         Cache::forget('packages_items');
-        $this->packages_items = [];
+        $this->dispatch('items-update');
     }
     
     public function removeItem($item)
