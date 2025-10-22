@@ -2,16 +2,22 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\TeamInvitationService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Laravel\Jetstream\Contracts\AddsTeamMembers;
-use Laravel\Jetstream\TeamInvitation;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProcessPendingTeamInvitation
 {
+    /**
+     * Create a new middleware instance.
+     */
+    public function __construct(
+        protected TeamInvitationService $invitationService
+    ) {}
+
     /**
      * Handle an incoming request.
      *
@@ -32,64 +38,32 @@ class ProcessPendingTeamInvitation
         if (Auth::check() && session()->has('team_invitation_id')) {
             $invitationId = session('team_invitation_id');
             $invitationEmail = session('team_invitation_email');
-            $teamName = session('team_invitation_team');
-            
             $user = Auth::user();
             
-            Log::info('Processing pending invitation', [
+            Log::info('Processing pending invitation in middleware', [
                 'invitation_id' => $invitationId,
                 'invitation_email' => $invitationEmail,
                 'user_email' => $user->email,
             ]);
             
-            // Find the invitation
-            $invitation = TeamInvitation::find($invitationId);
+            // Process the invitation using the service
+            $result = $this->invitationService->processPendingInvitation(
+                $invitationId,
+                $invitationEmail,
+                $user
+            );
             
-            if (!$invitation) {
-                Log::warning('Invitation not found', ['invitation_id' => $invitationId]);
-                session()->forget(['team_invitation_id', 'team_invitation_email', 'team_invitation_team', 'url.intended']);
-                return $next($request);
-            }
+            // Clear session data
+            $this->invitationService->clearInvitationSession();
             
-            // Validate if invitation exists and email matches
-            if ($invitation->email === $invitationEmail && $invitation->email === $user->email) {
-                Log::info('Emails validated, adding user to team');
-                
-                // Add member to team
-                app(AddsTeamMembers::class)->add(
-                    $invitation->team->owner,
-                    $invitation->team,
-                    $invitation->email,
-                    $invitation->role
-                );
-                
-                Log::info('User successfully added to team');
-                
-                // Delete the invitation
-                $invitation->delete();
-                
-                // Remove from session (including url.intended to prevent redirect to expired signed URL)
-                session()->forget([
-                    'team_invitation_id', 
-                    'team_invitation_email', 
-                    'team_invitation_team',
-                    'url.intended' // Remove intended URL that may have expired signature
-                ]);
-                
-                // Add success message
-                session()->flash('success', __('team-invitations.You are now part of the :team team!', ['team' => $teamName]));
-                
-                // Redirect to dashboard after processing invitation
+            // Flash appropriate message and redirect
+            if ($result['success']) {
+                session()->flash('success', $result['message']);
+                Log::info('Invitation processed successfully, redirecting to dashboard');
                 return redirect()->route('root.dashboard.hierarchy');
             } else {
-                Log::warning('Email validation failed', [
-                    'invitation_email' => $invitation->email,
-                    'session_email' => $invitationEmail,
-                    'user_email' => $user->email,
-                ]);
-                
-                // If there's any inconsistency, clear the session
-                session()->forget(['team_invitation_id', 'team_invitation_email', 'team_invitation_team', 'url.intended']);
+                session()->flash('error', $result['message']);
+                Log::warning('Invitation processing failed in middleware', ['reason' => $result['message']]);
             }
         }
         
