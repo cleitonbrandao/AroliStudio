@@ -38,10 +38,24 @@ class TeamInvitationController extends Controller
             $this->setLocaleFromBrowser($request);
             
             // Armazena na sessão as informações do convite para processar após login/registro
-            session([
+            // Usa regenerate(true) para manter os dados durante a regeneração da sessão no login
+            $request->session()->put([
                 'team_invitation_id' => $invitation->id,
                 'team_invitation_email' => $invitation->email,
                 'team_invitation_team' => $invitation->team->name,
+            ]);
+            
+            // FORÇA a gravação da sessão antes de mostrar a view
+            $request->session()->save();
+            
+            // Marca que há um convite pendente (este dado será preservado mesmo com regenerate)
+            $request->session()->flash('_team_invitation_pending', true);
+            
+            Log::info('Sessão salva com convite pendente', [
+                'session_id' => $request->session()->getId(),
+                'session_has_invitation' => $request->session()->has('team_invitation_id'),
+                'invitation_id' => $request->session()->get('team_invitation_id'),
+                'invitation_email' => $request->session()->get('team_invitation_email'),
             ]);
             
             // Mostra a página com detalhes do convite
