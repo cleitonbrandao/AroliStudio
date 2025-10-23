@@ -42,6 +42,14 @@ class Service extends Model implements AuditableContract
 
     public function scopeAuth(Builder $query): void
     {
-        $query->where('team_id', Auth::user()->currentTeam->id);
+        $user = Auth::user();
+        
+        // If user doesn't have a current team, return no results
+        if (!$user || !$user->currentTeam) {
+            $query->whereNull('team_id');
+            return;
+        }
+        
+        $query->where('team_id', $user->currentTeam->id);
     }
 }

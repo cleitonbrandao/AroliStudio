@@ -103,4 +103,28 @@ class Team extends JetstreamTeam implements AuditableContract
             set: fn($value): string => $value ?? config('app.locale', 'pt_BR'),
         );
     }
+
+    /**
+     * Remove the given user from the team.
+     * 
+     * Override Jetstream's method to automatically switch to next available team
+     * instead of setting current_team_id to null.
+     */
+    public function removeUser($user): void
+    {
+        // Detach user from team first
+        $this->users()->detach($user);
+
+        // If the removed user had this team as current, update to another team or null
+        if ($user->current_team_id === $this->id) {
+            // Try to find another team (after detachment, so this team won't be included)
+            $nextTeam = $user->teams()->first();
+            
+            $user->forceFill([
+                'current_team_id' => $nextTeam?->id,
+            ])->save();
+        }
+    }
 }
+
+

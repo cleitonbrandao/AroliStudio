@@ -80,6 +80,7 @@ return [
     'save' => 'Salvar',
     'cancel' => 'Cancelar',
     'delete' => 'Excluir',
+    'remove' => 'Remover',
     'edit' => 'Editar',
     'create' => 'Criar',
     'update' => 'Atualizar',
@@ -123,7 +124,14 @@ return [
     'leave_blank_to_keep' => 'Deixe em branco para manter a senha atual',
     'employee_created_successfully' => 'Funcionário criado com sucesso!',
     'employee_updated_successfully' => 'Funcionário atualizado com sucesso!',
+    'employee_removed_successfully' => 'Funcionário removido da equipe com sucesso!',
     'employee_not_found' => 'Funcionário não encontrado ou não pertence à sua equipe.',
     'unauthorized_action' => 'Você não tem permissão para realizar esta ação.',
+    'cannot_remove_yourself' => 'Você não pode remover a si mesmo da equipe.',
+    'confirm_remove_employee' => 'Tem certeza que deseja remover este funcionário da equipe?',
+    'remove_employee_warning' => 'Esta ação irá desvincular o funcionário desta equipe, mas não excluirá sua conta.',
+
+    // Team Access
+    'team_required' => 'Você precisa fazer parte de uma equipe para acessar este recurso. Por favor, entre em contato com um administrador.',
 
 ];

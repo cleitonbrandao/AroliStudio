@@ -2,10 +2,12 @@
 
 namespace App\Livewire\Employee;
 
+use App\Actions\Jetstream\RemoveTeamMember;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Jetstream\Jetstream;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -109,6 +111,76 @@ class IndexEmployee extends Component
         // Jetstream uses 'membership' as pivot alias, not 'pivot'
         // See: vendor/laravel/jetstream/src/Team.php -> users() method
         return $member->membership?->role ?? 'member';
+    }
+
+    /**
+     * Remove member from team using Jetstream's RemoveTeamMember action
+     * Same flow as /teams/{id} page
+     */
+    public function removeMember(int $userId, RemoveTeamMember $remover): void
+    {
+        $team = $this->currentTeam;
+
+        if (!$team) {
+            $this->dispatch('show-toast', [
+                'type' => 'error',
+                'message' => __('app.no_team_selected')
+            ]);
+            return;
+        }
+
+        // Check if user can manage team members
+        if (!$this->canManageMembers) {
+            $this->dispatch('show-toast', [
+                'type' => 'error',
+                'message' => __('app.unauthorized_action')
+            ]);
+            return;
+        }
+
+        // Prevent user from removing themselves
+        if ($userId === Auth::id()) {
+            $this->dispatch('show-toast', [
+                'type' => 'error',
+                'message' => __('app.cannot_remove_yourself')
+            ]);
+            return;
+        }
+
+        try {
+            // Find the user to be removed
+            $teamMember = Jetstream::findUserByIdOrFail($userId);
+            
+            // Check if user exists in team
+            if (!$team->users()->where('users.id', $userId)->exists()) {
+                $this->dispatch('show-toast', [
+                    'type' => 'error',
+                    'message' => __('app.employee_not_found')
+                ]);
+                return;
+            }
+
+            // Use Jetstream's RemoveTeamMember action (same as /teams/{id})
+            $remover->remove(
+                Auth::user(),
+                $team,
+                $teamMember
+            );
+
+            // Reset pagination if current page is now empty
+            $this->resetPage();
+
+            $this->dispatch('show-toast', [
+                'type' => 'success',
+                'message' => __('app.employee_removed_successfully')
+            ]);
+
+        } catch (\Exception $e) {
+            $this->dispatch('show-toast', [
+                'type' => 'error',
+                'message' => __('app.error_occurred')
+            ]);
+        }
     }
 
     /**

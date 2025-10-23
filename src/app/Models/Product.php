@@ -39,6 +39,13 @@ class Product extends Model implements AuditableContract
 
     public function scopeAuth($query)
     {
-        $query->where('team_id', Auth::user()->currentTeam->id);
+        $user = Auth::user();
+        
+        // If user doesn't have a current team, return no results
+        if (!$user || !$user->currentTeam) {
+            return $query->whereNull('team_id');
+        }
+        
+        $query->where('team_id', $user->currentTeam->id);
     }
 }
