@@ -159,7 +159,9 @@
 
                                     <!-- Remove Team Member -->
                                     @elseif (Gate::check('removeTeamMember', $team))
-                                        <button class="cursor-pointer ms-6 text-sm text-red-500" wire:click="confirmTeamMemberRemoval('{{ $user->id }}')">
+                                        <button 
+                                            class="cursor-pointer ms-6 text-sm text-red-500" 
+                                            wire:click="confirmTeamMemberRemoval('{{ $user->id }}')">
                                             {{ __('Remove') }}
                                         </button>
                                     @endif
@@ -254,7 +256,10 @@
                 {{ __('Cancel') }}
             </x-secondary-button>
 
-            <x-danger-button class="ms-3" wire:click="removeTeamMember" wire:loading.attr="disabled">
+            <x-danger-button 
+                class="ms-3" 
+                wire:click="removeTeamMember" 
+                wire:loading.attr="disabled">
                 {{ __('Remove') }}
             </x-danger-button>
         </x-slot>

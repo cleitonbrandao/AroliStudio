@@ -31,6 +31,14 @@
                     placeholder="{{ __('app.search_members') }}"
                 >
             </div>
+            
+            <a href="{{ route('root.employee.create') }}" 
+                class="ml-4 inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition ease-in-out duration-150">
+                <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                {{ __('app.create_employee') }}
+            </a>
         </div>
 
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
@@ -78,9 +86,18 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     @if($member->id !== auth()->id())
-                                        <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                            {{ __('app.edit') }}
-                                        </a>
+                                        <div class="flex items-center gap-3">
+                                            <a href="{{ route('root.employee.edit', ['userId' => $member->id]) }}" 
+                                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                                {{ __('app.edit') }}
+                                            </a>
+                                            <button
+                                                x-data
+                                                @click="$dispatch('open-remove-modal', { userId: {{ $member->id }}, userName: '{{ $member->name }}' })"
+                                                class="font-medium text-red-600 dark:text-red-500 hover:underline">
+                                                {{ __('app.remove') }}
+                                            </button>
+                                        </div>
                                     @else
                                         <span class="text-gray-400 text-xs">{{ __('app.you') }}</span>
                                     @endif
@@ -108,4 +125,74 @@
             @endif
         </div>
     @endif
+
+    <!-- Remove Confirmation Modal -->
+    <div x-data="{ 
+            show: false, 
+            userId: null, 
+            userName: '' 
+         }"
+         @open-remove-modal.window="
+            userId = $event.detail.userId;
+            userName = $event.detail.userName;
+            show = true;
+         "
+         x-show="show"
+         x-cloak
+         class="fixed inset-0 z-50 overflow-y-auto"
+         style="display: none;">
+        
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+             @click="show = false"></div>
+
+        <!-- Modal -->
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-lg w-full p-6"
+                 @click.away="show = false"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 transform scale-95"
+                 x-transition:enter-end="opacity-100 transform scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 transform scale-100"
+                 x-transition:leave-end="opacity-0 transform scale-95">
+                
+                <!-- Icon -->
+                <div class="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full dark:bg-red-900">
+                    <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+
+                <!-- Content -->
+                <div class="mt-4 text-center">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                        {{ __('app.confirm_remove_employee') }}
+                    </h3>
+                    <div class="mt-2">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ __('app.remove_employee_warning') }}
+                        </p>
+                        <p class="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300" x-text="userName"></p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                    <button 
+                        type="button"
+                        @click="show = false"
+                        class="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                        {{ __('app.cancel') }}
+                    </button>
+                    <button 
+                        type="button"
+                        @click="$wire.removeMember(userId); show = false"
+                        class="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        {{ __('app.remove') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

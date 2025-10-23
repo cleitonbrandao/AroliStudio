@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'subscription' => \App\Http\Middleware\CheckSubscriptionLimits::class,
             'company.permission' => \App\Http\Middleware\CheckCompanyPermission::class,
             'user.has.company' => \App\Http\Middleware\EnsureUserHasCompany::class,
+            'user.has.team' => \App\Http\Middleware\EnsureUserHasTeam::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

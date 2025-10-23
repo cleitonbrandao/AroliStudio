@@ -11,6 +11,7 @@ use App\Livewire\Dashboard\HierarchyManager;
 
 use App\Livewire\Employee\IndexEmployee;
 use App\Livewire\Employee\RegisterEmployee;
+use App\Livewire\Employee\EmployeeForm;
 
 use App\Livewire\Service\IndexService;
 use App\Livewire\Service\HomeService;
@@ -70,6 +71,8 @@ Route::middleware([
     Route::name('root.')->prefix('employee')->group(function () {
         Route::get('/', IndexEmployee::class)->name('employee');
         Route::get('/index', IndexEmployee::class)->name('employee.index');
+        Route::get('/create', EmployeeForm::class)->name('employee.create');
+        Route::get('/{userId}/edit', EmployeeForm::class)->name('employee.edit');
     });
 
     Route::name('root.')->prefix('costumer')->group(function (){
@@ -77,13 +80,12 @@ Route::middleware([
         Route::get('/index', [IndexCostumer::class, 'index'])->name('costumer.index');
     });
 
-    Route::name('root.')->prefix('negotiable')->group(function () {
+    Route::name('root.')->prefix('negotiable')->middleware('user.has.team')->group(function () {
         Route::get('/', IndexService::class)->name('negotiable');
         Route::get('product/index', [ProductController::class, 'index'])->name('product.index');
     });
 
-    Route::name('root.')->prefix('form')->group(function () {
-        Route::get('/employee', RegisterEmployee::class)->name('form.employee');
+    Route::name('root.')->prefix('form')->middleware('user.has.team')->group(function () {
         Route::get('/costumer', [RegisterCostumer::class, 'render'])->name('form.costumer');
         Route::get('/service', RegisterService::class)->name('form.service');
         Route::get('/product', RegisterProduct::class)->name('form.product');
@@ -91,25 +93,25 @@ Route::middleware([
 //        Route::get('/form/package', RegisterPackage::class);
     });
 
-    Route::name('root.')->prefix('commercial')->group(function () {
+    Route::name('root.')->prefix('commercial')->middleware('user.has.team')->group(function () {
         Route::get('/', SummaryCommercial::class)->name('commercial.index');
         Route::get('/summary', SummaryCommercial::class)->name('commercial.summary');
         Route::get('/consumption', Consumption::class)->name('commercial.consumption');
     });
 
-    Route::name('root.')->prefix('register')->group(function () {
+    Route::name('root.')->prefix('register')->middleware('user.has.team')->group(function () {
         Route::post('/costumer', [CostumerController::class, 'store'])->name('register.costumer');
         Route::post('/service', [ServiceController::class, 'store'])->name('register.service');
         Route::post('/package', [PackageController::class, 'store'])->name('register.package');
         Route::post('/enterprise', [EnterpriseController::class, 'store'])->name('register.enterprise');
     });
 
-    Route::name('root.')->prefix('update')->group(function () {
+    Route::name('root.')->prefix('update')->middleware('user.has.team')->group(function () {
         Route::patch('/costumer', [RegisterCostumer::class, 'update'])->name('update.costumer');
         Route::patch('/product/{product}', [ProductController::class, 'update'])->name('update.product');
     });
 
-    Route::name('root.')->prefix('delete')->group(function () {
+    Route::name('root.')->prefix('delete')->middleware('user.has.team')->group(function () {
         Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('delete.product');
     });
 
