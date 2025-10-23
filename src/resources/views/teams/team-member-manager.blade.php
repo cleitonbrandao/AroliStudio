@@ -161,7 +161,7 @@
                                     @elseif (Gate::check('removeTeamMember', $team))
                                         <button 
                                             class="cursor-pointer ms-6 text-sm text-red-500" 
-                                            wire:click="confirmTeamMemberRemoval({{ $user->id }})">
+                                            wire:click="confirmTeamMemberRemoval('{{ $user->id }}')">
                                             {{ __('Remove') }}
                                         </button>
                                     @endif
