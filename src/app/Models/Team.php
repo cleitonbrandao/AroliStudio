@@ -126,5 +126,3 @@ class Team extends JetstreamTeam implements AuditableContract
         }
     }
 }
-
-
