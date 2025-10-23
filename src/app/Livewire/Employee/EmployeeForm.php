@@ -110,7 +110,7 @@ class EmployeeForm extends Component
         // Password is required only for new users
         if (!$this->isEditMode) {
             $rules['password'] = ['required', 'string', 'min:8', 'confirmed'];
-        } else if (!empty($this->password)) {
+        } elseif (!empty($this->password)) {
             // Password is optional for updates, but must be confirmed if provided
             $rules['password'] = ['string', 'min:8', 'confirmed'];
         }
