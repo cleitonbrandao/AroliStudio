@@ -2,15 +2,22 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\TeamInvitationService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Jetstream\Contracts\AddsTeamMembers;
-use Laravel\Jetstream\TeamInvitation;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProcessPendingTeamInvitation
 {
+    /**
+     * Create a new middleware instance.
+     */
+    public function __construct(
+        protected TeamInvitationService $invitationService
+    ) {}
+
     /**
      * Handle an incoming request.
      *
@@ -18,31 +25,45 @@ class ProcessPendingTeamInvitation
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Se o usuário acabou de logar e há um convite pendente na sessão
+        Log::info('ProcessPendingTeamInvitation executed', [
+            'is_authenticated' => Auth::check(),
+            'has_session_invitation' => session()->has('team_invitation_id'),
+            'session_invitation_id' => session('team_invitation_id'),
+            'session_invitation_email' => session('team_invitation_email'),
+            'user_email' => Auth::user()?->email,
+            'url' => $request->url(),
+        ]);
+        
+        // If user is authenticated and has a pending invitation in session
         if (Auth::check() && session()->has('team_invitation_id')) {
             $invitationId = session('team_invitation_id');
-            $teamName = session('team_invitation_team');
+            $invitationEmail = session('team_invitation_email');
+            $user = Auth::user();
             
-            // Remove da sessão
-            session()->forget(['team_invitation_id', 'team_invitation_team']);
+            Log::info('Processing pending invitation in middleware', [
+                'invitation_id' => $invitationId,
+                'invitation_email' => $invitationEmail,
+                'user_email' => $user->email,
+            ]);
             
-            // Busca o convite
-            $invitation = TeamInvitation::find($invitationId);
+            // Process the invitation using the service
+            $result = $this->invitationService->processPendingInvitation(
+                $invitationId,
+                $invitationEmail,
+                $user
+            );
             
-            if ($invitation && $invitation->email === Auth::user()->email) {
-                // Adiciona o membro ao time
-                app(AddsTeamMembers::class)->add(
-                    $invitation->team->owner,
-                    $invitation->team,
-                    $invitation->email,
-                    $invitation->role
-                );
-                
-                // Deleta o convite
-                $invitation->delete();
-                
-                // Adiciona mensagem de sucesso
-                session()->flash('success', __('team-invitations.You are now part of the :team team!', ['team' => $teamName]));
+            // Clear session data
+            $this->invitationService->clearInvitationSession();
+            
+            // Flash appropriate message and redirect
+            if ($result['success']) {
+                session()->flash('success', $result['message']);
+                Log::info('Invitation processed successfully, redirecting to dashboard');
+                return redirect()->route('root.dashboard.hierarchy');
+            } else {
+                session()->flash('error', $result['message']);
+                Log::warning('Invitation processing failed in middleware', ['reason' => $result['message']]);
             }
         }
         
