@@ -89,7 +89,7 @@ class CustomerForm extends Form
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('costumers', 'email')
+                Rule::unique('customers', 'email')
                     ->where('team_id', $teamId)
                     ->ignore($customerId),
             ],
