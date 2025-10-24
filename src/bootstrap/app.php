@@ -7,24 +7,12 @@ use Illuminate\Foundation\Configuration\Middleware;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
-        channels: __DIR__.'/../routes/channels.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware) {
-        $middleware->web(append: [
-            \App\Http\Middleware\SetActiveCompany::class,
-            \App\Http\Middleware\SetLocale::class,
-        ]);
-
-        $middleware->alias([
-            'subscription' => \App\Http\Middleware\CheckSubscriptionLimits::class,
-            'company.permission' => \App\Http\Middleware\CheckCompanyPermission::class,
-            'user.has.company' => \App\Http\Middleware\EnsureUserHasCompany::class,
-            'user.has.team' => \App\Http\Middleware\EnsureUserHasTeam::class,
-        ]);
+    ->withMiddleware(function (Middleware $middleware): void {
+        //
     })
-    ->withExceptions(function (Exceptions $exceptions) {
+    ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

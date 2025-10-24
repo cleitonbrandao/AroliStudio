@@ -1,255 +1,61 @@
-# 🏢 AroliStudio - Sistema de Gestão Empresarial
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-<p align="center">
-  <strong>Sistema completo de gestão empresarial desenvolvido em Laravel 10 com Livewire 3</strong>
-</p>
+## About Laravel
 
-## 📋 Sobre o Projeto
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-O **AroliStudio** é um sistema de gestão empresarial moderno que oferece funcionalidades completas para:
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-- 🏢 **Gestão de Empresas** - Cadastro e controle de empresas
-- 👥 **Gestão de Clientes** - Controle completo de clientes
-- 👨‍💼 **Gestão de Funcionários** - Administração de equipes
-- 📦 **Gestão de Produtos** - Controle de estoque e produtos
-- 🔧 **Gestão de Serviços** - Administração de serviços oferecidos
-- 📋 **Pacotes Comerciais** - Criação de pacotes personalizados
-- 💼 **Área Comercial** - Vendas, resumos e controle de consumo
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## 🛠️ Stack Tecnológica
+## Learning Laravel
 
-- **Backend**: Laravel 10, PHP 8.1+
-- **Frontend**: Livewire 3, Alpine.js, Tailwind CSS
-- **UI Components**: Flowbite
-- **Autenticação**: Laravel Jetstream + Fortify
-- **Banco de Dados**: MySQL 8.0 (Docker)
-- **Build Tool**: Vite
-- **Validações**: CPF, CNPJ, datas brasileiras
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-## 🚀 Como Iniciar o Projeto
+You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-### 📋 Pré-requisitos
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-Certifique-se de ter instalado:
+## Laravel Sponsors
 
-- ✅ **PHP 8.1 ou superior**
-- ✅ **Composer**
-- ✅ **Node.js e NPM**
-- ✅ **Docker Desktop** (para o banco de dados)
-- ✅ **Git**
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-### 🔧 Instalação Passo a Passo
+### Premium Partners
 
-#### **1. Clone o Repositório**
-```bash
-git clone <url-do-repositorio>
-cd AroliStudio
-```
+- **[Vehikl](https://vehikl.com)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+- **[Redberry](https://redberry.international/laravel-development)**
+- **[Active Logic](https://activelogic.com)**
 
-#### **2. Instalar Dependências PHP**
-```bash
-composer install
-```
+## Contributing
 
-#### **3. Instalar Dependências Node.js**
-```bash
-npm install
-```
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-#### **4. Configurar Ambiente**
+## Code of Conduct
 
-**Copie o arquivo de exemplo:**
-```bash
-copy .env.example .env
-```
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-**Edite o arquivo `.env` com as seguintes configurações:**
-```env
-APP_NAME=AroliStudio
-APP_ENV=local
-APP_DEBUG=true
-APP_URL=http://localhost
+## Security Vulnerabilities
 
-# Configurações do Banco de Dados (Docker MySQL)
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=aroli_studio
-DB_USERNAME=aroli_user
-DB_PASSWORD=aroli_password
-```
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-#### **5. Configurar Banco de Dados**
+## License
 
-**Opção A - Script Automático (Recomendado):**
-```powershell
-.\setup-database.ps1
-```
-
-**Opção B - Comandos Manuais:**
-```bash
-# Iniciar banco de dados
-docker-compose up -d
-
-# Gerar chave da aplicação
-php artisan key:generate
-
-# Executar todas as migrações
-php artisan migrate:fresh
-
-# Executar seeders (opcional)
-php artisan db:seed
-```
-
-#### **6. Compilar Assets**
-```bash
-npm run dev
-```
-
-#### **7. Iniciar o Servidor**
-```bash
-php artisan serve
-```
-
-### 🌐 Acessar a Aplicação
-
-Após seguir todos os passos, acesse:
-
-- **URL Principal**: http://localhost:8000
-- **Registro**: http://localhost:8000/register
-- **Login**: http://localhost:8000/login
-
-### 📱 Funcionalidades Principais
-
-Após fazer login, você terá acesso a:
-
-- **Dashboard**: `/dashboard` - Visão geral do sistema
-- **Funcionários**: `/employee` - Gestão de funcionários
-- **Clientes**: `/costumer` - Gestão de clientes
-- **Produtos/Serviços**: `/negotiable` - Gestão de produtos e serviços
-- **Comercial**: `/commercial` - Área comercial e vendas
-- **Formulários**: `/form/*` - Formulários de cadastro
-
-## 🐳 Gerenciamento do Docker
-
-### **Comandos Úteis**
-
-```bash
-# Iniciar banco de dados
-docker-compose up -d
-
-# Parar banco de dados
-docker-compose down
-
-# Ver logs do MySQL
-docker-compose logs mysql
-
-# Acessar MySQL via linha de comando
-docker exec -it aroli_mysql mysql -u root -p
-```
-
-### **Configurações do Container**
-
-- **Imagem**: MySQL 8.0
-- **Porta**: 3306
-- **Banco**: aroli_studio
-- **Usuário**: aroli_user
-- **Senha**: aroli_password
-
-## 🔧 Comandos de Desenvolvimento
-
-```bash
-# Setup completo do banco (recomendado)
-.\setup-database.ps1
-
-# Limpar cache
-php artisan cache:clear
-php artisan config:clear
-php artisan view:clear
-
-# Recriar banco (CUIDADO: apaga todos os dados)
-php artisan migrate:fresh --seed
-
-# Compilar assets para produção
-npm run build
-
-# Executar testes
-php artisan test
-```
-
-## 🚨 Troubleshooting
-
-### **Erro de Conexão com Banco**
-- Verifique se o Docker está rodando: `docker ps`
-- Confirme as configurações no `.env`
-- Aguarde alguns segundos após iniciar o container
-
-### **Erro "MySQL server has gone away"**
-- O banco de dados não está rodando
-- Execute: `docker-compose up -d`
-- Verifique se a porta 3306 não está ocupada
-
-### **Erro de Permissões (Windows)**
-- Execute o PowerShell como Administrador
-- Verifique se o Docker Desktop está rodando
-
-### **Assets não carregam**
-- Execute: `npm run dev`
-- Limpe o cache: `php artisan view:clear`
-
-### **Migrações falham**
-- Execute o script automático: `.\setup-database.ps1`
-- Verifique se o banco está rodando: `docker ps`
-- Confirme as credenciais no `.env`
-- Execute: `php artisan migrate:status`
-
-### **Erro "Undefined variable $name"**
-- Limpe o cache de views: `php artisan view:clear`
-- Os componentes modal foram corrigidos automaticamente
-
-## 📁 Estrutura do Projeto
-
-```
-AroliStudio/
-├── app/
-│   ├── Livewire/          # Componentes Livewire
-│   ├── Models/            # Modelos Eloquent
-│   ├── Http/Controllers/  # Controladores
-│   └── Casts/             # Casts personalizados
-├── database/
-│   ├── migrations/        # Migrações do banco
-│   └── seeders/          # Seeders para dados iniciais
-├── resources/
-│   ├── views/            # Views Blade
-│   └── js/               # Assets JavaScript
-├── docker/               # Configurações Docker
-└── routes/               # Definição de rotas
-```
-
-## 🤝 Contribuição
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## 📞 Suporte
-
-Se encontrar problemas ou tiver dúvidas:
-
-1. Verifique a seção [Troubleshooting](#-troubleshooting)
-2. Consulte a documentação do [Docker](docker/README.md)
-3. Abra uma issue no repositório
-
----
-
-**Desenvolvido com ❤️ usando Laravel e Livewire**
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
