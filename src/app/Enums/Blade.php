@@ -102,6 +102,7 @@ final class Blade
 
 	// Livewire - customer (novo padrão)
 	public const LIVEWIRE_CUSTOMER_INDEX = 'livewire.customer.index-customer';
+	public const LIVEWIRE_CUSTOMER_TABLE = 'livewire.customer.customers-table';
 	public const LIVEWIRE_CUSTOMER_FORM = 'livewire.customer.customer-form-component';
 
 	// Livewire - dashboard

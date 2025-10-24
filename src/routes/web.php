@@ -24,6 +24,7 @@ use App\Livewire\Commercial\Consumption;
 
 use App\Livewire\Customer\CustomerFormComponent;
 use App\Livewire\Customer\IndexCustomer;
+use App\Livewire\Customer\CustomersTable;
 
 use App\Livewire\Companies\Index as CompaniesIndex;
 use App\Livewire\Companies\Create as CompaniesCreate;
