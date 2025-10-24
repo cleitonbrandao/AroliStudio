@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Costumer;
+use App\Models\Customer;
 use App\Models\People;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,7 +19,7 @@ class CustomerService
         int $perPage = 15,
         ?Team $team = null
     ): LengthAwarePaginator {
-        $query = Costumer::with('people', 'team')
+        $query = Customer::with('people', 'team')
             ->auth();
 
         if ($search) {
@@ -37,9 +37,9 @@ class CustomerService
     /**
      * Buscar customer por ID
      */
-    public function find(int $customerId): ?Costumer
+    public function find(int $customerId): ?Customer
     {
-        return Costumer::with('people', 'team')
+        return Customer::with('people', 'team')
             ->auth()
             ->find($customerId);
     }
@@ -47,7 +47,7 @@ class CustomerService
     /**
      * Criar novo customer com pessoa
      */
-    public function create(array $data, Team $team): Costumer
+    public function create(array $data, Team $team): Customer
     {
         return DB::transaction(function () use ($data, $team) {
             // Criar pessoa primeiro
@@ -60,7 +60,7 @@ class CustomerService
             ]);
 
             // Criar customer vinculado à pessoa
-            $customer = Costumer::create([
+            $customer = Customer::create([
                 'team_id' => $team->id,
                 'person_id' => $person->id,
                 'cpf' => $data['cpf'] ?? null,
@@ -75,7 +75,7 @@ class CustomerService
     /**
      * Atualizar customer existente
      */
-    public function update(Costumer $customer, array $data): Costumer
+    public function update(Customer $customer, array $data): Customer
     {
         return DB::transaction(function () use ($customer, $data) {
             // Atualizar dados da pessoa
@@ -102,7 +102,7 @@ class CustomerService
     /**
      * Deletar customer (e opcionalmente a pessoa)
      */
-    public function delete(Costumer $customer, bool $deletePerson = false): bool
+    public function delete(Customer $customer, bool $deletePerson = false): bool
     {
         return DB::transaction(function () use ($customer, $deletePerson) {
             $person = $customer->people;
@@ -122,9 +122,9 @@ class CustomerService
     /**
      * Buscar customers por CPF
      */
-    public function findByCpf(string $cpf, ?Team $team = null): ?Costumer
+    public function findByCpf(string $cpf, ?Team $team = null): ?Customer
     {
-        $query = Costumer::with('people', 'team')
+        $query = Customer::with('people', 'team')
             ->where('cpf', $cpf);
 
         if ($team) {
@@ -139,9 +139,9 @@ class CustomerService
     /**
      * Buscar customers por email
      */
-    public function findByEmail(string $email, ?Team $team = null): ?Costumer
+    public function findByEmail(string $email, ?Team $team = null): ?Customer
     {
-        $query = Costumer::with('people', 'team')
+        $query = Customer::with('people', 'team')
             ->where('email', $email);
 
         if ($team) {
@@ -158,7 +158,7 @@ class CustomerService
      */
     public function cpfExists(string $cpf, ?int $excludeCustomerId = null, ?Team $team = null): bool
     {
-        $query = Costumer::where('cpf', $cpf);
+        $query = Customer::where('cpf', $cpf);
 
         if ($excludeCustomerId) {
             $query->where('id', '!=', $excludeCustomerId);
@@ -178,7 +178,7 @@ class CustomerService
      */
     public function emailExists(string $email, ?int $excludeCustomerId = null, ?Team $team = null): bool
     {
-        $query = Costumer::where('email', $email);
+        $query = Customer::where('email', $email);
 
         if ($excludeCustomerId) {
             $query->where('id', '!=', $excludeCustomerId);
@@ -198,7 +198,7 @@ class CustomerService
      */
     public function getStatistics(?Team $team = null): array
     {
-        $query = Costumer::auth();
+        $query = Customer::auth();
 
         if ($team) {
             $query->where('team_id', $team->id);
@@ -223,7 +223,7 @@ class CustomerService
      */
     public function getRecent(int $limit = 10, ?Team $team = null): Collection
     {
-        $query = Costumer::with('people', 'team')
+        $query = Customer::with('people', 'team')
             ->auth()
             ->orderBy('created_at', 'desc')
             ->limit($limit);

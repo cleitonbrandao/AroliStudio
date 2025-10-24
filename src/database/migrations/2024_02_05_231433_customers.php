@@ -12,10 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('costumers', function (Blueprint $table) {
+        Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('person_id')
-                ->constrained(table: 'peoples', indexName: 'costumer_people_id')
+                ->constrained(table: 'peoples', indexName: 'customer_people_id')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->bigInteger('cpf')->nullable();
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->unique(['person_id']);
         });
         DB::statement(
-            'ALTER TABLE costumers MODIFY COLUMN cpf BIGINT(11) UNSIGNED ZEROFILL AFTER person_id'
+            'ALTER TABLE customers MODIFY COLUMN cpf BIGINT(11) UNSIGNED ZEROFILL AFTER person_id'
         );
     }
 
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('costumers');
+        Schema::dropIfExists('customers');
     }
 };

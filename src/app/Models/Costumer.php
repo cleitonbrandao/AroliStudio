@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use OwenIt\Auditing\Auditable;
 
-class Costumer extends Model implements AuditableContract
+class Customer extends Model implements AuditableContract
 {
     use HasFactory;
     use Auditable;

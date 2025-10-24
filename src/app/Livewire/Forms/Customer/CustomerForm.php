@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Forms\Customer;
 
-use App\Models\Costumer;
+use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
@@ -11,7 +11,7 @@ use Livewire\Form;
 
 class CustomerForm extends Form
 {
-    public ?Costumer $customer = null;
+    public ?Customer $customer = null;
     
     // Dados da Pessoa (People)
     #[Validate('required|string|max:45')]
@@ -26,7 +26,6 @@ class CustomerForm extends Form
     #[Validate('nullable|string|max:255')]
     public ?string $photo = null;
     
-    // Dados do Customer (Costumer)
     public ?string $cpf = null;
     
     #[Validate('required|email|max:255')]
@@ -70,7 +69,7 @@ class CustomerForm extends Form
                     }
                     
                     // Verifica unicidade no banco (usando CPF limpo)
-                    $exists = \App\Models\Costumer::where('team_id', $teamId)
+                    $exists = \App\Models\Customer::where('team_id', $teamId)
                         ->where('id', '!=', $customerId)
                         ->whereNotNull('cpf')
                         ->get()
@@ -89,7 +88,7 @@ class CustomerForm extends Form
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('costumers', 'email')
+                Rule::unique('customers', 'email')
                     ->where('team_id', $teamId)
                     ->ignore($customerId),
             ],
@@ -143,7 +142,7 @@ class CustomerForm extends Form
      */
     public function setCustomer(int $customerId): void
     {
-        $this->customer = Costumer::with('people')->auth()->findOrFail($customerId);
+        $this->customer = Customer::with('people')->auth()->findOrFail($customerId);
         
         // Carregar dados da pessoa
         if ($this->customer->people) {

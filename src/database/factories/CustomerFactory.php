@@ -7,14 +7,14 @@ use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Costumer>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Customer>
  */
 class CustomerFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      */
-    protected $model = \App\Models\Costumer::class;
+    protected $model = \App\Models\Customer::class;
 
     /**
      * Define the model's default state.
