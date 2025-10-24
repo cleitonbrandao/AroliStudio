@@ -22,10 +22,13 @@ final class Route
     // Employee
     const WEB_ROOT_EMPLOYEE = 'root.employee';
     const WEB_ROOT_EMPLOYEE_INDEX = 'root.employee.index';
+    const WEB_ROOT_EMPLOYEE_CREATE = 'root.employee.create';
+    const WEB_ROOT_EMPLOYEE_EDIT = 'root.employee.edit';
 
-    // Costumer
-    const WEB_ROOT_COSTUMER = 'root.costumer';
-    const WEB_ROOT_COSTUMER_INDEX = 'root.costumer.index';
+    // Customers (novo padrão)
+    const WEB_CUSTOMERS_INDEX = 'customers.index';
+    const WEB_CUSTOMERS_CREATE = 'customers.create';
+    const WEB_CUSTOMERS_EDIT = 'customers.edit';
 
     // Negotiable / services
     const WEB_ROOT_NEGOTIABLE = 'root.negotiable';
@@ -33,7 +36,6 @@ final class Route
 
     // Forms (root.form.*)
     const WEB_ROOT_FORM_EMPLOYEE = 'root.form.employee';
-    const WEB_ROOT_FORM_COSTUMER = 'root.form.costumer';
     const WEB_ROOT_FORM_SERVICE = 'root.form.service';
     const WEB_ROOT_FORM_PRODUCT = 'root.form.product';
     const WEB_ROOT_FORM_PACKAGE = 'root.form.package';
@@ -44,13 +46,11 @@ final class Route
     const WEB_ROOT_COMMERCIAL_CONSUMPTION = 'root.commercial.consumption';
 
     // Register actions
-    const WEB_ROOT_REGISTER_COSTUMER = 'root.register.costumer';
     const WEB_ROOT_REGISTER_SERVICE = 'root.register.service';
     const WEB_ROOT_REGISTER_PACKAGE = 'root.register.package';
     const WEB_ROOT_REGISTER_ENTERPRISE = 'root.register.enterprise';
 
     // Update actions
-    const WEB_ROOT_UPDATE_COSTUMER = 'root.update.costumer';
     const WEB_ROOT_UPDATE_PRODUCT = 'root.update.product';
 
     // Delete actions

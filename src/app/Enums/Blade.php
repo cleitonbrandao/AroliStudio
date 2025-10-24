@@ -15,7 +15,6 @@ final class Blade
 	public const LAYOUTS_APP = 'layouts.app';
 	public const LAYOUTS_GUEST = 'layouts.guest';
 	public const LAYOUTS_COMMERCIAL_HOME = 'layouts.commercial.home';
-	public const LAYOUTS_CUSTOMER_HOME = 'layouts.costumer.home';
 	public const LAYOUTS_DASHBOARD_HOME = 'layouts.dashboard.home';
 	public const LAYOUTS_EMPLOYEE_HOME = 'layouts.employee.home';
 	public const LAYOUTS_SERVICE_HOME = 'layouts.service.home';
@@ -101,11 +100,9 @@ final class Blade
 	// Livewire - components
 	public const LIVEWIRE_COMPONENTS_CARD = 'livewire.components.card';
 
-	// Livewire - costumer
-	public const LIVEWIRE_COSTUMER_FORM = 'livewire.costumer.form';
-	public const LIVEWIRE_COSTUMER_INDEX = 'livewire.costumer.index';
-	public const LIVEWIRE_COSTUMER_REGISTER = 'livewire.costumer.register-costumer';
-	public const LIVEWIRE_COSTUMER_UPDATE = 'livewire.costumer.update';
+	// Livewire - customer (novo padrão)
+	public const LIVEWIRE_CUSTOMER_INDEX = 'livewire.customer.index-customer';
+	public const LIVEWIRE_CUSTOMER_FORM = 'livewire.customer.customer-form-component';
 
 	// Livewire - dashboard
 	public const LIVEWIRE_DASHBOARD_HOME = 'livewire.dashboard.home';
@@ -120,7 +117,6 @@ final class Blade
 	public const LIVEWIRE_SERVICE_ANY_SEARCH = 'livewire.service.any-search';
 	public const LIVEWIRE_SERVICE_FORM = 'livewire.service.form';
 	public const LIVEWIRE_SERVICE_INDEX = 'livewire.service.index';
-	public const LIVEWIRE_SERVICE_REGISTER_COSTUMER = 'livewire.service.register-costumer';
 	public const LIVEWIRE_SERVICE_REGISTER = 'livewire.service.register-service';
 	public const LIVEWIRE_SERVICE_INDEX_EMPLOYEE = 'livewire.service.index-employee';
 	public const LIVEWIRE_SERVICE_HIERARCHY_MANAGER = 'livewire.service.hierarchy-manager';

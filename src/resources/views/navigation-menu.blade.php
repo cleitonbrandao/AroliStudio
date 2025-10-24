@@ -18,7 +18,7 @@
                     <x-nav-link href="{{ route('root.employee') }}" :active="request()->routeIs('root.employee')">
                         {{ __('app.employees') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('root.costumer') }}" :active="request()->routeIs('root.costumer')">
+                    <x-nav-link href="{{ route('customers.index') }}" :active="request()->routeIs('customers.*')">
                         {{ __('app.customers') }}
                     </x-nav-link>
                     <x-nav-link href="{{ route('root.negotiable') }}" :active="request()->routeIs('root.negotiable')">
