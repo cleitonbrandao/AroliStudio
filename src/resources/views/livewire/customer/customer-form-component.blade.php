@@ -182,7 +182,7 @@
                                         @else border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500 
                                         @enderror"
                                     placeholder="000.000.000-00"
-                                    maxlength="11"
+                                    maxlength="14"
                                     x-mask="999.999.999-99"
                                 >
                                 @error('form.cpf')

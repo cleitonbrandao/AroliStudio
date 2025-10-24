@@ -3,6 +3,7 @@
 namespace App\Livewire\Forms\Customer;
 
 use App\Models\Costumer;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Validate;
@@ -41,7 +42,7 @@ class CustomerForm extends Form
      */
     public function rules(): array
     {
-        $teamId = auth()->user()?->currentTeam?->id;
+        $teamId = Auth::user()?->currentTeam?->id;
         $customerId = $this->customer?->id;
 
         return [
@@ -52,11 +53,36 @@ class CustomerForm extends Form
             
             'cpf' => [
                 'nullable',
-                'digits:11',
-                Rule::unique('costumers', 'cpf')
-                    ->where('team_id', $teamId)
-                    ->ignore($customerId)
-                    ->whereNotNull('cpf'),
+                'string',
+                'regex:/^\d{3}\.\d{3}\.\d{3}-\d{2}$/',
+                function ($attribute, $value, $fail) use ($teamId, $customerId) {
+                    if (empty($value)) {
+                        return;
+                    }
+                    
+                    // Remove formatação para verificar unicidade
+                    $cleanCpf = preg_replace('/[^0-9]/', '', $value);
+                    
+                    // Verifica se tem 11 dígitos
+                    if (strlen($cleanCpf) !== 11) {
+                        $fail('O CPF deve conter exatamente 11 dígitos.');
+                        return;
+                    }
+                    
+                    // Verifica unicidade no banco (usando CPF limpo)
+                    $exists = \App\Models\Costumer::where('team_id', $teamId)
+                        ->where('id', '!=', $customerId)
+                        ->whereNotNull('cpf')
+                        ->get()
+                        ->contains(function ($customer) use ($cleanCpf) {
+                            $dbCpf = preg_replace('/[^0-9]/', '', $customer->cpf);
+                            return $dbCpf === $cleanCpf;
+                        });
+                    
+                    if ($exists) {
+                        $fail('Este CPF já está cadastrado.');
+                    }
+                },
             ],
             
             'email' => [
@@ -85,8 +111,7 @@ class CustomerForm extends Form
             
             'phone.max' => 'O telefone não pode ter mais de 20 caracteres.',
             
-            'cpf.digits' => 'O CPF deve conter exatamente 11 dígitos.',
-            'cpf.unique' => 'Este CPF já está cadastrado.',
+            'cpf.regex' => 'O CPF deve estar no formato: 000.000.000-00',
             
             'email.required' => 'O email é obrigatório.',
             'email.email' => 'O email deve ser válido.',
@@ -129,9 +154,11 @@ class CustomerForm extends Form
         }
         
         // Carregar dados do customer
+        // O CPF já vem formatado pelo cast CpfMaskaredWithDataBase
         $this->cpf = $this->customer->cpf;
         $this->email = $this->customer->email;
-        $this->birthday = $this->customer->birthday ? $this->customer->birthday->format('Y-m-d') : null;
+        // Pega o valor original do banco (Y-m-d) sem passar pelo cast
+        $this->birthday = $this->customer->getAttributes()['birthday'] ?? null;
         $this->team_id = $this->customer->team_id;
     }
 
@@ -145,6 +172,7 @@ class CustomerForm extends Form
             'last_name' => $this->last_name,
             'phone' => $this->phone,
             'photo' => $this->photo,
+            // CPF já vem formatado do input, o cast CpfMaskaredWithDataBase vai limpar antes de salvar
             'cpf' => $this->cpf,
             'email' => $this->email,
             'birthday' => $this->birthday,
