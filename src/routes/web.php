@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CostumerController;
 use App\Http\Controllers\EnterpriseController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\PackageController;
@@ -23,9 +22,8 @@ use App\Livewire\Commercial\HomeCommercial;
 use App\Livewire\Commercial\SummaryCommercial;
 use App\Livewire\Commercial\Consumption;
 
-use App\Livewire\Costumer\HomeCostumer;
-use App\Livewire\Costumer\IndexCostumer;
-use App\Livewire\Costumer\RegisterCostumer;
+use App\Livewire\Customer\CustomerFormComponent;
+use App\Livewire\Customer\IndexCustomer;
 
 use App\Livewire\Companies\Index as CompaniesIndex;
 use App\Livewire\Companies\Create as CompaniesCreate;
@@ -75,9 +73,11 @@ Route::middleware([
         Route::get('/{userId}/edit', EmployeeForm::class)->name('employee.edit');
     });
 
-    Route::name('root.')->prefix('costumer')->group(function (){
-        Route::get('/', [HomeCostumer::class, 'home'])->name('costumer');
-        Route::get('/index', [IndexCostumer::class, 'index'])->name('costumer.index');
+    // Customer routes (padrão consolidado)
+    Route::name('customers.')->prefix('customers')->middleware('user.has.team')->group(function () {
+        Route::get('/', IndexCustomer::class)->name('index');
+        Route::get('/create', CustomerFormComponent::class)->name('create');
+        Route::get('/{customerId}/edit', CustomerFormComponent::class)->name('edit');
     });
 
     Route::name('root.')->prefix('negotiable')->middleware('user.has.team')->group(function () {
@@ -86,7 +86,6 @@ Route::middleware([
     });
 
     Route::name('root.')->prefix('form')->middleware('user.has.team')->group(function () {
-        Route::get('/costumer', [RegisterCostumer::class, 'render'])->name('form.costumer');
         Route::get('/service', RegisterService::class)->name('form.service');
         Route::get('/product', RegisterProduct::class)->name('form.product');
         Route::get('/package', RegisterPackage::class)->name('form.package');
@@ -100,14 +99,16 @@ Route::middleware([
     });
 
     Route::name('root.')->prefix('register')->middleware('user.has.team')->group(function () {
-        Route::post('/costumer', [CostumerController::class, 'store'])->name('register.costumer');
+        // DEPRECATED: Usar customers.* routes (novo padrão Livewire)
+        // Route::post('/costumer', [CostumerController::class, 'store'])->name('register.costumer');
         Route::post('/service', [ServiceController::class, 'store'])->name('register.service');
         Route::post('/package', [PackageController::class, 'store'])->name('register.package');
         Route::post('/enterprise', [EnterpriseController::class, 'store'])->name('register.enterprise');
     });
 
     Route::name('root.')->prefix('update')->middleware('user.has.team')->group(function () {
-        Route::patch('/costumer', [RegisterCostumer::class, 'update'])->name('update.costumer');
+        // DEPRECATED: Usar customers.* routes (novo padrão Livewire)
+        // Route::patch('/costumer', [RegisterCostumer::class, 'update'])->name('update.costumer');
         Route::patch('/product/{product}', [ProductController::class, 'update'])->name('update.product');
     });
 
