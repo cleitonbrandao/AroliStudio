@@ -27,9 +27,9 @@ class People extends Model
      * Relacionamento com Customer (1:1)
      * Uma pessoa pode ser um customer
      */
-    public function costumer(): HasOne
+    public function customer(): HasOne
     {
-        return $this->hasOne(Costumer::class, 'person_id', 'id');
+        return $this->hasOne(Customer::class, 'person_id', 'id');
     }
 
     /**
@@ -85,6 +85,6 @@ class People extends Model
      */
     public function isCustomer(): bool
     {
-        return $this->costumer()->exists();
+        return $this->customer()->exists();
     }
 }
