@@ -23,8 +23,8 @@ return new class extends Migration
             $table->index('team_id');
         });
 
-        // Adicionar team_id à tabela costumers
-        Schema::table('costumers', function (Blueprint $table) {
+        // Adicionar team_id à tabela customers
+        Schema::table('customers', function (Blueprint $table) {
             $table->foreignId('team_id')
                 ->nullable()
                 ->after('id')
@@ -47,7 +47,7 @@ return new class extends Migration
             $table->dropColumn('team_id');
         });
 
-        Schema::table('costumers', function (Blueprint $table) {
+        Schema::table('customers', function (Blueprint $table) {
             $table->dropForeign(['team_id']);
             $table->dropIndex(['team_id']);
             $table->dropColumn('team_id');
