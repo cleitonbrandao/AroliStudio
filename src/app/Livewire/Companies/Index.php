@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Companies;
 
-use App\Models\Company;
+use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -35,7 +35,7 @@ class Index extends Component
     public function switchCompany($companyId)
     {
         $user = Auth::user();
-        $company = Company::find($companyId);
+        $company = Team::find($companyId);
         
         if ($company && $user->belongsToTeam($company)) {
             session(['active_company_id' => $companyId]);

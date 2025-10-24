@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Company;
+use App\Models\Team;
 use App\Models\User;
 use App\Services\FranchiseService;
 use Illuminate\Database\Seeder;
@@ -24,7 +24,7 @@ class FranchiseTestSeeder extends Seeder
         );
 
         // 2. Criar Matriz
-        $matriz = Company::create([
+        $matriz = Team::create([
             'name' => 'Restaurante Matriz Ltda',
             'user_id' => $ceo->id,
             'personal_team' => false,

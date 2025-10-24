@@ -29,11 +29,19 @@ class CompanySubscription extends Model
     ];
 
     /**
-     * Relacionamento com empresa
+     * Relacionamento com empresa (team)
      */
     public function company(): BelongsTo
     {
-        return $this->belongsTo(Company::class, 'company_id');
+        return $this->belongsTo(Team::class, 'company_id');
+    }
+
+    /**
+     * Alias para compatibilidade: team() retorna o mesmo que company()
+     */
+    public function team(): BelongsTo
+    {
+        return $this->company();
     }
 
     /**

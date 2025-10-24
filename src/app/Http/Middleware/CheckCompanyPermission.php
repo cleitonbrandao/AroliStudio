@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Company;
+use App\Models\Team;
 use App\Services\FranchiseService;
 use Closure;
 use Illuminate\Http\Request;
@@ -28,14 +28,14 @@ class CheckCompanyPermission
         // Obter empresa do parâmetro da rota ou do contexto atual
         $company = $request->route('company') ?? $user->currentTeam;
         
-        if (!$company instanceof Company) {
+        if (!$company instanceof Team) {
             return redirect()->route('companies.index')
                 ->with('error', 'Empresa não encontrada.');
         }
 
         // Verificar se usuário tem permissão para a ação
         if (!$this->franchiseService->canUserAccessCompany($user, $company, $action)) {
-            $role = $user->getRoleInCompany($company);
+            $role = $company->getUserRole($user);
             
             return redirect()->back()
                 ->with('error', "Você não tem permissão para {$action} nesta empresa. Seu role: {$role}");

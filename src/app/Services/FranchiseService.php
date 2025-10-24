@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Company;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -11,11 +11,11 @@ class FranchiseService
     /**
      * Criar filial de uma empresa matriz
      */
-    public function createFranchise(Company $parentCompany, User $franchiseOwner, array $franchiseData): Company
+    public function createFranchise(Team $parentCompany, User $franchiseOwner, array $franchiseData): Team
     {
         return DB::transaction(function () use ($parentCompany, $franchiseOwner, $franchiseData) {
             // Criar a filial
-            $franchise = Company::create([
+            $franchise = Team::create([
                 'name' => $franchiseData['name'],
                 'user_id' => $franchiseOwner->id,
                 'personal_team' => false,
@@ -50,7 +50,7 @@ class FranchiseService
     /**
      * Obter hierarquia de empresas (matriz -> filiais)
      */
-    public function getCompanyHierarchy(Company $company): array
+    public function getCompanyHierarchy(Team $company): array
     {
         $hierarchy = [
             'company' => $company,
@@ -59,7 +59,7 @@ class FranchiseService
         ];
 
         // Buscar filiais (empresas onde este usuário é owner mas não é a empresa principal)
-        $franchises = Company::where('user_id', $company->user_id)
+        $franchises = Team::where('user_id', $company->user_id)
             ->where('id', '!=', $company->id)
             ->where('plan_type', 'franchise')
             ->get();
@@ -77,7 +77,7 @@ class FranchiseService
         $companies = [];
 
         // Empresas onde é owner
-        $ownedCompanies = $user->ownedCompanies()->get();
+        $ownedCompanies = $user->ownedTeams()->get();
         foreach ($ownedCompanies as $company) {
             $companies[] = [
                 'company' => $company,
@@ -87,7 +87,9 @@ class FranchiseService
         }
 
         // Empresas onde é admin
-        $adminCompanies = $user->adminCompanies()->get();
+        $adminCompanies = $user->allTeams()->filter(function($team) use ($user) {
+            return $user->teamRole($team)?->key === 'admin';
+        });
         foreach ($adminCompanies as $company) {
             $companies[] = [
                 'company' => $company,
@@ -97,7 +99,9 @@ class FranchiseService
         }
 
         // Empresas onde é member
-        $memberCompanies = $user->memberCompanies()->get();
+        $memberCompanies = $user->allTeams()->filter(function($team) use ($user) {
+            return $user->teamRole($team)?->key === 'member';
+        });
         foreach ($memberCompanies as $company) {
             $companies[] = [
                 'company' => $company,
@@ -112,9 +116,9 @@ class FranchiseService
     /**
      * Verificar se usuário pode acessar dados de uma empresa
      */
-    public function canUserAccessCompany(User $user, Company $company, string $action = 'read'): bool
+    public function canUserAccessCompany(User $user, Team $company, string $action = 'read'): bool
     {
-        $role = $user->getRoleInCompany($company);
+        $role = $company->getUserRole($user);
         
         if (!$role) {
             return false;
