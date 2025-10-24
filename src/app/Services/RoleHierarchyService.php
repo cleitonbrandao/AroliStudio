@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Company;
+use App\Models\Team;
 use App\Models\User;
 
 class RoleHierarchyService
@@ -40,10 +40,10 @@ class RoleHierarchyService
     /**
      * Verificar se usuário pode gerenciar outro usuário
      */
-    public function canUserManageUser(User $manager, User $target, Company $company): bool
+    public function canUserManageUser(User $manager, User $target, Team $company): bool
     {
-        $managerRole = $manager->getRoleInCompany($company);
-        $targetRole = $target->getRoleInCompany($company);
+        $managerRole = $company->getUserRole($manager);
+        $targetRole = $company->getUserRole($target);
 
         if (!$managerRole || !$targetRole) {
             return false;
@@ -66,9 +66,9 @@ class RoleHierarchyService
     /**
      * Verificar se usuário pode realizar ação em empresa
      */
-    public function canUserPerformAction(User $user, Company $company, string $action): bool
+    public function canUserPerformAction(User $user, Team $company, string $action): bool
     {
-        $role = $user->getRoleInCompany($company);
+        $role = $company->getUserRole($user);
         
         if (!$role) {
             return false;
@@ -124,9 +124,9 @@ class RoleHierarchyService
     /**
      * Obter roles que um usuário pode atribuir
      */
-    public function getAssignableRoles(User $user, Company $company): array
+    public function getAssignableRoles(User $user, Team $company): array
     {
-        $userRole = $user->getRoleInCompany($company);
+        $userRole = $company->getUserRole($user);
         $userLevel = $this->getRoleLevel($userRole);
 
         $assignableRoles = [];
@@ -143,9 +143,9 @@ class RoleHierarchyService
     /**
      * Verificar se usuário pode criar filial
      */
-    public function canUserCreateFranchise(User $user, Company $parentCompany): bool
+    public function canUserCreateFranchise(User $user, Team $parentCompany): bool
     {
-        $role = $user->getRoleInCompany($parentCompany);
+        $role = $parentCompany->getUserRole($user);
         
         return in_array($role, ['super_admin', 'ceo']);
     }
@@ -153,9 +153,9 @@ class RoleHierarchyService
     /**
      * Verificar se usuário pode deletar empresa
      */
-    public function canUserDeleteCompany(User $user, Company $company): bool
+    public function canUserDeleteCompany(User $user, Team $company): bool
     {
-        $role = $user->getRoleInCompany($company);
+        $role = $company->getUserRole($user);
         
         return in_array($role, ['super_admin', 'ceo']);
     }

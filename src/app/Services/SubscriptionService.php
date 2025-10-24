@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Company;
+use App\Models\Team;
 use App\Models\CompanySubscription;
 use App\Models\Subscription;
 use App\Models\User;
@@ -33,7 +33,7 @@ class SubscriptionService
     /**
      * Criar assinatura para empresa
      */
-    public function createCompanySubscription(Company $company, Subscription $subscription, array $planData): CompanySubscription
+    public function createCompanySubscription(Team $company, Subscription $subscription, array $planData): CompanySubscription
     {
         return DB::transaction(function () use ($company, $subscription, $planData) {
             $companySubscription = $company->subscriptions()->create([
@@ -88,7 +88,7 @@ class SubscriptionService
     /**
      * Verificar se empresa pode adicionar usuário
      */
-    public function canCompanyAddUser(Company $company): array
+    public function canCompanyAddUser(Team $company): array
     {
         if (!$company->hasActiveSubscription()) {
             return [

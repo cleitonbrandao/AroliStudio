@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Company;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -33,7 +33,7 @@ class TestCompanySeeder extends Seeder
         ];
 
         foreach ($companies as $companyData) {
-            $company = Company::firstOrCreate(
+            $company = Team::firstOrCreate(
                 ['name' => $companyData['name']],
                 array_merge($companyData, [
                     'user_id' => $user->id,

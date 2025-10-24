@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Company;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -33,10 +33,10 @@ class CompanySeeder extends Seeder
         ];
 
         foreach ($companies as $companyData) {
-            $company = Company::firstOrCreate(['name' => $companyData['name']], $companyData);
+            $company = Team::firstOrCreate(['name' => $companyData['name']], $companyData);
             
             // Verificar se o usuário já não pertence à empresa
-            if (!$user->belongsToCompany($company)) {
+            if (!$user->belongsToTeam($company)) {
                 $company->addUser($user, 'owner');
             }
         }
