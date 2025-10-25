@@ -17,9 +17,21 @@ class PeopleFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake('pt_BR')->name(),
-            'last_name' => fake('pt_BR')->lastName,
-            'phone' => fake()->cellphoneNumber()
+            'team_id' => \App\Models\Team::factory(),
+            'name' => fake('pt_BR')->firstName(),
+            'last_name' => fake('pt_BR')->lastName(),
+            'phone' => fake('pt_BR')->cellphoneNumber(),
+            'photo' => null,
         ];
+    }
+
+    /**
+     * Indicar que a pessoa pertence a um team específico
+     */
+    public function forTeam(\App\Models\Team $team): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'team_id' => $team->id,
+        ]);
     }
 }
