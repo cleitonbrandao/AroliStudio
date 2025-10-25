@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('layouts.app')]
+#[Layout('layouts.customer.home')]
 class CustomerFormComponent extends Component
 {
     public CustomerForm $form;
@@ -77,7 +77,7 @@ class CustomerFormComponent extends Component
                 session()->flash('success', 'Cliente cadastrado com sucesso!');
                 
                 // Redirecionar para edição ou lista
-                $this->redirect(route('customers.index'), navigate: true);
+                $this->redirect(route('root.customers.list'), navigate: true);
             }
             
         } catch (\Exception $e) {
@@ -131,7 +131,7 @@ class CustomerFormComponent extends Component
      */
     public function cancel(): void
     {
-        $this->redirect(route('customers.index'), navigate: true);
+        $this->redirect(route('root.customers.list'), navigate: true);
     }
 
     /**

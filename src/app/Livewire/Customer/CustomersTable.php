@@ -11,7 +11,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Layout('layouts.app')]
+#[Layout('layouts.customer.home')]
 class CustomersTable extends Component
 {
     use WithPagination;
@@ -91,7 +91,7 @@ class CustomersTable extends Component
      */
     public function create(): void
     {
-        $this->redirect(route('customers.create'), navigate: true);
+        $this->redirect(route('root.customers.create'), navigate: true);
     }
 
     /**
@@ -99,7 +99,7 @@ class CustomersTable extends Component
      */
     public function edit(int $customerId): void
     {
-        $this->redirect(route('customers.edit', $customerId), navigate: true);
+        $this->redirect(route('root.customers.edit', $customerId), navigate: true);
     }
 
     /**

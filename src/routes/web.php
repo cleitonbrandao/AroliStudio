@@ -75,8 +75,9 @@ Route::middleware([
     });
 
     // Customer routes (padrão consolidado)
-    Route::name('customers.')->prefix('customers')->middleware('user.has.team')->group(function () {
+    Route::name('root.customers.')->prefix('customers')->middleware('user.has.team')->group(function () {
         Route::get('/', IndexCustomer::class)->name('index');
+        Route::get('/list', CustomersTable::class)->name('list');
         Route::get('/create', CustomerFormComponent::class)->name('create');
         Route::get('/{customerId}/edit', CustomerFormComponent::class)->name('edit');
     });
